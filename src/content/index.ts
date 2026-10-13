@@ -9,6 +9,7 @@ import { ch08MessagingFunctions } from './ch08-messaging-functions'
 import { ch09DataAnalytics } from './ch09-data-analytics'
 import { ch10BicepDelivery } from './ch10-bicep-delivery'
 import { ch11OpsSecurityRecovery } from './ch11-ops-security-recovery'
+import { ch12Optimisation } from './ch12-optimisation'
 import type { Course, Section } from './types'
 
 // Course registry, in syllabus order. Courses are added here as each is authored.
@@ -24,6 +25,7 @@ export const COURSES: Record<string, Course> = {
   [ch09DataAnalytics.id]: ch09DataAnalytics,
   [ch10BicepDelivery.id]: ch10BicepDelivery,
   [ch11OpsSecurityRecovery.id]: ch11OpsSecurityRecovery,
+  [ch12Optimisation.id]: ch12Optimisation,
 }
 
 export type { Course, Section }
