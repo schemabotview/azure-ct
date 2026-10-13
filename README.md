@@ -1,6 +1,6 @@
 # azure-ct
 
-A **GraphL content repo** for the Azure course — from cloud foundations to advanced application and operations. Course plan: [`AZURE-COURSE-PLAN.md`](AZURE-COURSE-PLAN.md); authoring approach and status: [`AUTHORING-PLAN.md`](AUTHORING-PLAN.md). Status: scaffolded, no chapters authored yet (the template `demo` course is a placeholder).
+A **GraphL content repo** for the Azure course — from cloud foundations to advanced application and operations. Course plan: [`AZURE-COURSE-PLAN.md`](AZURE-COURSE-PLAN.md); authoring approach and status: [`AUTHORING-PLAN.md`](AUTHORING-PLAN.md). Status: Chapter 1 authored (6 sections, narration text only — no `.wav` yet); Chapters 2–12 not started.
 
 The rest of this file is the template's description of the content model.
 

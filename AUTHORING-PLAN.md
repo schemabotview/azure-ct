@@ -64,7 +64,7 @@ per course is fixed by the plan (6·8·6·9·7·7·8·9·6·7·10·7 = **90**, c
 | Phase | Scope | Exit gate |
 | --- | --- | --- |
 | 0 | Scaffold from template, identity swap, this plan *(done)* | `build` / `tsc` / `check` green |
-| 1 | **Pilot: Chapter 1 (6 sections)** — full unit: scenes, slides, narration | You review the rendered routes; adjust voice, density, scene style |
+| 1 | **Pilot: Chapter 1 (6 sections)** — full unit: scenes, slides, narration *(authored; awaiting review)* | You review the rendered routes; adjust voice, density, scene style |
 | 2 | Chapters 2–4 (identity → app → network: the core path) | Review per chapter |
 | 3 | Chapters 5–8 (compute, storage, data, messaging) | Review per chapter |
 | 4 | Chapters 9–12 (analytics, delivery, operations, optimisation) | Review per chapter |
@@ -89,5 +89,5 @@ come before breadth chapters.
 
 1. **Narration length / voice.** Demo narration is ~120–170 words per section. Same target?
 2. **Chapter granularity.** Twelve courses (one per chapter) vs fewer longer courses. Default: twelve.
-3. **Demo course** stays until Chapter 1 is registered, then is deleted per `TEMPLATE.md`.
+3. **Demo course** — deleted when Chapter 1 was registered.
 4. **Pages/catalog.** Enabling Pages and listing in `ui-graphl`'s `catalog.json` are yours; I haven't touched either.

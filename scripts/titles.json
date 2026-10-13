@@ -1,5 +1,4 @@
 {
-  "demo": "How A GraphL Section Is Built",
   "ch01-foundations": "Azure Basics: Subscriptions, Resource Groups, Regions",
   "ch02-identity-governance": "Azure Identity, RBAC, Managed Identity and Policy",
   "ch03-app-service": "Deploying a Web App on Azure App Service",
