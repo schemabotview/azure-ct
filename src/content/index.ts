@@ -1,6 +1,7 @@
 import { ch01Foundations } from './ch01-foundations'
 import { ch02IdentityGovernance } from './ch02-identity-governance'
 import { ch03AppService } from './ch03-app-service'
+import { ch04Networking } from './ch04-networking'
 import type { Course, Section } from './types'
 
 // Course registry, in syllabus order. Courses are added here as each is authored.
@@ -8,6 +9,7 @@ export const COURSES: Record<string, Course> = {
   [ch01Foundations.id]: ch01Foundations,
   [ch02IdentityGovernance.id]: ch02IdentityGovernance,
   [ch03AppService.id]: ch03AppService,
+  [ch04Networking.id]: ch04Networking,
 }
 
 export type { Course, Section }
