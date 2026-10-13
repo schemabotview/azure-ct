@@ -1,0 +1,10 @@
+/* This repo's whole design surface — the three tokens @graphlearning/shell leaves to the repo.
+   Imported AFTER the shell's stylesheet in main.tsx, so these win the cascade.
+
+   Azure blue as --brand (the catalog card and thumbnail gradient use the same anchor), a lighter tint
+   as --brand-hover, and amber as the contrasting --accent-2. */
+:root {
+  --brand: #0078d4; /* the subject's identity colour */
+  --brand-hover: #4da1e1; /* a lighter tint — the eyebrow's hover state */
+  --accent-2: #fbbf24; /* the counter tone — the slide's `###` subheading */
+}
