@@ -14,6 +14,7 @@ export const firstRequestAndResourceId: Section = {
 - **Portal** for exploring
 - **Azure CLI** for repeatable commands
 - **Cloud Shell**: a browser shell that is already signed in
+- All three call the **same management API**
 
 ### The call
 - \`az group create\` sends a request to ARM

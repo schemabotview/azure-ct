@@ -7,6 +7,7 @@ export const operatingModels: Scene = {
   id: 'ch01-operating-models',
   title: 'Who operates each layer',
   flow: 'TB',
+  padding: 0.05,
   nodes: [
     {
       id: 'responsibility',
@@ -22,6 +23,17 @@ export const operatingModels: Scene = {
       ],
     },
     {
+      id: 'moves',
+      label: 'The boundary moves, service by service',
+      pattern: 'group',
+      cols: 3,
+      children: [
+        { id: 'm-iaas', label: 'IaaS', sub: 'you patch the VM', pattern: 'service', icon: 'vm' },
+        { id: 'm-paas', label: 'PaaS', sub: 'you deploy code', pattern: 'service', icon: 'appservice' },
+        { id: 'm-saas', label: 'SaaS', sub: 'you configure it', pattern: 'service', icon: 'cloud' },
+      ],
+    },
+    {
       id: 'always',
       label: 'Never outsourced',
       sub: 'your data and who may reach it',
@@ -29,5 +41,8 @@ export const operatingModels: Scene = {
       icon: 'shieldcheck',
     },
   ],
-  edges: [{ source: 'responsibility', target: 'always', label: 'whatever the model' }],
+  edges: [
+    { source: 'responsibility', target: 'moves', label: 'read across' },
+    { source: 'moves', target: 'always', label: 'whatever the model' },
+  ],
 }

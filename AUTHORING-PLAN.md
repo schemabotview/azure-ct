@@ -45,8 +45,16 @@ per course is fixed by the plan (6·8·6·9·7·7·8·9·6·7·10·7 = **90**, c
 5. **Failure/boundary line.** Each section states at least one thing the plan flags as *not* true
    (e.g. "a resource group is not a network boundary") so misconceptions are addressed, not implied.
 6. **Guards**: `npm run build && npx tsc --noEmit && npm run check`.
-7. **Look at the route** (`#/<course>-<section>`) in a browser — card overflow, edge labels over cards,
+7. **Measure density on the rendered route** (see below), then **look at it** (`#/<course>-<section>`) in a browser — card overflow, edge labels over cards,
    density targets in `CLAUDE.md`.
+
+### Density gate (every section)
+
+Measured on the rendered route at 1920×1080 with a headless-browser probe, not just the modelled
+`check` heights. Targets: slide text **80–95 %** of pane height; scene **≥ 0.55** area and the binding
+axis near **0.85–0.95**; no node under the top-left eyebrow (raise `padding` to 0.10–0.12 for tall boards).
+Levers are real content and restacking (`cols`), never padding for its own sake. Icon keys are also
+validated against the engine's registry, because `check` does not.
 
 ## 3. Recurring assets (built once, reused)
 
@@ -65,7 +73,7 @@ per course is fixed by the plan (6·8·6·9·7·7·8·9·6·7·10·7 = **90**, c
 | --- | --- | --- |
 | 0 | Scaffold from template, identity swap, this plan *(done)* | `build` / `tsc` / `check` green |
 | 1 | **Pilot: Chapter 1 (6 sections)** — full unit: scenes, slides, narration *(authored; awaiting review)* | You review the rendered routes; adjust voice, density, scene style |
-| 2 | Chapters 2–4 (identity → app → network: the core path) | Review per chapter |
+| 2 | Chapters 2–4 (identity → app → network: the core path) — *Chapter 2 authored; awaiting review* | Review per chapter |
 | 3 | Chapters 5–8 (compute, storage, data, messaging) | Review per chapter |
 | 4 | Chapters 9–12 (analytics, delivery, operations, optimisation) | Review per chapter |
 | 5 | Cross-chapter pass: bridges, terminology, repeated scenes, retirement/SKU re-verification | Full `check` green |

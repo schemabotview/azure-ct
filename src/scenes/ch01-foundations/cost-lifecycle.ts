@@ -24,12 +24,13 @@ export const costLifecycle: Scene = {
     },
     {
       id: 'controls',
-      label: 'Three habits that help',
+      label: 'Four habits that help',
       pattern: 'group',
-      cols: 3,
+      cols: 2,
       children: [
         { id: 'tags', label: 'Tag it', sub: 'owner, env, purpose', pattern: 'service', icon: 'tags' },
         { id: 'budget', label: 'Budget it', sub: 'alerts, never a cap', pattern: 'warn', icon: 'costbudgets' },
+        { id: 'review', label: 'Review it', sub: 'is it still needed?', pattern: 'service', icon: 'search' },
         { id: 'cleanup', label: 'Delete the group', sub: 'after checking', pattern: 'storage', icon: 'resourcegroup' },
       ],
     },
