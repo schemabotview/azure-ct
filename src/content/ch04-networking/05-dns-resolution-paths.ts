@@ -22,9 +22,7 @@ export const dnsResolutionPaths: Section = {
 ### Reading a lookup
 - The **canonical name** and **address** show the path a client will take
 - The same name can answer **differently** inside and outside the VNet
-
-### Caching
-- Records have a **TTL**, so changes can take time to appear
+- Records have a **TTL**, so changes take time to appear
 
 ### Debugging habit
 - A wrong answer means a **wrong path**

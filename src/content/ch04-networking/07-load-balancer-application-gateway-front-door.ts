@@ -25,7 +25,6 @@ export const loadBalancerApplicationGatewayFrontDoor: Section = {
 
 ### Also worth knowing
 - All three **probe their backends** and stop sending to unhealthy ones
-- **Traffic Manager** routes by DNS only and never sees the traffic
 
 ### How to choose
 - Start from **protocol and scope**, then required features

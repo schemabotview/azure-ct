@@ -19,10 +19,10 @@ export const ipAddressingCidrAndPorts: Section = {
 - **10.20.1.0/24**: the first 24 bits are the **network**, the last 8 vary
 - A /24 holds **256** addresses, a /16 holds **65,536**
 - Azure reserves **5 per subnet**, so a /24 gives **251** usable
+- A **/32** is one address; **/0** is all
 
 ### Sizing a subnet
 - Count what will live in it and add **headroom**
-- Too small cannot grow; too large wastes **space you may need elsewhere**
 
 ### Ports and protocols
 - A **port** picks the service on a host, over **TCP or UDP**
