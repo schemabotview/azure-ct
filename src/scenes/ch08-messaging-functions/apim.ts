@@ -6,7 +6,7 @@ export const apim: Scene = {
   id: 'ch08-apim',
   title: 'An API gateway in front of the backend',
   flow: 'TB',
-  padding: 0.1,
+  padding: 0.12,
   nodes: [
     { id: 'client', label: 'Partner app', sub: 'calls /orders', pattern: 'user', icon: 'users' },
     {
@@ -29,7 +29,7 @@ export const apim: Scene = {
       label: `<inbound>
   <validate-jwt header-name="Authorization"
                 failed-validation-httpcode="401">
-    <openid-config url="https://login.microsoftonline.com/<tenant-id>/v2.0/.well-known/openid-configuration" />
+    <openid-config url="<entra-openid-config-url>" />
   </validate-jwt>
   <rate-limit calls="100" renewal-period="60" />
 </inbound>`,
