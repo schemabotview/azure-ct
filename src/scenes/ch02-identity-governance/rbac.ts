@@ -6,7 +6,7 @@ export const rbac: Scene = {
   id: 'ch02-rbac',
   title: 'Who, which role, at what scope',
   flow: 'TB',
-  padding: 0.11,
+  padding: 0.12,
   nodes: [
     {
       id: 'matrix',

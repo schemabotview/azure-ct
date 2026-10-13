@@ -72,11 +72,11 @@ validated against the engine's registry, because `check` does not.
 | Phase | Scope | Exit gate |
 | --- | --- | --- |
 | 0 | Scaffold from template, identity swap, this plan *(done)* | `build` / `tsc` / `check` green |
-| 1 | **Pilot: Chapter 1 (6 sections)** — full unit: scenes, slides, narration *(authored; awaiting review)* | You review the rendered routes; adjust voice, density, scene style |
-| 2 | Chapters 2–4 (identity → app → network: the core path) — *Chapter 2 authored; awaiting review* | Review per chapter |
-| 3 | Chapters 5–8 (compute, storage, data, messaging) | Review per chapter |
-| 4 | Chapters 9–12 (analytics, delivery, operations, optimisation) | Review per chapter |
-| 5 | Cross-chapter pass: bridges, terminology, repeated scenes, retirement/SKU re-verification | Full `check` green |
+| 1 | **Pilot: Chapter 1 (6 sections)** — full unit: scenes, slides, narration *(authored)* | You review the rendered routes; adjust voice, density, scene style |
+| 2 | Chapters 2–4 (identity → app → network: the core path) — *authored* | Review per chapter |
+| 3 | Chapters 5–8 (compute, storage, data, messaging) — *authored* | Review per chapter |
+| 4 | Chapters 9–12 (analytics, delivery, operations, optimisation) — *authored* | Review per chapter |
+| 5 | Cross-chapter pass: bridges, terminology, repeated scenes, retirement/SKU re-verification — *density and consistency done; fact re-verification pending (see below)* | Full `check` green |
 
 Reasoning: chapter 1 is small and sets every convention; locking style on it avoids rework across 84
 later sections. Chapters 2→3→4 carry the learning spine's riskiest ideas (access, networking), so they
@@ -99,3 +99,34 @@ come before breadth chapters.
 2. **Chapter granularity.** Twelve courses (one per chapter) vs fewer longer courses. Default: twelve.
 3. **Demo course** — deleted when Chapter 1 was registered.
 4. **Pages/catalog.** Enabling Pages and listing in `ui-graphl`'s `catalog.json` are yours; I haven't touched either.
+
+## 7. Status and review guide (all 12 chapters authored)
+
+**Built:** 12 courses, 90 sections (scene + slide + narration each). `npm run build`, `npx tsc --noEmit`
+and `npm run check` pass. Every route was rendered at 1920×1080 and measured for slide height, scene
+board size and eyebrow collisions; scenes were viewed where a measurement or edit changed them. Icon keys
+were validated against the engine's registry (the repo's `check` does not do this).
+
+**Not done / needs you**
+1. **Fact verification.** `learn.microsoft.com` was unreachable from the authoring environment, so every
+   section carries a header comment saying it was written from stable knowledge and must be re-checked.
+   Section-specific `note:` lines name what to verify first: SKU and tier eligibility, retirement notices
+   (App Service runtimes, Consumption plan, Azure Cache for Redis, default outbound access, Synapse versus
+   Fabric direction), CLI flags and runtime strings, API versions, licensing for Conditional Access / PIM,
+   and Azure Backup / storage retention defaults.
+2. **Narration audio.** No `.wav` files exist; they come only from the Colab + Chatterbox pass. Once a course
+   has its first wav, `check` requires one for every section in it.
+3. **Hypothetical numbers.** Cost units, latency breakdowns, pool sizes, RPO/RTO targets and utilisation
+   figures are labelled hypothetical or synthetic on the slide or in the scene; no real prices are quoted.
+
+**Known visual compromises**
+- Narration runs 172–219 words per section (median 192), above the demo's 120–170. Trim if the video
+  segments feel long.
+- Ten boards sit at 52–55 % scene area (target ≥ 55 %) because they are tall and narrow: ch01 resource-manager
+  and first-request, ch03 http-requests, ch04 virtual-networks, routes-outbound and tls, ch08 api-management,
+  ch10 what-if and schema-rollback, ch12 architecture-compare. They bind on height at ~90 %, so widening
+  would mean adding content, not spacing.
+- Page-level checks, not exhaustive: edge labels landing on cards are only caught by eye.
+
+**Repo gates used per chapter:** `tsc` → `check` → icon-registry validation → rendered density measurement →
+visual spot checks → fail-closed commit. The measurement harness lives outside the repo (`.tmp/`, ignored).

@@ -7,7 +7,7 @@ export const resourceManager: Scene = {
   id: 'ch01-resource-manager',
   title: 'Every management call goes through ARM',
   flow: 'TB',
-  padding: 0.1,
+  padding: 0.12,
   nodes: [
     {
       id: 'clients',

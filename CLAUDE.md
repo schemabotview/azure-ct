@@ -1,10 +1,32 @@
-# CLAUDE.md — content-repo-template
+# CLAUDE.md — azure-ct
 
-> This is the **template**. In a real content repo this file carries the route contract, the scene
-> inventory and the course arc. Rewrite it when the repo is cloned — see `TEMPLATE.md`.
+> The Azure course: 12 courses, 90 sections, authored from `AZURE-COURSE-PLAN.md` (see `AUTHORING-PLAN.md`
+> for the approach, review guide and open items). Below the inventory is the template's engine guidance.
 >
 > The workspace-level `CLAUDE.md` (one level up, in `graphl-workspace`) holds the invariants that
 > span every repo. This file is only what is true *here*.
+
+## Course inventory (route contract: `#/<courseId>-<sectionId>`)
+
+| Course id | Chapter | Sections |
+| --- | --- | --- |
+| `ch01-foundations` | Azure Foundations and Resource Ownership | 6 |
+| `ch02-identity-governance` | Identity, Access, and Governance | 8 |
+| `ch03-app-service` | A First Managed Application | 6 |
+| `ch04-networking` | Networking and Request Delivery | 9 |
+| `ch05-compute` | Compute Alternatives and Elastic Capacity | 7 |
+| `ch06-storage` | Storage and Data Protection | 7 |
+| `ch07-databases` | Databases and Application State | 8 |
+| `ch08-messaging-functions` | APIs, Functions, and Asynchronous Workflows | 9 |
+| `ch09-data-analytics` | Data Integration and Analytical Workloads | 6 |
+| `ch10-bicep-delivery` | Infrastructure and Software Delivery | 7 |
+| `ch11-ops-security-recovery` | Observability, Security, and Recovery | 10 |
+| `ch12-optimisation` | Optimisation and Architecture Evolution | 7 |
+
+Scenes live in `src/scenes/<course>/` (one file per scene, ids prefixed `chNN-`); sections in
+`src/content/<course>/NN-<section-id>.ts`. Authoring conventions used here: synthetic names only
+(`contoso-*`, `<subscription-id>`), placeholders for IDs and secrets, hypothetical numbers labelled as such,
+and a header comment on each section naming what must be re-verified against current Microsoft docs.
 
 ## What this repo is
 

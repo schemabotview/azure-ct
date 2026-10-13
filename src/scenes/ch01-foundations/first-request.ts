@@ -6,7 +6,7 @@ export const firstRequest: Scene = {
   id: 'ch01-first-request',
   title: 'A first request and its resource ID',
   flow: 'TB',
-  padding: 0.11,
+  padding: 0.13,
   nodes: [
     {
       id: 'command',

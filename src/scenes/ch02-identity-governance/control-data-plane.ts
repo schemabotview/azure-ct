@@ -7,7 +7,7 @@ export const controlDataPlane: Scene = {
   id: 'ch02-control-data-plane',
   title: 'Management access is not data access',
   flow: 'TB',
-  padding: 0.1,
+  padding: 0.12,
   nodes: [
     { id: 'priya', label: 'Priya', sub: 'Contributor on the account', pattern: 'user', icon: 'users' },
     {

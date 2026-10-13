@@ -6,7 +6,7 @@ export const appToken: Scene = {
   id: 'ch02-app-token',
   title: 'An application asks for a token',
   flow: 'TB',
-  padding: 0.08,
+  padding: 0.12,
   nodes: [
     { id: 'orders-app', label: 'Order service', sub: 'a running application', pattern: 'service', icon: 'appservice' },
     {

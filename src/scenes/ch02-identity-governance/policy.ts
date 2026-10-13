@@ -6,7 +6,7 @@ export const policy: Scene = {
   id: 'ch02-policy',
   title: 'A policy rule and its effects',
   flow: 'TB',
-  padding: 0.11,
+  padding: 0.12,
   nodes: [
     {
       id: 'rule',

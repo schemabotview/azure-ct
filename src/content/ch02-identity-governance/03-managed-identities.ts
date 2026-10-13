@@ -20,6 +20,7 @@ A **managed identity** is a service principal whose credentials **Azure manages*
 - A **separate resource** with its own lifecycle
 - Attach it to **several** workloads
 - Survives deleting any one of them
+- Prefer it when **several resources** share access
 
 ### How code uses it
 - \`DefaultAzureCredential\` asks the platform for a **token**
