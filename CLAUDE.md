@@ -23,7 +23,7 @@
 | `operations` | Observability, Security, and Recovery | 10 |
 | `optimisation` | Optimisation and Architecture Evolution | 7 |
 
-Scenes live in `src/scenes/<course>/` (one file per scene, ids prefixed `chNN-`); sections in
+Scenes live in `src/scenes/<course>/` (one file per scene; ids are plain slugs, unique across courses); sections in
 `src/content/<course>/NN-<section-id>.ts`. Authoring conventions used here: synthetic names only
 (`contoso-*`, `<subscription-id>`), placeholders for IDs and secrets, hypothetical numbers labelled as such,
 and a header comment on each section naming what must be re-verified against current Microsoft docs.
