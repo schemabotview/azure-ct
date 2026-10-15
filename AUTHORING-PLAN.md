@@ -18,18 +18,18 @@ per course is fixed by the plan (6·8·6·9·7·7·8·9·6·7·10·7 = **90**, c
 
 | # | Course id | Draft title | Sections |
 | --- | --- | --- | --- |
-| 1 | `ch01-foundations` | Azure Basics: Subscriptions, Resource Groups, Regions | 6 |
-| 2 | `ch02-identity-governance` | Azure Identity, RBAC, Managed Identity and Policy | 8 |
-| 3 | `ch03-app-service` | Deploying a Web App on Azure App Service | 6 |
-| 4 | `ch04-networking` | Azure Networking: VNets, NSGs, DNS and Private Endpoints | 9 |
-| 5 | `ch05-compute` | Azure Compute: VMs, Container Apps and AKS Compared | 7 |
-| 6 | `ch06-storage` | Azure Storage: Blob, Files, Disks and Redundancy | 7 |
-| 7 | `ch07-databases` | Azure Databases: SQL, PostgreSQL, Cosmos DB and Caching | 8 |
-| 8 | `ch08-messaging-functions` | Azure Functions, Service Bus, Event Grid and Event Hubs | 9 |
-| 9 | `ch09-data-analytics` | Azure Data Pipelines: ADLS, Data Factory, Fabric | 6 |
-| 10 | `ch10-bicep-delivery` | Azure Bicep and CI/CD: Deploy Safely | 7 |
-| 11 | `ch11-ops-security-recovery` | Azure Monitor, KQL, Security and Disaster Recovery | 10 |
-| 12 | `ch12-optimisation` | Azure Architecture Review: Cost, Performance, Well-Architected | 7 |
+| 1 | `foundations` | Azure Basics: Subscriptions, Resource Groups, Regions | 6 |
+| 2 | `identity` | Azure Identity, RBAC, Managed Identity and Policy | 8 |
+| 3 | `app-service` | Deploying a Web App on Azure App Service | 6 |
+| 4 | `networking` | Azure Networking: VNets, NSGs, DNS and Private Endpoints | 9 |
+| 5 | `compute` | Azure Compute: VMs, Container Apps and AKS Compared | 7 |
+| 6 | `storage` | Azure Storage: Blob, Files, Disks and Redundancy | 7 |
+| 7 | `databases` | Azure Databases: SQL, PostgreSQL, Cosmos DB and Caching | 8 |
+| 8 | `integration` | Azure Functions, Service Bus, Event Grid and Event Hubs | 9 |
+| 9 | `analytics` | Azure Data Pipelines: ADLS, Data Factory, Fabric | 6 |
+| 10 | `delivery` | Azure Bicep and CI/CD: Deploy Safely | 7 |
+| 11 | `operations` | Azure Monitor, KQL, Security and Disaster Recovery | 10 |
+| 12 | `optimisation` | Azure Architecture Review: Cost, Performance, Well-Architected | 7 |
 
 ## 2. Per-section recipe (every section, same order)
 

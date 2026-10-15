@@ -1,14 +1,14 @@
 {
-  "ch01-foundations": "Azure Basics: Subscriptions, Resource Groups, Regions",
-  "ch02-identity-governance": "Azure Identity, RBAC, Managed Identity and Policy",
-  "ch03-app-service": "Deploying a Web App on Azure App Service",
-  "ch04-networking": "Azure Networking: VNets, NSGs, DNS and Private Endpoints",
-  "ch05-compute": "Azure Compute: VMs, Container Apps and AKS Compared",
-  "ch06-storage": "Azure Storage: Blob, Files, Disks and Redundancy",
-  "ch07-databases": "Azure Databases: SQL, PostgreSQL, Cosmos DB and Caching",
-  "ch08-messaging-functions": "Azure Functions, Service Bus, Event Grid and Event Hubs",
-  "ch09-data-analytics": "Azure Data Pipelines: ADLS, Data Factory, Fabric",
-  "ch10-bicep-delivery": "Azure Bicep and CI/CD: Deploy Safely",
-  "ch11-ops-security-recovery": "Azure Monitor, KQL, Security and Disaster Recovery",
-  "ch12-optimisation": "Azure Architecture Review: Cost, Performance, Well-Architected"
+  "foundations": "Azure Basics: Subscriptions, Resource Groups, Regions",
+  "identity": "Azure Identity, RBAC, Managed Identity and Policy",
+  "app-service": "Deploying a Web App on Azure App Service",
+  "networking": "Azure Networking: VNets, NSGs, DNS and Private Endpoints",
+  "compute": "Azure Compute: VMs, Container Apps and AKS Compared",
+  "storage": "Azure Storage: Blob, Files, Disks and Redundancy",
+  "databases": "Azure Databases: SQL, PostgreSQL, Cosmos DB and Caching",
+  "integration": "Azure Functions, Service Bus, Event Grid and Event Hubs",
+  "analytics": "Azure Data Pipelines: ADLS, Data Factory, Fabric",
+  "delivery": "Azure Bicep and CI/CD: Deploy Safely",
+  "operations": "Azure Monitor, KQL, Security and Disaster Recovery",
+  "optimisation": "Azure Architecture Review: Cost, Performance, Well-Architected"
 }

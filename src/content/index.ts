@@ -1,31 +1,31 @@
-import { ch01Foundations } from './ch01-foundations'
-import { ch02IdentityGovernance } from './ch02-identity-governance'
-import { ch03AppService } from './ch03-app-service'
-import { ch04Networking } from './ch04-networking'
-import { ch05Compute } from './ch05-compute'
-import { ch06Storage } from './ch06-storage'
-import { ch07Databases } from './ch07-databases'
-import { ch08MessagingFunctions } from './ch08-messaging-functions'
-import { ch09DataAnalytics } from './ch09-data-analytics'
-import { ch10BicepDelivery } from './ch10-bicep-delivery'
-import { ch11OpsSecurityRecovery } from './ch11-ops-security-recovery'
-import { ch12Optimisation } from './ch12-optimisation'
+import { foundations } from './foundations'
+import { identity } from './identity'
+import { appService } from './app-service'
+import { networking } from './networking'
+import { compute } from './compute'
+import { storage } from './storage'
+import { databases } from './databases'
+import { integration } from './integration'
+import { analytics } from './analytics'
+import { delivery } from './delivery'
+import { operations } from './operations'
+import { optimisation } from './optimisation'
 import type { Course, Section } from './types'
 
 // Course registry, in syllabus order. Courses are added here as each is authored.
 export const COURSES: Record<string, Course> = {
-  [ch01Foundations.id]: ch01Foundations,
-  [ch02IdentityGovernance.id]: ch02IdentityGovernance,
-  [ch03AppService.id]: ch03AppService,
-  [ch04Networking.id]: ch04Networking,
-  [ch05Compute.id]: ch05Compute,
-  [ch06Storage.id]: ch06Storage,
-  [ch07Databases.id]: ch07Databases,
-  [ch08MessagingFunctions.id]: ch08MessagingFunctions,
-  [ch09DataAnalytics.id]: ch09DataAnalytics,
-  [ch10BicepDelivery.id]: ch10BicepDelivery,
-  [ch11OpsSecurityRecovery.id]: ch11OpsSecurityRecovery,
-  [ch12Optimisation.id]: ch12Optimisation,
+  [foundations.id]: foundations,
+  [identity.id]: identity,
+  [appService.id]: appService,
+  [networking.id]: networking,
+  [compute.id]: compute,
+  [storage.id]: storage,
+  [databases.id]: databases,
+  [integration.id]: integration,
+  [analytics.id]: analytics,
+  [delivery.id]: delivery,
+  [operations.id]: operations,
+  [optimisation.id]: optimisation,
 }
 
 export type { Course, Section }

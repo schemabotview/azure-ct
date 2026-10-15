@@ -1,21 +1,21 @@
 import type { Scene } from '@graphlearning/flow'
-import { ch01Scenes } from './ch01-foundations'
-import { ch02Scenes } from './ch02-identity-governance'
-import { ch03Scenes } from './ch03-app-service'
-import { ch04Scenes } from './ch04-networking'
-import { ch05Scenes } from './ch05-compute'
-import { ch06Scenes } from './ch06-storage'
-import { ch07Scenes } from './ch07-databases'
-import { ch08Scenes } from './ch08-messaging-functions'
-import { ch09Scenes } from './ch09-data-analytics'
-import { ch10Scenes } from './ch10-bicep-delivery'
-import { ch11Scenes } from './ch11-ops-security-recovery'
-import { ch12Scenes } from './ch12-optimisation'
+import { foundationsScenes } from './foundations'
+import { identityScenes } from './identity'
+import { appServiceScenes } from './app-service'
+import { networkingScenes } from './networking'
+import { computeScenes } from './compute'
+import { storageScenes } from './storage'
+import { databasesScenes } from './databases'
+import { integrationScenes } from './integration'
+import { analyticsScenes } from './analytics'
+import { deliveryScenes } from './delivery'
+import { operationsScenes } from './operations'
+import { optimisationScenes } from './optimisation'
 
 // Scene registry. Sections reference scenes by id; scenes are grouped by course (one folder each,
 // mirroring src/content). Ids are globally unique across courses, so the flat lookup below is
 // unambiguous. Courses are added here as each is authored.
-const ALL: Scene[] = [...ch01Scenes, ...ch02Scenes, ...ch03Scenes, ...ch04Scenes, ...ch05Scenes, ...ch06Scenes, ...ch07Scenes, ...ch08Scenes, ...ch09Scenes, ...ch10Scenes, ...ch11Scenes, ...ch12Scenes]
+const ALL: Scene[] = [...foundationsScenes, ...identityScenes, ...appServiceScenes, ...networkingScenes, ...computeScenes, ...storageScenes, ...databasesScenes, ...integrationScenes, ...analyticsScenes, ...deliveryScenes, ...operationsScenes, ...optimisationScenes]
 
 export const SCENES: Record<string, Scene> = Object.fromEntries(ALL.map((s) => [s.id, s]))
 

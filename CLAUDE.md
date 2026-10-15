@@ -10,18 +10,18 @@
 
 | Course id | Chapter | Sections |
 | --- | --- | --- |
-| `ch01-foundations` | Azure Foundations and Resource Ownership | 6 |
-| `ch02-identity-governance` | Identity, Access, and Governance | 8 |
-| `ch03-app-service` | A First Managed Application | 6 |
-| `ch04-networking` | Networking and Request Delivery | 9 |
-| `ch05-compute` | Compute Alternatives and Elastic Capacity | 7 |
-| `ch06-storage` | Storage and Data Protection | 7 |
-| `ch07-databases` | Databases and Application State | 8 |
-| `ch08-messaging-functions` | APIs, Functions, and Asynchronous Workflows | 9 |
-| `ch09-data-analytics` | Data Integration and Analytical Workloads | 6 |
-| `ch10-bicep-delivery` | Infrastructure and Software Delivery | 7 |
-| `ch11-ops-security-recovery` | Observability, Security, and Recovery | 10 |
-| `ch12-optimisation` | Optimisation and Architecture Evolution | 7 |
+| `foundations` | Azure Foundations and Resource Ownership | 6 |
+| `identity` | Identity, Access, and Governance | 8 |
+| `app-service` | A First Managed Application | 6 |
+| `networking` | Networking and Request Delivery | 9 |
+| `compute` | Compute Alternatives and Elastic Capacity | 7 |
+| `storage` | Storage and Data Protection | 7 |
+| `databases` | Databases and Application State | 8 |
+| `integration` | APIs, Functions, and Asynchronous Workflows | 9 |
+| `analytics` | Data Integration and Analytical Workloads | 6 |
+| `delivery` | Infrastructure and Software Delivery | 7 |
+| `operations` | Observability, Security, and Recovery | 10 |
+| `optimisation` | Optimisation and Architecture Evolution | 7 |
 
 Scenes live in `src/scenes/<course>/` (one file per scene, ids prefixed `chNN-`); sections in
 `src/content/<course>/NN-<section-id>.ts`. Authoring conventions used here: synthetic names only
