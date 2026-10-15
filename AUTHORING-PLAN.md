@@ -8,7 +8,7 @@ This file is *how* we turn it into GraphL content. Scaffold: `content-repo-templ
 
 | Course plan | Repo |
 | --- | --- |
-| Chapter *N* | One **course**, id `chNN-<slug>` → `src/content/chNN-<slug>/`, `src/scenes/chNN-<slug>/`, `public/audio/chNN-<slug>/` |
+| Chapter *N* | One **course**, id `<slug>` (plain topic slug, as in sibling repos) → `src/content/<slug>/`, `src/scenes/<slug>/`, `public/audio/<slug>/` |
 | Numbered section | One **section** = `(scene, slide, narration)` = one video segment, file `NN-<section-id>.ts` |
 | Worked illustrations | Scenes: diagrams for paths/boundaries, code cards for CLI, Bicep, Policy JSON, Python, SQL, KQL |
 | Objective / Outcome / Bridge | Opening and closing sentences of the first and last section of each course (not extra sections) |
