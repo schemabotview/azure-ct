@@ -39,7 +39,7 @@ superseded by the plan.
 | 3 | `start` | Start the project | 6 | authored, awaiting owner review (no narration audio yet) |
 | 4 | `secure` | Lock it down | 8 | authored, awaiting owner review (no narration audio yet) |
 | 5 | `network` | Give it a network | 9 | authored, awaiting owner review (no narration audio yet) |
-| 6 | `automate` | Make it repeatable | 8 | planned |
+| 6 | `automate` | Make it repeatable | 8 | authored, awaiting owner review (no narration audio yet) |
 | 7 | `land` | Land the files | 8 | planned |
 | 8 | `batch` | Bring the batches in | 8 | planned |
 | 9 | `stream` | Bring the stream in | 8 | planned |
@@ -126,7 +126,7 @@ Every code card declares how it was verified, as the last part of its `filename`
 | level | what it means | what check:azure does |
 | --- | --- | --- |
 | `runs locally` | real Python or SQL, really run | runs the `.py` card with the SDK environment (or a `.sql` card in a fresh database on the local PostgreSQL 16 cluster); a sibling node `<id>-out` must equal its output exactly |
-| `model-checked` | checked offline against Azure's own definitions | `.bicep`: `bicep build` + `bicep lint`, any warning fails (Bicep type-checks every property against Azure's API definitions); `.sh`: `bash -n`, and every `az …` line through the CLI's own parser (a command that only wants a sign-in passes; an unknown command or parameter fails); `<package>.<Model>.json`: every key at every depth is a member of that model in `azure-mgmt-<package>` (TypeSpec and msrest models, discriminated subtypes and maps handled); policy JSON: if/then, known effect, well-formed conditions; role JSON: Provider/type/operation actions |
+| `model-checked` | checked offline against Azure's own definitions | `.yml`: actionlint (syntax, expressions, each known action's real inputs); a spine `.bicepparam`: `bicep build-params` + lint; `.bicep`: `bicep build` + `bicep lint`, any warning fails (Bicep type-checks every property against Azure's API definitions); `.sh`: `bash -n`, and every `az …` line through the CLI's own parser (a command that only wants a sign-in passes; an unknown command or parameter fails); `<package>.<Model>.json`: every key at every depth is a member of that model in `azure-mgmt-<package>` (TypeSpec and msrest models, discriminated subtypes and maps handled); policy JSON: if/then, known effect, well-formed conditions; role JSON: Provider/type/operation actions |
 | `emulated` | behaviour from an emulator, **not Azure** | must be a spine file (replayed); a stand-alone emulated card fails |
 | `doc-cited` | Microsoft documentation says so | the scene file must carry a `// source: https://…` comment |
 | `illustrative` | made-up but realistic; nothing checks it | counted, so unverified cards stay visible |
@@ -172,6 +172,9 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | peak sizing | Databricks 17 addresses per subnet (16 workers + driver); 9 private endpoints; app 20 (10 instances × 2 in a scale); shir 2 |
 | front of the dashboard | now: private Application Gateway (London, internal); Course 14: Front Door with a Private Link origin (Singapore joins) |
 | hybrid | ExpressRoute in London via the hub gateway (not encrypted by default); site-to-site VPN as backup; spoke-to-hub peering with gateway transit; platform team owns the hub (`rg-hub-net`) |
+| templates | `templates/main.bicep` (subscription scope: rg-risk-<env>-net / -data, modules network, lake, vault, runtime); subnets are child resources, `@batchSize(1)`; `prod.bicepparam` / `dev.bicepparam` (10.110 / 10.120); runtime admin `shiradmin`, password from `az.getSecret(..., kv-wg-risk-<env>, runtime-admin-password)`; vault `enabledForTemplateDeployment` |
+| drift (model) | stwgriskprod TLS lowered to 1.0 by hand → Modify back to 1.2; `stwgscratch` made by hand → Ignore (incremental) / Delete (complete) |
+| pipeline | GitHub repo `woodgrove-example/risk-on-azure`; `deploy.yml` build → dev → prod (prod environment needs a reviewer); `release.yml` reusable; identities `risk-deploy-dev` / `risk-deploy-prod`, federated subject `repo:woodgrove-example/risk-on-azure:environment:<env>`, Contributor on own subscription only; release order infra → Databricks bundle → Data Factory (triggers stopped); deployment name `risk-<env>-<sha7>`, `out/SHA256SUMS` |
 | API versions | Storage data plane `x-ms-version` 2026-10-06 (SDK 12.31); Microsoft.Storage control plane `2025-08-01` (CLI 2.91, Bicep 0.48.1) |
 
 ## Scene inventory
@@ -213,6 +216,14 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | `private-endpoints` | map frame: infra/05-private-endpoints.sh + tools/reach.py; private vs service endpoint | `network-private-endpoints-and-service-endpoints` |
 | `front-door-choice` | Load Balancer / Application Gateway / Front Door / Traffic Manager, the dashboard's answer in two steps | `network-load-balancer-application-gateway-or-front-door` |
 | `hybrid-links` | map frame: infra/05-peering.sh, ways to join networks, ExpressRoute + VPN backup | `network-reaching-the-bank` |
+| `script-rerun` | map frame: infra/05-network.sh + tools/script_rerun.py (a model): refused / unchanged / left alone | `automate-when-the-scripts-stop-scaling` |
+| `bicep-arm` | IDE: modules/network.bicep, bicep build + tools/arm_summary.py; Bicep → ARM table | `automate-bicep-and-arm` |
+| `bicep-modules` | IDE: main.bicep (subscription scope, three modules), its nested deployments; scopes | `automate-modules-references-and-scopes` |
+| `bicep-params` | IDE: prod.bicepparam, build-params shows the Key Vault reference; prod vs dev | `automate-parameters-outputs-and-secrets` |
+| `what-if` | IDE: tools/whatif.py (a model) in incremental and complete mode; drift; replacements | `automate-what-if-drift-and-replacement` |
+| `pipeline-identity` | IDE: release.yml (OIDC) + tools/oidc_subject.py (a model of the subject match) | `automate-a-pipeline-with-no-stored-secret` |
+| `data-release` | map frame: the future release.yml (model-checked, actionlint), release order, ADF from git | `automate-releasing-data-code` |
+| `promotion` | map frame: deploy.yml build once, infra/06-build.sh checksums; Bicep vs Terraform | `automate-one-artefact-two-environments` |
 
 ## Invariants — do not break
 

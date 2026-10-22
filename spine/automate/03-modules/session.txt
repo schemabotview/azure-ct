@@ -1,0 +1,12 @@
+$ bicep build templates/main.bicep
+$ python tools/arm_summary.py templates/main.json
+subscriptionDeploymentTemplate, 5 parameters
+Microsoft.Resources/resourceGroups@2025-04-01
+Microsoft.Resources/resourceGroups@2025-04-01
+Microsoft.Resources/deployments@2025-04-01  after: net
+  Microsoft.Network/virtualNetworks@2025-07-01
+  Microsoft.Network/virtualNetworks/subnets@2025-07-01  after: virtualNetworks
+Microsoft.Resources/deployments@2025-04-01  after: data
+  Microsoft.Storage/storageAccounts@2025-08-01
+Microsoft.Resources/deployments@2025-04-01  after: data
+  Microsoft.KeyVault/vaults@2025-05-01

@@ -1,0 +1,5 @@
+$ bicep build templates/modules/network.bicep
+$ python tools/arm_summary.py templates/modules/network.json
+deploymentTemplate, 4 parameters
+Microsoft.Network/virtualNetworks@2025-07-01
+Microsoft.Network/virtualNetworks/subnets@2025-07-01  after: virtualNetworks

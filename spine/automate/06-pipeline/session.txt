@@ -1,0 +1,9 @@
+$ python tools/oidc_subject.py
+release, env dev   risk-deploy-dev
+  sub repo:woodgrove-example/risk-on-azure:environment:dev
+release, env prod  risk-deploy-prod
+  sub repo:woodgrove-example/risk-on-azure:environment:prod
+a pull request     refused: no credential
+  sub repo:woodgrove-example/risk-on-azure:pull_request
+a fork             refused: no credential
+  sub repo:someone/risk-on-azure:environment:prod

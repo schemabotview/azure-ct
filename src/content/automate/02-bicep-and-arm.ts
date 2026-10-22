@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const bicepAndArm: Section = {
+  id: 'bicep-and-arm',
+  title: 'Bicep and ARM',
+  scene: 'bicep-arm',
+  narration:
+    "The editor holds templates slash modules slash network dot bicep: the same spoke, written as what should exist instead of the steps to make it. A resource line names a type, Microsoft dot Network slash virtual Networks, and an A P I version, twenty twenty five, zero seven, zero one. The version is a contract: it fixes which properties exist and what they mean, so this file means the same thing in five years. The subnets are declared as child resources, with parent colon v net, in a loop over the subnets parameter, and at batch size one, so they are made one after another, because parallel changes to one network's subnets collide. Bicep is a language for people; Resource Manager reads A R M templates, which are J S O N. The terminal compiles the file with bicep build, and tools slash arm summary dot py lists what the J S O N declares: a deployment template with four parameters, the virtual network at its A P I version, and the subnets, after the virtual network. Bicep worked out that order from the parent reference; nobody wrote it. The first table on the right maps one to the other. The at sign version is the A P I version and its properties. Parent colon v net becomes a child, deployed after its parent. The for loop becomes a copy loop, one per subnet. Batch size one makes the loop go one at a time. And an output, the network's I D, is a value the next module can use. The list underneath is what a deployment does in incremental mode, the default. It creates what is declared and missing, updates what is declared and different, leaves alone anything it does not declare, and is recorded, with a name, its template and its result, so every change to the platform has a history. Next, modules, which put the spoke, the lake and the vault together.",
+}

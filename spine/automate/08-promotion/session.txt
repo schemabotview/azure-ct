@@ -1,0 +1,5 @@
+$ infra/06-build.sh
+$ cat out/SHA256SUMS
+03e73a09fc43866448f5dd0b81bd0b2875702d1fd9c1382bdf2548ba842b2c02  main.json
+2ebe4046db394555c43b36b2a588aaac249b169cddb024cd98c70c9aaf46387f  dev.parameters.json
+cfda1079fcec1f715ad344882de9aef85084a1747e913bc00783a5a5b7d7f5b8  prod.parameters.json

@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const modulesReferencesAndScopes: Section = {
+  id: 'modules-references-and-scopes',
+  title: 'Modules, references and scopes',
+  scene: 'bicep-modules',
+  narration:
+    "One file per environment would drift as fast as the scripts did, so the platform is one main file built from modules. The editor shows templates slash main dot bicep. Its first line that matters is target Scope equals subscription: this file is deployed to a whole subscription, because it creates the resource groups that everything else lives in. Below that, three modules: the network, the lake and the vault, each its own Bicep file, each given a scope, the net or the data resource group, which this same file creates. A module never says which subscription or group it is in; whoever uses it decides. The terminal compiles main and lists what it declares: two resource groups, then three nested deployments, one per module, each holding its own resources. The network's deployment comes after net, and the lake's and the vault's after data, because each module refers to its group. No depends on was written; a reference is a dependency. The table on the right lists the four scopes a deployment can land in. The tenant, for management groups. A management group, for policies and roles that reach many subscriptions, which is where Course four's guardrails belong. A subscription, for resource groups. And a resource group, for nearly everything else. The list underneath says what a module is: a Bicep file used by another one, which becomes a nested deployment, lands in the scope it is given, waits for whatever it refers to, and is used by dev and prod alike, so the two environments are built by the same code. Next, the values that make one environment different from the other, including a password that must never be written down.",
+}

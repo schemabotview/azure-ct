@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const releasingDataCode: Section = {
+  id: 'releasing-data-code',
+  title: 'Releasing data code',
+  scene: 'data-release',
+  narration:
+    "The platform's infrastructure is not all it releases. Course eight adds Data Factory pipelines, and Course ten adds Databricks jobs, and both are code that must reach production the same way. The card on the right is the release workflow as it will look once they exist, so it is checked against GitHub Actions' rules rather than replayed. It signs in once, the same way, and the Databricks command line uses that same Entra I D sign in. Then three steps, in an order that matters. First, infra slash zero six deploy dot sh: the infrastructure everything runs on. Second, databricks bundle deploy: a Databricks asset bundle declares jobs and the targets they go to, dev or prod, and this deploys the jobs for this environment. Third, Data Factory's release: stop its triggers, deploy, and start them again. The table underneath says why that order. Infrastructure needs nothing, because everything lives in it. The Databricks jobs need the workspace and the lake. And Data Factory needs the jobs its pipelines start: deploy it first, and a pipeline could call a job that is not there yet. The list at the bottom is how Data Factory itself is released. Only the development factory is connected to git, where engineers build pipelines in the browser and save to a branch. A build turns the main branch into an A R M template, with Microsoft's own tool. Test and production factories are deployed from that template and never edited by hand. And triggers stop for the deployment and start again after it, so no run starts halfway through a change. Next, making sure that what reaches production is exactly what dev tested.",
+}

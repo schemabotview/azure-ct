@@ -34,6 +34,10 @@ unless it IS a spine file, byte for byte (`replayed`): scripts/spine.py has alre
                     role `.json` (has "assignableScopes")   a custom role: actions in
                                Provider/type/operation form, data actions apart from actions.
                     other `.json`   valid JSON.
+                    `.yml`     a GitHub Actions workflow, linted by actionlint: syntax, expressions,
+                               and each well-known action's real inputs (a spine file is linted with
+                               its whole .github, so a local reusable workflow resolves).
+                  A spine `.bicepparam` is built (`bicep build-params`) and linted against its template.
   doc-cited       not executable; the scene file must carry a `// source: https://…` comment.
   illustrative    nothing is checked. Reported, so the count of unverified cards stays visible.
 
@@ -48,6 +52,7 @@ import json
 import os
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -59,6 +64,7 @@ SDK_PY = CACHE / "sdk" / "bin" / "python"
 CHECK_PY = CACHE / "check" / "bin" / "python"
 AZ = CACHE / "cli" / "bin" / "az"
 BICEP = CACHE / "bicep" / "bicep"
+ACTIONLINT = CACHE / "check" / "bin" / "actionlint"
 
 LEVELS = {"runs locally", "model-checked", "emulated", "doc-cited", "illustrative"}
 # Commands that change or read the CLI itself, not Azure: nothing to put to the parser.
@@ -122,7 +128,13 @@ def az_verdict(words: list[str]) -> str | None:
 
 def check_az(where: str, text: str) -> None:
     joined = re.sub(r"\\\n\s*", " ", text)
-    for raw in joined.splitlines():
+    lines: list[str] = []
+    for raw in joined.splitlines():  # a quoted argument may run over several lines
+        if lines and len(re.findall(r'(?<!\\)"', lines[-1])) % 2:
+            lines[-1] += " " + raw.strip()
+        else:
+            lines.append(raw)
+    for raw in lines:
         line = raw.strip().removeprefix("$ ").removeprefix("> ").strip()
         if line.startswith("#"):
             continue
@@ -180,6 +192,39 @@ def check_bicep(where: str, text: str, path: Path | None = None) -> None:
                 for f in findings or [r.stderr.strip()[:300]]:
                     problems.append(f"{where}: bicep {verb}: {f.split(' : ', 1)[-1][:300]}")
                 return
+
+
+def check_bicepparam(where: str, path: Path | None) -> None:
+    """A parameter file names its template (`using`), so it is only checked in place, as a spine file."""
+    if not path:
+        problems.append(f"{where}: a .bicepparam card must be a spine file (its `using` names a template)")
+        return
+    for args in ([str(BICEP), "build-params", str(path), "--stdout"], [str(BICEP), "lint", str(path)]):
+        r = subprocess.run(args, capture_output=True, text=True, timeout=180)
+        findings = [l for l in r.stderr.splitlines() if re.search(r"\b(Warning|Error)\b", l)]
+        if r.returncode or findings:
+            for f in findings or [r.stderr.strip()[:300]]:
+                problems.append(f"{where}: bicep {args[1]}: {f.split(' : ', 1)[-1][:300]}")
+            return
+
+
+# --- GitHub Actions -------------------------------------------------------------------------------------
+def check_workflow(where: str, text: str, path: Path | None) -> None:
+    """actionlint: the workflow syntax, expressions, and each popular action's real inputs. It resolves a
+    local reusable workflow from the repository root, so a spine file is linted with its whole .github."""
+    with tempfile.TemporaryDirectory() as d:
+        if path and ".github" in path.parts:
+            root = Path(*path.parts[: path.parts.index(".github")])
+            shutil.copytree(root / ".github", Path(d) / ".github")
+            target = Path(d) / path.relative_to(root)
+        else:
+            target = Path(d) / ".github" / "workflows" / "card.yml"
+            target.parent.mkdir(parents=True)
+            target.write_text(text)
+        subprocess.run(["git", "init", "-q"], cwd=d, check=True)
+        r = subprocess.run([str(ACTIONLINT), "-no-color", str(target.relative_to(d))], cwd=d, capture_output=True, text=True)
+        if r.returncode:
+            problems.append(f"{where}: actionlint: {r.stdout.strip()[:400]}")
 
 
 # --- JSON: Azure SDK models, policies, roles ---------------------------------------------------------
@@ -386,12 +431,16 @@ def static_check(where: str, name: str, text: str, path: Path | None) -> None:
         check_az(where, text)
     elif name.endswith(".bicep"):
         check_bicep(where, text, path)
+    elif name.endswith(".bicepparam"):
+        check_bicepparam(where, path)
+    elif name.endswith((".yml", ".yaml")):
+        check_workflow(where, text, path)
     elif name.endswith(".json"):
         check_json(where, text)
 
 
 def main() -> None:
-    for need in (SDK_PY, CHECK_PY, AZ, BICEP):
+    for need in (SDK_PY, CHECK_PY, AZ, BICEP, ACTIONLINT):
         if not need.exists():
             sys.exit(f"✗ {need.relative_to(ROOT)} is missing — run `python3 scripts/spine.py` once, and "
                      f"`python3 -m venv .spine-cache/check && .spine-cache/check/bin/pip install -r scripts/requirements-check.txt`")
@@ -440,6 +489,8 @@ def main() -> None:
                     check_az(where, text)
                 elif name.endswith(".bicep"):
                     check_bicep(where, text)
+                elif name.endswith((".yml", ".yaml")):
+                    check_workflow(where, text, None)
                 elif name.endswith(".json"):
                     check_json(where, text)
                 else:

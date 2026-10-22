@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const oneArtefactTwoEnvironments: Section = {
+  id: 'one-artefact-two-environments',
+  title: 'One artefact, two environments',
+  scene: 'promotion',
+  narration:
+    "If each environment compiles the templates for itself, dev and prod can get different results from the same commit, from a newer tool or a changed module. So the workflow at the top, dot github slash workflows slash deploy dot y m l, now builds once. A build job checks out the commit, runs infra slash zero six build dot sh, and uploads the out folder as an artifact called release. The dev job needs the build, and prod needs dev: prod is promoted, it never builds. Each release job downloads that same artifact rather than rebuilding it. The terminal runs the build script: bicep compiles main to J S O N and each parameter file to its own, and a checksum file records all three. The release script checks those checksums before it deploys, and names the deployment after the commit, so the deployment history in each subscription says which commit made it. That is provenance: from a running resource, back to a deployment, to a commit, to a review. The table at the bottom places Terraform, which many banks use alongside or instead of Bicep. Bicep is Azure only; Terraform describes many clouds in one language. Bicep keeps no state, because Azure itself is the state; Terraform keeps a state file, which must be stored, locked and protected, since it can hold secrets. New Azure A P I versions work in Bicep on the day they are released; in Terraform, the Az A P I provider has them at once and the Azure R M provider later. And both preview a change: Bicep with what if, Terraform with plan. Either is a fair choice; mixing them for the same resources is not. That completes the platform's automation. Next, Course seven lands the daily files in the lake.",
+}
