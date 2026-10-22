@@ -1,0 +1,6 @@
+$ python tools/subnet_fit.py
+snet-dbx-host        59 usable  17 at peak  16 workers + a driver
+snet-dbx-container   59 usable  17 at peak  16 workers + a driver
+snet-pe             251 usable   9 at peak  one per private endpoint
+snet-app             59 usable  20 at peak  10 app instances, x2 in a scale
+snet-shir            27 usable   2 at peak  two integration runtime VMs

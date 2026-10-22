@@ -139,7 +139,9 @@ def check_az(where: str, text: str) -> None:
 
 
 def check_az_command(where: str, cmd: str) -> None:
-    cmd = re.sub(r"\$\{?\w+\}?", "x", cmd.split(" #", 1)[0])
+    cmd = cmd.split(" #", 1)[0]
+    cmd = re.sub(r"\"?\$(?:@|\{@[^}]*\})\"?", "", cmd)  # a function's remaining arguments: none
+    cmd = re.sub(r"\$\{[^}]*\}|\$\w+", "x", cmd)
     try:
         words = shlex.split(cmd)
     except ValueError:

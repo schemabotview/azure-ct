@@ -1,0 +1,14 @@
+$ python tools/cidr_plan.py
+on-premises (the bank)      10.50.0.0/16        65536 addresses
+vnet-hub-uks                10.100.0.0/22        1024 addresses
+  GatewaySubnet             10.100.0.0/27          27 usable
+  AzureFirewallSubnet       10.100.0.64/26         59 usable
+  snet-dns-inbound          10.100.1.0/28          11 usable
+vnet-risk-prod-uks          10.110.0.0/20        4096 addresses
+  snet-dbx-host             10.110.0.0/26          59 usable
+  snet-dbx-container        10.110.0.64/26         59 usable
+  snet-pe                   10.110.1.0/24         251 usable
+  snet-app                  10.110.2.0/26          59 usable
+  snet-shir                 10.110.3.0/27          27 usable
+vnet-risk-dev-uks           10.120.0.0/20        4096 addresses
+overlaps: none, so every range can be routed

@@ -1,0 +1,10 @@
+$ python tools/resolve.py
+a laptop on the internet
+  CNAME stwgriskprod.privatelink.blob.core.windows.net
+  A 20.150.0.4 (public)
+the API in snet-app
+  CNAME stwgriskprod.privatelink.blob.core.windows.net
+  A 10.110.1.4 (private zone)
+TradeBook, on-premises
+  CNAME stwgriskprod.privatelink.blob.core.windows.net
+  A 10.110.1.4 (private zone)

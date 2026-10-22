@@ -1,0 +1,9 @@
+$ python tools/route_pick.py
+without a route table
+  10.110.1.4   the lake (endpoint) 10.110.0.0/20 system VNet (local)
+  10.50.12.7   TradeBook (bank)    10.50.0.0/16  BGP    gateway: ExpressRoute
+  203.0.113.10 a package site      0.0.0.0/0     system Internet: none (private)
+with rt-risk-prod-spoke
+  10.110.1.4   the lake (endpoint) 10.110.0.0/20 system VNet (local)
+  10.50.12.7   TradeBook (bank)    10.50.0.0/16  BGP    gateway: ExpressRoute
+  203.0.113.10 a package site      0.0.0.0/0     user   firewall 10.100.0.68

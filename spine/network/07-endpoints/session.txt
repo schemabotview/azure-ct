@@ -1,0 +1,5 @@
+$ python tools/reach.py
+a laptop on the internet      20.150.0.4  refused: public network access is disabled
+the API in snet-app           10.110.1.4  reaches the lake; a role decides the rest
+TradeBook, via ExpressRoute   10.110.1.4  reaches the lake; a role decides the rest
+a VM in risk-dev, not peered  20.150.0.4  refused: public network access is disabled

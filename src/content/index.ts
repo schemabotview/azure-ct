@@ -3,6 +3,7 @@ import { whyCloud } from './why-cloud'
 import { howAzureRuns } from './how-azure-runs'
 import { start } from './start'
 import { secure } from './secure'
+import { network } from './network'
 
 // Course registry, in plan order (AZURE-COURSE-PLAN.md). A course is registered here only once
 // it is authored. Reset on 2026-10-22: the previous 12-chapter course was deleted for a re-plan.
@@ -11,6 +12,7 @@ export const COURSES: Record<string, Course> = {
   [howAzureRuns.id]: howAzureRuns,
   [start.id]: start,
   [secure.id]: secure,
+  [network.id]: network,
 }
 
 export type { Course, Section }
