@@ -1,0 +1,10 @@
+$ python tools/invoke_breach.py
+in:  Woodgrove.Risk.LimitBreached for groups/G-WW
+out: to the queue breach-alerts
+  officer     sam
+  group_id    G-WW
+  deal_id     LC-2044
+  reservation req-c41e
+  text        Wide World Group is over its limit: net 10.40 against 10.00
+              (104%). LC-2044, 2.00, booked 15:30 for Wide World Importers.
+              Approve the excess or reject the deal within 30 minutes.

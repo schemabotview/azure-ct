@@ -1,0 +1,11 @@
+$ python tools/two_deliveries.py
+1. plain writes: the last one wins
+  first copy                              ok
+  second copy, overwrite                  ok
+  reader reads on, if unchanged           412 ConditionNotMet
+2. write once: only if the name is new
+  first copy                              ok
+  second copy                             409 BlobAlreadyExists
+3. a lease: one writer at a time
+  a writer without the lease              412 LeaseIdMissing
+  the reader marks it loaded              ok

@@ -1,0 +1,6 @@
+$ python tools/group_update.py
+A saves note "on watch": ok
+B saves note "limit review": 412, changed since read
+batch: add C-103, members 3: both applied
+batch: add C-101, members 3: 409, neither applied
+members now 3

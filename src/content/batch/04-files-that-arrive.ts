@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const filesThatArrive: Section = {
+  id: 'files-that-arrive',
+  title: 'Files that arrive',
+  scene: 'files-arrive',
+  narration:
+    "The hierarchy file lands at eighteen hundred and the collateral file at nineteen hundred, give or take, so a schedule would either wait too long or run too early. Instead, the files start their own pipeline. The map now has Event Grid. When a file is written to the lake, the storage account publishes a blob created event, and Event Grid delivers it to whoever subscribed. The code at the top is adf slash trigger slash tr collateral arrives dot json, a storage event trigger. It subscribes to blob created events, for paths that begin with landing, then the segment blobs, then collateral, and end with dot c s v, and it ignores empty files. It starts load landing file, passing the folder and the file name; the folder Event Grid reports includes the container, so the expression strips landing off the front. The terminal runs tools slash route event dot py, a model of that match, over five events from one evening. The hierarchy file at eighteen hundred starts load landing file for its folder. A collateral file at eighteen fifty eight, put at the top of landing instead of in its folder, starts nothing, and the support team would hear about it from the next section's checks. The real collateral file at nineteen hundred starts load landing file. An empty placeholder for tomorrow is ignored. And the deals Parquet file in bronze starts nothing, because no trigger watches bronze. The list at the bottom is what the trigger needs. Event Grid registered on the subscription. The lake letting Event Grid through, even though it is private. Whoever publishes the trigger allowed to manage the lake's events. And a file written whole, so there is one event per completed file. Next, what load landing file checks before it copies anything.",
+}

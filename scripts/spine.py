@@ -48,10 +48,13 @@ step.json (all keys optional):
   {"venv": true}                create .venv (borrowing the SDKs) and start with it activated
   {"env": true}                 `source env.sh` silently before the session, as a learner's shell would have
   {"setup": ["cmd", ...]}       run first, silently, in the project (state a frame needs but does not show being made)
-  {"time": "2026-10-13 22:30:00"}  the frozen clock's start (`@…` for a ticking clock)
+  {"time": "2026-10-13 22:30:00"}  the frozen clock's start (`@…` for a ticking clock, `real` for the
+                                machine's own: a step that talks to a Docker emulator, whose clock is real)
   {"azurite": false}            do not start Azurite (a step that touches no storage)
   {"postgres": ["tradebook"]}   fresh databases on the local PostgreSQL 16 cluster, dropped after
   {"capture": ["path", ...]}    files the session creates that a scene shows; saved to captured/
+  eventhubs.json / servicebus.json   start that Microsoft emulator (Docker) with this config, beside the step
+  {"cosmos": true}              start the Cosmos DB (NoSQL, vNext) emulator in Docker on 8081
   {"columns": 100}              the pane's width: 84 in an IDE frame's terminal (default), 100 in a map frame's side pane
 """
 import base64
@@ -164,6 +167,8 @@ def bicep() -> Path:
 
 
 def faketime_env(venv: Path, start: str) -> dict:
+    if start == 'real':  # a step beside an emulator whose clock cannot be faked
+        return {}
     src = next(venv.glob('lib/python3*/site-packages/libfaketime/vendor/libfaketime/src'))
     return {'LD_LIBRARY_PATH': str(src), 'LD_PRELOAD': 'libfaketime.so.1', 'DONT_FAKE_MONOTONIC': '1',
             'FAKETIME_NO_CACHE': '1', 'FAKETIME_DISABLE_SHM': '1', 'FAKETIME': start}
@@ -180,6 +185,11 @@ def wait_port(port: int, what: str) -> None:
 
 
 def start_azurite(venv: Path, config: dict, data: Path) -> subprocess.Popen:
+    # a port already taken means a leftover Azurite from a killed replay: its data would leak in
+    for port in PORTS.values():
+        with socket.socket() as s:
+            if s.connect_ex(('127.0.0.1', port)) == 0:
+                raise SystemExit(f'port {port} is already in use — an Azurite left over from a killed replay?')
     env = {**os.environ, **faketime_env(venv, config.get('time', CLOCK)), 'AZURITE_ACCOUNTS': ';'.join(f'{a}:{ACCOUNT_KEY}' for a in ACCOUNTS)}
     server = subprocess.Popen([str(azurite()), '--silent', '--location', str(data), '--skipApiVersionCheck',
                                '--disableProductStyleUrl', '--loose'],
@@ -187,6 +197,97 @@ def start_azurite(venv: Path, config: dict, data: Path) -> subprocess.Popen:
     for port in PORTS.values():
         wait_port(port, 'Azurite')
     return server
+
+
+# Microsoft's messaging emulators, in Docker, pinned. A step that has eventhubs.json or servicebus.json
+# (the emulator's own Config.json format: the hubs or queues the step needs) gets a fresh emulator on
+# the standard ports (AMQP 5672, Kafka 9092), which is what env.sh's connection strings name. Event
+# Hubs keeps its checkpoints and metadata in its own Azurite; Service Bus keeps its state in SQL
+# Server. Their clocks are the machine's, not the step's: a frame never prints an enqueued time.
+EMULATORS = {
+    'eventhubs': ('mcr.microsoft.com/azure-messaging/eventhubs-emulator:2.2.1', '/Eventhubs_Emulator/ConfigFiles/Config.json',
+                  ['-p', '5672:5672', '-p', '9092:9092', '-p', '5300:5300']),
+    'servicebus': ('mcr.microsoft.com/azure-messaging/servicebus-emulator:2.0.1', '/ServiceBus_Emulator/ConfigFiles/Config.json',
+                   ['-p', '5672:5672', '-p', '5300:5300']),
+}
+EMULATOR_AZURITE = 'mcr.microsoft.com/azure-storage/azurite:3.35.0'
+EMULATOR_SQL = 'mcr.microsoft.com/mssql/server:2022-CU26-ubuntu-22.04'
+SQL_PASSWORD = 'Spine-emulator-1'  # the emulator's own database, inside a throwaway network
+
+
+def start_messaging(step: Path) -> list[str]:
+    """Start the emulators a step asks for; return the containers and network to remove after."""
+    made: list[str] = []
+    try:
+        return _start_messaging(step, made)
+    except BaseException:
+        stop_messaging(made)
+        raise
+
+
+COSMOS = 'mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:vnext-EN20261008'
+
+
+def _start_messaging(step: Path, made: list[str]) -> list[str]:
+    if json.loads((step / 'step.json').read_text()).get('cosmos') if (step / 'step.json').exists() else False:
+        # the Linux (vNext) Cosmos DB emulator, NoSQL API over plain HTTP on 8081
+        name = f'spine-cosmos-{os.getpid()}'
+        subprocess.run(['docker', 'run', '-d', '--name', name, '-p', '8081:8081', COSMOS, '--protocol', 'http'],
+                       check=True, capture_output=True)
+        made.append(name)
+        for _ in range(150):
+            try:
+                with urllib.request.urlopen('http://127.0.0.1:8081/', timeout=2) as r:
+                    if r.status == 200:
+                        break
+            except OSError:
+                pass
+            time.sleep(2)
+        else:
+            raise SystemExit(f'{step}: the Cosmos DB emulator did not start')
+    for kind, (image, target, ports) in EMULATORS.items():
+        config = step / f'{kind}.json'
+        if not config.exists():
+            continue
+        net = f'spine-{kind}-{os.getpid()}'
+        docker = lambda *a: subprocess.run(['docker', *a], check=True, capture_output=True, text=True)
+        docker('network', 'create', net)
+        made.append(f'network:{net}')
+        if kind == 'eventhubs':
+            docker('run', '-d', '--name', f'{net}-store', '--network', net, EMULATOR_AZURITE)
+            backing = ['-e', f'BLOB_SERVER={net}-store', '-e', f'METADATA_SERVER={net}-store']
+        else:
+            docker('run', '-d', '--name', f'{net}-store', '--network', net, '-e', 'ACCEPT_EULA=Y',
+                   '-e', f'MSSQL_SA_PASSWORD={SQL_PASSWORD}', EMULATOR_SQL)
+            backing = ['-e', f'SQL_SERVER={net}-store', '-e', f'MSSQL_SA_PASSWORD={SQL_PASSWORD}']
+        made.append(f'{net}-store')
+        docker('run', '-d', '--name', net, '--network', net, *ports, '-v', f'{config.resolve()}:{target}:ro',
+               '-e', 'ACCEPT_EULA=Y', *backing, image)
+        made.append(net)
+        for _ in range(150):
+            state = subprocess.run(['docker', 'inspect', '-f', '{{.State.Running}}', net], capture_output=True, text=True)
+            if state.stdout.strip() != 'true':
+                log = subprocess.run(['docker', 'logs', net], capture_output=True, text=True)
+                errors = [l for l in (log.stdout + log.stderr).splitlines() if 'rror' in l]
+                raise SystemExit(f'{step}: the {kind} emulator stopped: {(errors or ["(no error logged)"])[0].strip()}')
+            try:
+                with urllib.request.urlopen('http://127.0.0.1:5300/health', timeout=2) as r:
+                    if b'"healthy"' in r.read():
+                        break
+            except OSError:
+                pass
+            time.sleep(2)
+        else:
+            raise SystemExit(f'{step}: the {kind} emulator did not become healthy')
+    return made
+
+
+def stop_messaging(made: list[str]) -> None:
+    for item in reversed(made):
+        if item.startswith('network:'):
+            subprocess.run(['docker', 'network', 'rm', item[8:]], capture_output=True)
+        else:
+            subprocess.run(['docker', 'rm', '-f', item], capture_output=True)
 
 
 def postgres(databases: list[str], drop: bool = False) -> None:
@@ -290,7 +391,9 @@ def replay(step: Path) -> tuple[str, dict[str, str]]:
         databases = config.get('postgres', [])
         postgres(databases)
         server = start_azurite(venv, config, Path(tmp) / 'azurite') if config.get('azurite', True) else None
+        messaging: list[str] = []
         try:
+            messaging = start_messaging(step)
             state = home / '.spine-state'
             prelude = 'source env.sh >/dev/null 2>&1\n' if config.get('env') else ''
             for cmd in config.get('setup', []):
@@ -321,6 +424,7 @@ def replay(step: Path) -> tuple[str, dict[str, str]]:
             transcript = '\n'.join(blocks)
             captured = {n: (project / n).read_text() for n in config.get('capture', [])}
         finally:
+            stop_messaging(messaging)
             if server:
                 server.kill()
                 server.wait()

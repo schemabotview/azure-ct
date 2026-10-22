@@ -1,0 +1,6 @@
+$ python tools/adf_parts.py
+tr_tradebook_daily (TumblingWindowTrigger)
+  starts copy_tradebook
+    CopyChangedDeals (Copy)
+      reads  ds_tradebook_deals > ls_tradebook > ir-bank
+      writes ds_bronze_parquet > ls_lake > Azure runtime

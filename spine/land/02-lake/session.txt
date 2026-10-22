@@ -1,0 +1,11 @@
+$ export ZONES="landing bronze silver gold"
+$ for z in $ZONES; do az storage container create -n $z -o none; done
+$ az storage container list --query "[].name" -o tsv
+bronze
+gold
+landing
+silver
+$ export F=hierarchy_20261013.csv D=2026-10-13
+$ az storage blob upload -c landing -f data/$F -n hierarchy/$D/$F --no-progress -o none
+$ az storage blob list -c landing --query "[].[name, properties.contentLength]" -o tsv
+hierarchy/2026-10-13/hierarchy_20261013.csv	507

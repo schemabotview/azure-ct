@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const whoMayWriteAFile: Section = {
+  id: 'who-may-write-a-file',
+  title: 'Who may write a file',
+  scene: 'drop-sas',
+  narration:
+    "The collateral system is a vendor application in the bank's own data centre, and every evening at nineteen hundred it must drop a file into landing. It has no Azure identity, and the lake's account keys are switched off, so it gets a shared access signature, a S A S: a token that grants exactly the rights and the lifetime it was signed with. The editor shows tools slash drop sas dot py. Drop token signs a token for the landing container with two rights only, create and write, and an expiry. On Azure it is a user delegation S A S, signed with a key the platform asks Entra I D for, valid for at most seven days; the emulator has no Entra I D, so here the emulator's key signs it, and the comment says so. The terminal runs it against the emulator. Writing the file, with a token valid until nineteen thirty, is allowed. Reading it back is refused, four oh three, authorization permission mismatch, because the token has no read right. Listing landing is refused for the same reason: the vendor cannot see what else the bank receives. And yesterday's token is refused outright. The table on the right is who may write where. The collateral system, with a thirty minute token, into landing. Data Factory's managed identity, with a role, into landing and bronze. Databricks, with a role, into bronze through gold. And the risk analysts may only read gold. The list underneath is how the lake decides. Account keys are off, so no key can sign anything. A S A S is signed with a key from Entra I D. Roles are checked first, then a folder's access control list, an A C L, which can open one folder to one identity without a role on the whole container. And every S A S names its rights and its end. Next, what happens when that file arrives twice.",
+}

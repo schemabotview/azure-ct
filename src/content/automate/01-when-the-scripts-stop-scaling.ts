@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const whenTheScriptsStopScaling: Section = {
+  id: 'when-the-scripts-stop-scaling',
+  title: 'When the scripts stop scaling',
+  scene: 'script-rerun',
+  narration:
+    "Course five built the spoke with a script, infra slash zero five network dot sh, shown at the top: a virtual network, then five subnets, one command each. A month later, someone needs the app subnet twice as big, and someone else wants the integration runtime subnet gone, so they edit the script and run it again. The terminal runs a model of what happens, tools slash script rerun dot py, because there is no Resource Manager emulator to run the real thing against. Resource Manager creates or updates on every request, so the three subnets that did not change come back unchanged: running a create command twice duplicates nothing. The app subnet is refused, because App Service is joined to it, and a subnet's range cannot change while something uses it. The integration runtime subnet, deleted from the script, is left alone: a script says what to do, never what should exist, so removing a line removes nothing. And a subnet called snet test, which someone added by hand in the portal, is left alone too, because the script never looks at what is there. The table at the bottom names what a script cannot say. You want snet shir gone, and deleting the line does nothing. You want snet test noticed, and the script never looks. You want dev to match prod, and you get a second copy of the script, edited by hand, that slowly drifts. And you want to see a change before it happens, and the only way a script can show you is to run. All four have the same cause: a script describes steps, and the platform needs a description of the end state. Next, Bicep, which is exactly that.",
+}

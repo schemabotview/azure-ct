@@ -1,0 +1,3 @@
+$ python tools/retry_safely.py
+without a key        2 reservation(s), 1.00 held for one deal
+with key req-7f3a    1 reservation(s), 0.50 held for one deal

@@ -1,0 +1,4 @@
+{"UserConfig": {"NamespaceConfig": [{"Type": "EventHub", "Name": "emulatorNs1", "Entities": [
+  {"Name": "fx-rates", "PartitionCount": "4", "ConsumerGroups": [{"Name": "exposure-intraday"}]},
+  {"Name": "deal-events", "PartitionCount": "4", "ConsumerGroups": [{"Name": "exposure-intraday"}]}]}],
+ "LoggingConfig": {"Type": "File"}}}

@@ -1,0 +1,7 @@
+$ python tools/script_rerun.py
+snet-app            refused: in use, 10.110.2.0/26 cannot become 10.110.2.0/25
+snet-dbx-container  unchanged: the same PUT again
+snet-dbx-host       unchanged: the same PUT again
+snet-pe             unchanged: the same PUT again
+snet-shir           left alone: not in the script
+snet-test           left alone: not in the script

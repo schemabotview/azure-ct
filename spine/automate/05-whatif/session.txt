@@ -1,0 +1,13 @@
+$ python tools/whatif.py
+Incremental:
+  = kv-wg-risk-prod    NoChange
+  ~ stwgriskprod       Modify   minimumTlsVersion: TLS1_0 => TLS1_2
+  * stwgscratch        Ignore
+  + vm-wg-shir-prod-1  Create
+  + vm-wg-shir-prod-2  Create
+Complete:
+  = kv-wg-risk-prod    NoChange
+  ~ stwgriskprod       Modify   minimumTlsVersion: TLS1_0 => TLS1_2
+  - stwgscratch        Delete
+  + vm-wg-shir-prod-1  Create
+  + vm-wg-shir-prod-2  Create

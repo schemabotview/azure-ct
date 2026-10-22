@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const movingTradebook: Section = {
+  id: 'moving-tradebook',
+  title: 'Moving TradeBook',
+  scene: 'moving-tradebook',
+  narration:
+    "The bank has decided to move TradeBook, its deal system's PostgreSQL database, from its own data centre to a flexible server in Azure, p s q l w g tradebook prod. The map is complete for the serving layer. The script at the top, infra slash eleven migrate tradebook dot sh, uses the flexible server's own migration service, online. Create starts a migration called tradebook twenty twenty six eleven, from the properties file, which names the source at ten fifty twelve seven, reached over ExpressRoute, and the database to move. It copies everything once, then keeps replicating every change through logical replication. Show reports its state. And update with cutover finishes it. Nothing here was run: the script is checked by the Azure command line's parser, and the properties file against the S D K's migration model. The first table is the cutover weekend. All week, the full copy and then the changes. Every night, the platform reconciles counts and sums, as in Course eight. On Saturday at six, TradeBook's application stops writing. The last changes land, and the platform reconciles again. Then the cutover, and the application is pointed at Azure. And the old server is kept, read only, for a month, as the way back. The second table is what the service does and does not do. It copies schema and data, replicates changes until cutover, and validates before it starts. It does not change the application's connection, move roles' passwords, or choose the moment: people do. Afterwards, the integration runtime's copy reads TradeBook in Azure instead of across ExpressRoute. That completes serving. Next, Course twelve publishes the results to the risk team.",
+}

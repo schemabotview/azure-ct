@@ -1,0 +1,13 @@
+$ bicep build-params templates/prod.bicepparam --outfile /tmp/prod.json
+$ grep -A9 runtimeAdminPassword /tmp/prod.json
+    "runtimeAdminPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/aaaa0a0a-bb1b-cc2c-dd3d-eeeeee4e4e4e/resourceGroups/
+rg-risk-prod-data/providers/Microsoft.KeyVault/vaults/kv-wg-risk-prod"
+        },
+        "secretName": "runtime-admin-password"
+      }
+    }
+  }
+}

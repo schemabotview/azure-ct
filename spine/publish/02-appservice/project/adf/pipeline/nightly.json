@@ -1,0 +1,49 @@
+{
+  "name": "nightly",
+  "properties": {
+    "description": "The night's order: TradeBook in, then the exposure job",
+    "parameters": {
+      "windowStart": {"type": "string"},
+      "windowEnd": {"type": "string"}
+    },
+    "activities": [
+      {
+        "name": "CopyTradeBook",
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "copy_tradebook",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {
+            "windowStart": "@pipeline().parameters.windowStart",
+            "windowEnd": "@pipeline().parameters.windowEnd"
+          }
+        }
+      },
+      {
+        "name": "BuildExposure",
+        "type": "DatabricksJob",
+        "dependsOn": [
+          {"activity": "CopyTradeBook", "dependencyConditions": ["Succeeded"]}
+        ],
+        "linkedServiceName": {
+          "referenceName": "ls_databricks",
+          "type": "LinkedServiceReference"
+        },
+        "policy": {
+          "timeout": "0.03:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 600
+        },
+        "typeProperties": {
+          "jobId": "481516234200",
+          "jobParameters": {
+            "business_date": "@formatDateTime(pipeline().parameters.windowStart, 'yyyy-MM-dd')"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const oneDoorForOtherTeams: Section = {
+  id: 'one-door-for-other-teams',
+  title: 'One door for other teams',
+  scene: 'one-door',
+  narration:
+    "Other teams want headroom too: the trade finance portal, the credit officers' tools, a nightly script in operations. Each could call the A P I directly, and each would need its own rules. Instead they all come through one door, API Management, which the map now has. The policy at the top, policies slash a p i m slash exposure a p i dot x m l, runs on every request before it reaches the A P I. Validate J W T requires a bearer token from the bank's Entra I D tenant, whose audience is a p i colon slash slash exposure a p i, carrying the Exposure dot Read scope; anything else is refused with four oh one. Then rate limit by key allows sixty calls a minute per subscription, which is per team. The terminal runs tools slash a p i m check dot py, a model that reads that same policy file and plays five requests through it. No authorization header: four oh one, no token. A token for Microsoft Graph: four oh one, it is for a different audience. A token for this A P I without the scope: four oh one. Omar's dashboard, on its twelfth call this minute: two hundred, passed to the A P I. And a team's script on its sixty first call: four twenty nine, retry after the minute. The table at the bottom is what the door gives other teams. A contract: the routes, published and versioned, from templates slash modules slash a p i m dot bicep. A key each: one subscription per team, so usage is visible and can be revoked team by team. Sign in: an Entra token with the right scope. And a fair share: sixty calls a minute per team, so one script cannot starve the dealers. Next, when a group goes over its limit.",
+}

@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const theWorkspaceAsAnAzureResource: Section = {
+  id: 'the-workspace-as-an-azure-resource',
+  title: 'The workspace as an Azure resource',
+  scene: 'dbx-workspace',
+  narration:
+    "Databricks is where the platform's Spark jobs turn bronze into silver and gold, and to Azure it is first of all a resource, deployed like any other. The map now has Databricks. The code at the top is templates slash modules slash databricks dot bicep. An access connector comes first: a small Azure resource whose only job is to hold a managed identity, which the next section puts to work. Then the workspace itself, d b w w g risk prod, on the Premium tier, which private link and Unity Catalog's controls need. It names a managed resource group, sets public network access to disabled, and its parameters place it in the spoke's virtual network, in the two Databricks subnets from Course five, with no public I P addresses on its machines. The first table is what deploying it creates. The workspace belongs to the bank. The managed resource group belongs to Databricks, and is locked so that nobody else can change it. Inside it is the workspace's own storage, and, while clusters run, their virtual machines: Databricks creates them, and the bank pays for them. And the access connector belongs to the bank. The second table draws the line between this course and the Databricks data engineering course. Here: the workspace, its network and its identities; the lake's roles and Key Vault; and the virtual machines, quotas and the bill. There: notebooks, Spark and Delta; Unity Catalog's grants; and jobs, Auto Loader and Lakeflow. This course stops at the workspace's front door, with everything the workspace needs from Azure in place. Next, how the workspace sits in the network.",
+}

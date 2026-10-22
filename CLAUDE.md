@@ -39,13 +39,13 @@ superseded by the plan.
 | 3 | `start` | Start the project | 6 | authored, awaiting owner review (no narration audio yet) |
 | 4 | `secure` | Lock it down | 8 | authored, awaiting owner review (no narration audio yet) |
 | 5 | `network` | Give it a network | 9 | authored, awaiting owner review (no narration audio yet) |
-| 6 | `automate` | Make it repeatable | 8 | planned |
-| 7 | `land` | Land the files | 8 | planned |
-| 8 | `batch` | Bring the batches in | 8 | planned |
-| 9 | `stream` | Bring the stream in | 8 | planned |
-| 10 | `transform` | Transform it in Databricks | 7 | planned |
-| 11 | `serve` | Serve the results | 9 | planned |
-| 12 | `publish` | Publish to the risk team | 9 | planned |
+| 6 | `automate` | Make it repeatable | 8 | authored, awaiting owner review (no narration audio yet) |
+| 7 | `land` | Land the files | 8 | authored, awaiting owner review (no narration audio yet) |
+| 8 | `batch` | Bring the batches in | 8 | authored, awaiting owner review (no narration audio yet) |
+| 9 | `stream` | Bring the stream in | 8 | authored, awaiting owner review (no narration audio yet) |
+| 10 | `transform` | Transform it in Databricks | 7 | authored, awaiting owner review (no narration audio yet) |
+| 11 | `serve` | Serve the results | 9 | authored, awaiting owner review (no narration audio yet) |
+| 12 | `publish` | Publish to the risk team | 9 | authored, awaiting owner review (no narration audio yet) |
 | 13 | `operate` | Operate it | 10 | planned |
 | 14 | `evolve` | Measure, tune and evolve it | 9 | planned |
 
@@ -114,6 +114,16 @@ What makes a replay deterministic, all of it about the machine:
 - **The control plane has no emulator.** A command that needs Resource Manager stops at
   `ERROR: Please run 'az login' to setup account.` — real output, shown where it teaches something.
   Otherwise control-plane files are shown `model-checked` (below), never as captured output.
+- **Event Hubs and Service Bus run in Microsoft's emulators, in Docker** (Event Hubs 2.2.1 with its
+  own Azurite, Service Bus 2.0.1 with SQL Server 2022 CU26), started by a step that has
+  `eventhubs.json` / `servicebus.json` beside it, on the standard ports, which `env.sh`'s connection
+  strings name. Start Docker first (`dockerd`). Their clocks are real: never print an enqueued time,
+  and give a step that reads or settles messages `"time": "real"` (no faked clock at all) — a frozen
+  clock stalls the SDKs' waits, and a ticking one starts in each process separately, so Azurite's
+  clock runs ahead of the reader's and blob-stored partition ownership never looks expired. The
+  Service Bus emulator refuses a TTL over 1 h and a duplicate window over 5 min. `{"cosmos": true}`
+  starts the Cosmos DB (NoSQL) vNext emulator on 8081 (`COSMOS_ENDPOINT` / `COSMOS_KEY` in env.sh);
+  it reports a flat request charge, so RU figures are doc-cited.
 - Output is hard-wrapped at the pane's width: 84 columns in an IDE terminal, `"columns": 88` in a map
   frame's side pane (`MAP_SIDE_W` is 853 px; 88 × 9.02 fits). A typed line exactly the pane's width is
   refused as ambiguous.
@@ -126,7 +136,7 @@ Every code card declares how it was verified, as the last part of its `filename`
 | level | what it means | what check:azure does |
 | --- | --- | --- |
 | `runs locally` | real Python or SQL, really run | runs the `.py` card with the SDK environment (or a `.sql` card in a fresh database on the local PostgreSQL 16 cluster); a sibling node `<id>-out` must equal its output exactly |
-| `model-checked` | checked offline against Azure's own definitions | `.bicep`: `bicep build` + `bicep lint`, any warning fails (Bicep type-checks every property against Azure's API definitions); `.sh`: `bash -n`, and every `az …` line through the CLI's own parser (a command that only wants a sign-in passes; an unknown command or parameter fails); `<package>.<Model>.json`: every key at every depth is a member of that model in `azure-mgmt-<package>` (TypeSpec and msrest models, discriminated subtypes and maps handled); policy JSON: if/then, known effect, well-formed conditions; role JSON: Provider/type/operation actions |
+| `model-checked` | checked offline against Azure's own definitions | `.yml`: actionlint (syntax, expressions, each known action's real inputs); a spine `adf/<folder>/*.json`: walked against azure-mgmt-datafactory's Pipeline/Dataset/LinkedService/Trigger resource models; a spine `.bicepparam`: `bicep build-params` + lint; `.bicep`: `bicep build` + `bicep lint`, any warning fails (Bicep type-checks every property against Azure's API definitions); `.sh`: `bash -n`, and every `az …` line through the CLI's own parser (a command that only wants a sign-in passes; an unknown command or parameter fails); `<package>.<Model>.json`: every key at every depth is a member of that model in `azure-mgmt-<package>` (TypeSpec and msrest models, discriminated subtypes and maps handled); policy JSON: if/then, known effect, well-formed conditions; role JSON: Provider/type/operation actions |
 | `emulated` | behaviour from an emulator, **not Azure** | must be a spine file (replayed); a stand-alone emulated card fails |
 | `doc-cited` | Microsoft documentation says so | the scene file must carry a `// source: https://…` comment |
 | `illustrative` | made-up but realistic; nothing checks it | counted, so unverified cards stay visible |
@@ -172,6 +182,36 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | peak sizing | Databricks 17 addresses per subnet (16 workers + driver); 9 private endpoints; app 20 (10 instances × 2 in a scale); shir 2 |
 | front of the dashboard | now: private Application Gateway (London, internal); Course 14: Front Door with a Private Link origin (Singapore joins) |
 | hybrid | ExpressRoute in London via the hub gateway (not encrypted by default); site-to-site VPN as backup; spoke-to-hub peering with gateway transit; platform team owns the hub (`rg-hub-net`) |
+| templates | `templates/main.bicep` (subscription scope: rg-risk-<env>-net / -data, modules network, lake, vault, runtime); subnets are child resources, `@batchSize(1)`; `prod.bicepparam` / `dev.bicepparam` (10.110 / 10.120); runtime admin `shiradmin`, password from `az.getSecret(..., kv-wg-risk-<env>, runtime-admin-password)`; vault `enabledForTemplateDeployment` |
+| drift (model) | stwgriskprod TLS lowered to 1.0 by hand → Modify back to 1.2; `stwgscratch` made by hand → Ignore (incremental) / Delete (complete) |
+| pipeline | GitHub repo `woodgrove-example/risk-on-azure`; `deploy.yml` build → dev → prod (prod environment needs a reviewer); `release.yml` reusable; identities `risk-deploy-dev` / `risk-deploy-prod`, federated subject `repo:woodgrove-example/risk-on-azure:environment:<env>`, Contributor on own subscription only; release order infra → Databricks bundle → Data Factory (triggers stopped); deployment name `risk-<env>-<sha7>`, `out/SHA256SUMS` |
+| lake zones | containers `landing` (as delivered, 30 days), `bronze` (kept; cool > 30 d, cold > 90 d), `silver`, `gold`; blob + container soft delete 14 days; HNS: no blob versioning, soft delete does not keep overwrites; landing is write-once (`<source>/<date>/<file>`) |
+| collateral file | `collateral_20261013.csv`, 19:00, six rows COL-7001…7006 (C-101 cash 0.50 / warehouse goods 1.00 haircut 0.40; C-201 receivables 2.40; C-301 vessel mortgage 6.00, redelivered as 5.40; C-501 cash 0.80; C-502 standby LC 1.50); drop SAS create+write on landing, 30 min (emulated) |
+| lifecycle model | bronze 2 GB/day, a year: hot 62 / cool 120 / cold 548 GB = 4.63 vs all hot 14.60 USD/month; landing 60 GB 1.20 (**hypothetical**: hot 0.020, cool 0.010, cold 0.004 per GB-month) |
+| reports | account `stwgreports<env>` (GZRS, no HNS), container `large-exposures`, container-level WORM 2,557 days (seven years, assumed bank rule), locked by `infra/07-lock-reports.sh` |
+| collateral share | account `stwgcollat<env>` (ZRS), share `collateral` 100 GiB SMB, Microsoft Entra Kerberos (`AADKERB`), default share permission None, role Storage File Data SMB Share Contributor |
+| TradeBook deals | `data/tradebook.sql` (local PostgreSQL 16 stand-in, `trade.deals`), 12 Oct: LC-1987 C-101 3.00, LC-1990 C-201 4.00, LC-1995 C-202 1.20, GT-2001 C-301 5.50, LC-2003 C-102 2.50, LC-2007 C-302 0.90, TL-2010 C-401 3.30, LC-2011 C-101 2.00, LC-2015 C-501 2.20, LC-2020 C-502 1.80 (10 deals, 26.40); 13 Oct: + LC-2041 C-101 2.00 (14:05), LC-1995 → 1.50 (11:20), LC-2007 deleted |
+| batch copy | factory `adf-wg-risk-prod`, runtime `ir-bank`; pipeline `copy_tradebook` (tumbling window `tr_tradebook_daily`, 24 h, delay 5 min, retry 2 × 600 s) → `bronze/tradebook/deals/<window start>/deals.parquet`: first load 10 rows, 13 Oct 2 rows; reconcile TradeBook 10 / 27.80 vs lake 11 / 28.70 (LC-2007) |
+| arriving files | `load_landing_file` (Get Metadata → If → Copy or Fail `ContractBroken`), storage event triggers `tr_hierarchy_arrives` / `tr_collateral_arrives` (`/landing/blobs/<source>/`, `.csv`, ignore empty); `contracts/hierarchy.json`; `hierarchy_20261014.csv` refused (cpty_id, lei, three-letter countries) |
+| factory identity | linked services `ls_lake` / `ls_keyvault` (managed identity), `ls_tradebook` (user `adf_reader`, Key Vault secret `tradebook-adf-reader`); roles Key Vault Secrets User on the vault, Blob Data Contributor on landing and bronze; deployer gets RBAC Administrator conditioned to those two roles (`infra/08-deploy-can-assign.sh`) |
+| streams | namespace `evh-wg-<role>-<env>` → `evh-wg-risk-prod` Standard, 2 TUs, auto-inflate to 4, Kafka on, local auth off; hubs `fx-rates` (key: pair) and `deal-events` (key: deal), 4 partitions, 1 day, group `exposure-intraday`; Capture → bronze, Avro, 300 s / 300 MB, as the namespace's identity |
+| stream runs (emulated) | AMQP keys: GBPUSD → partition 3, EURUSD 1, SGDUSD 2, deal events → 0; Kafka (`feeds/market_producer.py`, `data/fx_20261013.csv`): SGDUSD 0, GBPUSD 1 (×3), EURUSD and INRUSD 3; checkpoints: 3 events, then LC-2042 (partition 2) only |
+| deal steps | Service Bus `sb-wg-risk-<env>` Standard, queue `deal-steps` (sessions, duplicate detection 10 min — emulator 5, lock 30 s, 3 deliveries, TTL 1 day — emulator 1 h); LC-2041 booked / documents-checked / issued (retry dropped), LC-2042 issued dead-lettered (MaxDeliveryCountExceeded) |
+| stream model | 08:00 burst 2,600 events/s × 5 s: 2 TUs refuse 600/s, in by 7 s; 3 TUs none, 5 s; 14:00 minute open to 14:01:10 (SGDUSD at 14:01:24 too late); 4 deal events, 3 kept |
+| workspace | `dbw-wg-risk-<env>` Premium, managed group `rg-dbw-wg-risk-<env>-managed`, VNet-injected (`snet-dbx-host` / `snet-dbx-container`, NSG `nsg-snet-dbx`), no public IP, public access off, `NoAzureDatabricksRules`, private endpoint `pe-dbw-wg-risk-<env>` (`databricks_ui_api`) in snet-pe; access connector `ac-wg-risk-<env>` (Blob Data Contributor on the lake); URL `adb-1234567890123456.7.azuredatabricks.net` (illustrative) |
+| Databricks secrets | Key Vault-backed scopes need access policies, so a second vault `kv-wg-dbx-<env>` (access policies, trusted services); scope `risk-kv`, READ for Risk Data Engineers only; secret `tradebook-dbx-reader` |
+| Databricks compute | Standard_D4ds_v5 (4 vCPU), DDSv5 quota 100 (assumed); overnight 16 workers + driver 00–02 (68 vCPU), by day intraday 2 + driver and three engineers' 4-worker clusters (18 nodes, 72 vCPU; 41 addresses spare); policy `policies/databricks/overnight-job.json` (Spot with fallback, driver on demand, tags); **hypothetical** Spot 0.06/h, DBU 0.15, 0.75 DBU per node-hour (assumed): night VMs 6.80 → 2.32, overnight 6.14 a run / 184.35 a month, intraday 9.38 / 206.25, total 390.60 |
+| nightly pipeline | `nightly`: ExecutePipeline copy_tradebook → DatabricksJob `BuildExposure` (job 481516234200, `business_date`), linked service `ls_databricks` (MSI); `tr_tradebook_daily` now starts `nightly`; the intraday job uses Databricks' own scheduler |
+| risk mart | `psql-wg-riskmart-<env>` PostgreSQL 16, General Purpose Standard_D2ds_v5, zone 1 + ZoneRedundant standby zone 3, 128 GB, 14-day geo-redundant backups, Entra only, private endpoint; `sql/mart.sql` (schema `mart`: groups, exposure 13 Oct, reservations, view headroom); limits G-WW 10.00 / G-FAB 8.00 / G-CON 6.00 / G-TAIL 4.00 / G-NW 5.00, net 8.40 / 3.70 / 1.30 / 3.30 / 1.85, headroom 1.60 / 4.30 / 4.70 / 0.70 / 3.15 |
+| reservations | two 1.00 at once against 1.60: READ COMMITTED both commit (−0.40), SERIALIZABLE B refused (40001), finds 0.60; lost reply retried: no key 2 rows (1.00), key `req-7f3a` 1 row (0.50) |
+| group lookup | `cosmos-wg-risk-<env>` NoSQL, Session, Entra only, private, db `risk`, container `groups` (/groupId), autoscale 4,000 RU/s; emulator vNext EN20261008 (flat request charge); hot partition model 1,200 → 3,000 lookups/s, 40% one group → 1,200 RU/s vs 1,000 share; ETag 412 for the second editor; batch add C-103 + members 3 applied, add C-101 409 none |
+| cache | `redis-wg-risk-<env>` Azure Managed Redis Balanced_B1, keys off; model TTL 60 s: stale 10–60 s, delete-on-write fresh from 10 s |
+| TradeBook move | target `psql-wg-tradebook-prod`, migration `tradebook-2026-11` online from 10.50.12.7 (`infra/11-migrate-tradebook.sh`, `infra/migration-tradebook.json`); cutover Saturday 06:00, old server kept read-only a month |
+| exposure API | `app/server.py` (stdlib + psycopg): GET /health, GET /groups/{id}/headroom, POST /groups/{id}/reservations (Idempotency-Key, SERIALIZABLE, 40001 retried 3×); run locally: 1.6 → req-7f3a 201 (0.6 left) → req-8b1c 409 |
+| App Service | `app-wg-exposure-<env>` on `asp-app-wg-exposure-<env>` P1v3 × 3, zone-redundant, Python 3.12, `python app/server.py`, /health, VNet integration snet-app, public access off, identity `id-wg-exposure-prod`; settings MART_HOST, MART_DATABASE, AZURE_CLIENT_ID, LIMITS_SERVICE_KEY = Key Vault reference (`kv-wg-risk-prod`, secret `limits-key`, used by `app/limits.py`); slot `staging`; autoscale 3–10 (+1 > 70% CPU 10 min, −1 < 30%, cooldown 10 min); `infra/12-release.sh` |
+| API Management | `apim-wg-risk-<env>` StandardV2, API `exposure`, policy validate-jwt (aud `api://exposure-api`, scp Exposure.Read) + rate-limit-by-key 60/60 s per subscription; model: 401 ×3, 200, 429 |
+| breach | event `Woodgrove.Risk.LimitBreached` (G-WW net 10.40 vs 10.00, 104%; deal LC-2044 2.00 booked 15:30, Wide World Importers, reservation `req-c41e`) → function `func-wg-breach-<env>` (Flex Consumption, storage `stwgfunc<env>`) → queue `breach-alerts` → Durable orchestrator: officer sam 30 min, else head of credit; reject → release reservation, tell dealer; walk: approve 15:42; timer 16:00, reject 16:08 |
+| filer | registry `crwgrisk<env>` Premium, environment `cae-wg-risk-<env>` in new subnet `snet-jobs` 10.110.4.0/27 (dev 10.120.4.0/27, delegated Microsoft.App/environments), job `job-wg-filer-<env>` cron `30 5 * * *` UTC (06:30 BST, 05:30 GMT), image `filer:1.0.3`, AcrPull; file in by 06:34; deployer's condition also allows AcrPull and Storage Blob Data Owner |
 | API versions | Storage data plane `x-ms-version` 2026-10-06 (SDK 12.31); Microsoft.Storage control plane `2025-08-01` (CLI 2.91, Bicep 0.48.1) |
 
 ## Scene inventory
@@ -213,6 +253,63 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | `private-endpoints` | map frame: infra/05-private-endpoints.sh + tools/reach.py; private vs service endpoint | `network-private-endpoints-and-service-endpoints` |
 | `front-door-choice` | Load Balancer / Application Gateway / Front Door / Traffic Manager, the dashboard's answer in two steps | `network-load-balancer-application-gateway-or-front-door` |
 | `hybrid-links` | map frame: infra/05-peering.sh, ways to join networks, ExpressRoute + VPN backup | `network-reaching-the-bank` |
+| `script-rerun` | map frame: infra/05-network.sh + tools/script_rerun.py (a model): refused / unchanged / left alone | `automate-when-the-scripts-stop-scaling` |
+| `bicep-arm` | IDE: modules/network.bicep, bicep build + tools/arm_summary.py; Bicep → ARM table | `automate-bicep-and-arm` |
+| `bicep-modules` | IDE: main.bicep (subscription scope, three modules), its nested deployments; scopes | `automate-modules-references-and-scopes` |
+| `bicep-params` | IDE: prod.bicepparam, build-params shows the Key Vault reference; prod vs dev | `automate-parameters-outputs-and-secrets` |
+| `what-if` | IDE: tools/whatif.py (a model) in incremental and complete mode; drift; replacements | `automate-what-if-drift-and-replacement` |
+| `pipeline-identity` | IDE: release.yml (OIDC) + tools/oidc_subject.py (a model of the subject match) | `automate-a-pipeline-with-no-stored-secret` |
+| `data-release` | map frame: the future release.yml (model-checked, actionlint), release order, ADF from git | `automate-releasing-data-code` |
+| `promotion` | map frame: deploy.yml build once, infra/06-build.sh checksums; Bicep vs Terraform | `automate-one-artefact-two-environments` |
+| `storage-kinds` | object / file / block lists, what survives what, which the platform uses | `land-object-file-and-block` |
+| `lake-zones` | map frame: lake.bicep (HNS, soft delete, four zone containers) + the zones made and the hierarchy file landed in Azurite | `land-the-lake-account` |
+| `drop-sas` | IDE: tools/drop_sas.py — write-only SAS: write ok, read/list 403, expired 403 (emulated) | `land-who-may-write-a-file` |
+| `two-deliveries` | IDE: tools/two_deliveries.py — overwrite + ETag 412, write-once 409, lease 412 (emulated) | `land-two-writers-one-file` |
+| `lake-lifecycle` | IDE: lifecycle.bicep + tools/lifecycle_plan.py (a model); tiers; recovery without versions | `land-versions-soft-delete-and-lifecycle` |
+| `locked-reports` | map frame: reports.bicep (WORM 2,557 d) + 07-lock-reports.sh; what a locked policy allows | `land-reports-nobody-can-change` |
+| `files-and-disks` | map frame: share.bicep (Entra Kerberos), reaching the share, the runtime VMs' disks | `land-files-and-disks` |
+| `storage-redundancy` | LRS / ZRS / GRS / GZRS table, a failover, what redundancy does not undo | `land-redundancy-and-restore` |
+| `adf-parts` | IDE: adf/pipeline/copy_tradebook.json + tools/adf_parts.py (follows the git JSON's references) | `batch-data-factorys-parts` |
+| `bank-runtime` | map frame: factory.bicep (MI, private, ir-bank); running the runtime's two VMs | `batch-a-runtime-inside-the-bank` |
+| `copy-tradebook` | IDE: tools/copy_window.py runs the pipeline's own query on PostgreSQL 16 into Azurite: 10 then 2 rows | `batch-copying-tradebook` |
+| `files-arrive` | map frame: tr_collateral_arrives.json + tools/route_event.py (a model of the event match) | `batch-files-that-arrive` |
+| `file-contract` | IDE: tools/check_contract.py: 13 Oct agreed, 14 Oct refused | `batch-a-files-contract` |
+| `reconcile-tradebook` | IDE: tools/reconcile.py (PostgreSQL vs bronze): LC-2007 deleted, still in the lake; window vs CDC | `batch-batch-cdc-and-reconciliation` |
+| `rerun-window` | IDE: tools/rerun_window.py (Azurite): append 3 rows vs replace 2 | `batch-reruns-without-duplicates` |
+| `pipeline-secrets` | IDE: ls_tradebook.json (Key Vault secret), adf_parts --credentials; the factory's roles | `batch-secrets-and-identities-for-pipelines` |
+| `why-stream` | Wide World's 14 October intraday, batch vs stream, the two streams | `stream-why-a-stream` |
+| `event-hubs` | map frame: streaming.bicep + tools/send_events.py in the Event Hubs emulator (partition keys) | `stream-event-hubs` |
+| `kafka-endpoint` | IDE: feeds/market_producer.py, unchanged, to the emulator's Kafka endpoint; what the properties change | `stream-the-kafka-endpoint` |
+| `stream-checkpoints` | IDE: tools/intraday_reader.py with blob checkpoints: 3 events, restart reads 1 | `stream-consumers-and-checkpoints` |
+| `stream-capture` | map frame: Capture in streaming.bicep (Avro to bronze, namespace identity) | `stream-capture-to-the-lake` |
+| `four-ways` | Queue Storage / Service Bus / Event Grid / Event Hubs, and each one's job here | `stream-queue-storage-service-bus-event-grid-or-event-hubs` |
+| `deal-steps` | IDE: tools/deal_steps.py in the Service Bus emulator: sessions, duplicate dropped, dead letter | `stream-service-bus-for-deal-steps` |
+| `stream-rules` | IDE: tools/stream_rules.py (a model): throttling, late events, duplicates | `stream-late-duplicate-and-throttled` |
+| `dbx-workspace` | map frame: databricks.bicep (connector, workspace); what Azure creates; this course vs the Databricks course | `transform-the-workspace-as-an-azure-resource` |
+| `dbx-network` | map frame: the NSG on the Databricks subnets + tools/dbx_capacity.py; three private paths | `transform-databricks-in-the-network` |
+| `dbx-lake` | IDE: access connector and its lake role, bicep build + arm_summary; Azure role to a Unity Catalog grant | `transform-reaching-the-lake` |
+| `dbx-secrets` | IDE: infra/10-secret-scope.sh (Databricks CLI), tools/secret_read.py; why a second vault | `transform-secrets-and-people` |
+| `dbx-compute` | IDE: the overnight cluster policy + tools/compute_plan.py (quota, Spot) | `transform-compute-on-the-azure-bill` |
+| `who-starts-the-job` | map frame: adf/pipeline/nightly.json (DatabricksJob); Data Factory vs Databricks' scheduler | `transform-who-starts-the-job` |
+| `night-cost` | IDE: tools/night_cost.py (hypothetical VM + DBU prices) | `transform-what-a-night-costs` |
+| `who-needs-what` | three readers' asks, which store answers which, one rule | `serve-who-needs-what` |
+| `relational-choices` | Azure SQL / MI / SQL on a VM / PostgreSQL flexible server; why PostgreSQL | `serve-relational-choices` |
+| `risk-mart` | map frame: mart.bicep + sql/mart.sql on local PostgreSQL 16 (headroom view); failures | `serve-the-risk-mart` |
+| `two-deals-one-limit` | IDE: tools/reserve_headroom.py — READ COMMITTED overbooks, SERIALIZABLE refuses | `serve-two-deals-one-limit` |
+| `retry-safely` | IDE: tools/retry_safely.py — lost reply, retry with and without an idempotency key | `serve-connections-and-credentials` |
+| `group-lookup` | IDE: tools/group_lookup.py in the Cosmos emulator; RU costs (doc); hot partition model | `serve-a-lookup-by-group` |
+| `cosmos-concurrency` | IDE: tools/group_update.py — ETag 412, transactional batch all-or-none; consistency levels | `serve-consistency-and-concurrency-in-cosmos-db` |
+| `cache-headroom` | IDE: tools/cache_headroom.py (a model): TTL vs delete-on-write | `serve-caching-the-headroom` |
+| `moving-tradebook` | map frame: infra/11-migrate-tradebook.sh, the cutover weekend, what the service does | `serve-moving-tradebook` |
+| `exposure-api` | IDE: app/server.py run locally against the mart with curl (health, headroom, 201, 409) | `publish-the-exposure-api` |
+| `app-service` | map frame: app.bicep plan and site; bicep build + arm_summary; App Service words | `publish-app-service` |
+| `settings-without-secrets` | IDE: app.bicep's settings + tools/settings_check.py; a Key Vault reference | `publish-settings-without-secrets` |
+| `logs-scale-slots` | map frame: infra/12-release.sh (staging slot, swap); scale up/out; health and logs | `publish-logs-scale-and-slots` |
+| `other-ways-to-run-it` | VM / scale set / App Service / Container Apps / AKS / Functions for the API; where each part runs | `publish-other-ways-to-run-it` |
+| `one-door` | map frame: the APIM policy XML + tools/apim_check.py (a model reading it) | `publish-one-door-for-other-teams` |
+| `breach-alerts` | IDE: functions/breach_alert/function_app.py + tools/invoke_breach.py (its logic, run locally) | `publish-breach-alerts` |
+| `breach-workflow` | IDE: the Durable orchestrator + tools/walk_breach.py (stand-in runtime) | `publish-the-breach-workflow` |
+| `morning-report` | map frame: filer.bicep (registry, Container Apps job); the morning; the analysts' tools | `publish-the-morning-report-and-the-analysts` |
 
 ## Invariants — do not break
 

@@ -1,0 +1,15 @@
+{
+  "node_type_id": {
+    "type": "allowlist",
+    "values": ["Standard_D4ds_v5"],
+    "defaultValue": "Standard_D4ds_v5"
+  },
+  "num_workers": {"type": "range", "maxValue": 16, "defaultValue": 16},
+  "azure_attributes.availability": {
+    "type": "fixed",
+    "value": "SPOT_WITH_FALLBACK_AZURE"
+  },
+  "azure_attributes.first_on_demand": {"type": "fixed", "value": 1},
+  "custom_tags.app": {"type": "fixed", "value": "risk-platform"},
+  "custom_tags.env": {"type": "fixed", "value": "prod"}
+}

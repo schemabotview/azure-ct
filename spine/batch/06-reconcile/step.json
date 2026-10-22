@@ -1,0 +1,5 @@
+{"venv": true, "env": true, "time": "2026-10-14 00:30:00", "postgres": ["tradebook"],
+ "setup": ["psql -q -d tradebook -f data/tradebook.sql", "az storage container create -n bronze -o none",
+           "python tools/copy_window.py 2026-01-01 2026-10-13 > /dev/null",
+           "psql -q -d tradebook -f data/tradebook_20261013.sql",
+           "python tools/copy_window.py 2026-10-13 2026-10-14 > /dev/null"]}

@@ -1,0 +1,12 @@
+{
+  "file": "hierarchy_YYYYMMDD.csv",
+  "agreed": "2026-09-01, with the client data team",
+  "key": "counterparty_id",
+  "columns": [
+    {"name": "group_id", "pattern": "^G-[A-Z]+$"},
+    {"name": "group_name", "pattern": "^.+$"},
+    {"name": "counterparty_id", "pattern": "^C-[0-9]{3}$"},
+    {"name": "counterparty_name", "pattern": "^.+$"},
+    {"name": "country", "pattern": "^[A-Z]{2}$"}
+  ]
+}

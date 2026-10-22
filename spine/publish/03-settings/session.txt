@@ -1,0 +1,6 @@
+$ python tools/settings_check.py
+MART_HOST           configuration
+MART_DATABASE       configuration
+AZURE_CLIENT_ID     configuration
+LIMITS_SERVICE_KEY  Key Vault reference: limits-key, read at startup
+references are read as the app identity id-wg-exposure-prod

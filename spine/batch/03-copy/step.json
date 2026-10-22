@@ -1,0 +1,2 @@
+{"venv": true, "env": true, "time": "2026-10-14 00:05:00", "postgres": ["tradebook"],
+ "setup": ["psql -q -d tradebook -f data/tradebook.sql", "az storage container create -n bronze -o none"]}

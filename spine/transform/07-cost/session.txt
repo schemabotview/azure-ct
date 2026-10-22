@@ -1,0 +1,5 @@
+$ python tools/night_cost.py
+job        node-h    VMs   DBUs   a run  a month
+overnight      34   2.32   3.82    6.14   184.35
+intraday       30   6.00   3.38    9.38   206.25
+total                                     390.60 USD a month

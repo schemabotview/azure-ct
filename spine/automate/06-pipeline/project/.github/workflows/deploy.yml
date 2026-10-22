@@ -1,0 +1,15 @@
+# Every push to main: release to dev, then to prod once a person approves
+# the prod environment. The same commit goes to both.
+name: deploy
+on:
+  push:
+    branches: [main]
+
+jobs:
+  dev:
+    uses: ./.github/workflows/release.yml
+    with: { env: dev }
+  prod:
+    needs: dev
+    uses: ./.github/workflows/release.yml
+    with: { env: prod }

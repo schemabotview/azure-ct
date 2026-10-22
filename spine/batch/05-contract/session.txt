@@ -1,0 +1,7 @@
+$ python tools/check_contract.py data/hierarchy_20261013.csv
+hierarchy_20261013.csv: agreed: 5 columns, 9 rows
+$ python tools/check_contract.py data/hierarchy_20261014.csv
+hierarchy_20261014.csv: refused
+  missing column counterparty_id
+  unexpected column cpty_id, lei
+  country: 9 of 9 rows break ^[A-Z]{2}$, e.g. GBR

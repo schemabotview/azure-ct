@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const reportsNobodyCanChange: Section = {
+  id: 'reports-nobody-can-change',
+  title: 'Reports nobody can change',
+  scene: 'locked-reports',
+  narration:
+    "Every morning the bank files its large exposures report, and once filed, a report is evidence: the regulator may ask for it years later, and must get exactly what was sent. The map now has its locked reports store. The code at the top is templates slash modules slash reports dot bicep: a separate storage account, so its readers, its redundancy and its policy are its own. Its container, large exposures, carries an immutability policy, write once, read many, for two thousand five hundred and fifty seven days, which is seven years, the bank's retention rule. While the policy applies, no report in the container can be overwritten or deleted, by anyone, administrators included. A new policy starts unlocked, so it can be tested. The script below it, infra slash zero seven lock reports dot sh, reads the policy's E tag and locks it. There is no undo, which the comment says plainly. The table at the bottom is what a locked policy allows. Filing a new report, yes. Overwriting or deleting one, refused for seven years. Extending the retention, allowed, up to five times. Shortening or removing the policy, refused, by anyone. And deleting the container, only once it is empty, which it will not be for seven years. Two things this does not do. It does not stop someone filing a wrong report; it only stops anyone hiding one, so a correction is filed as a new report beside the old. And the emulator has no immutability, so nothing here was run: the template is checked by the Bicep compiler, and the script by the Azure command line's own parser. Next, the two kinds of storage the lake does not cover: a share, and a disk.",
+}

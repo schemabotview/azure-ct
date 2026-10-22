@@ -1,0 +1,1 @@
+{"venv": true, "env": true, "time": "@2026-10-14 00:05:00", "setup": ["az storage container create -n bronze -o none"]}

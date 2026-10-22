@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const consistencyAndConcurrencyInCosmosDb: Section = {
+  id: 'consistency-and-concurrency-in-cosmos-db',
+  title: 'Consistency and concurrency in Cosmos DB',
+  scene: 'cosmos-concurrency',
+  narration:
+    "Cosmos D B has two kinds of consistency to think about: what a reader may see, and what happens when two writers collide. The first table on the right lists the five consistency levels, strongest first. Strong: always the latest write. Bounded staleness: at most a set number of versions or seconds behind. Session, the account's setting here: a client always sees its own writes, in order. Consistent prefix: possibly old, but never out of order. And eventual: anything, eventually. With one Region they behave alike; the differences appear with several. The editor shows tools slash group update dot py, against the emulator. Two analysts open Wide World Group at the same moment. Each saves a note with the item's E tag as a condition, if match. A's note, on watch, is saved. B's note, limit review, is refused with four twelve, because the item changed since B read it: B must reread and decide again, instead of silently overwriting A. Then a transactional batch adds a new counterparty, C one oh three, and updates the group's member count to three, together, and both are applied. The same batch again, adding C one oh one, which already exists, fails with four oh nine, and neither change is applied: the member count stays three, not four. The list underneath gives the batch's limits: one partition key, up to a hundred operations, all applied or none. So moving a counterparty from one group to another, which touches two partition keys, cannot be one batch, and needs its own design: in this platform, the nightly reload from gold. Next, a cache in front of the mart.",
+}

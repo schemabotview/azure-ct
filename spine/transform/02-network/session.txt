@@ -1,0 +1,6 @@
+$ python tools/dbx_capacity.py
+59 addresses usable in each subnet
+  overnight job        17 nodes, night
+  intraday job          3 nodes, day
+  engineers, ad hoc    15 nodes, day
+busiest: 18 nodes at once, 41 addresses spare

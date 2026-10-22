@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const computeOnTheAzureBill: Section = {
+  id: 'compute-on-the-azure-bill',
+  title: 'Compute on the Azure bill',
+  scene: 'dbx-compute',
+  narration:
+    "Every Databricks cluster node is an Azure virtual machine in the bank's own subscription, so it uses the subscription's quotas and appears on its bill. The table on the right is the choice for the overnight job: Standard D four d s version five machines, four virtual C P Us and sixteen gibibytes each, from a family whose quota in the subscription is a hundred virtual C P Us, an assumed figure the platform team requested. Workers run on Spot, and the driver always on demand. The editor shows policies slash databricks slash overnight job dot json, a cluster policy: rules every cluster created under it must follow. The machine type is allowed only from a list of one. Workers are at most sixteen. Availability is fixed at Spot with fallback to Azure on demand. The first node, the driver, is always on demand. And two tags are fixed, app and env, so every cluster's cost can be traced. The terminal runs tools slash compute plan dot py, a model with hypothetical prices. The overnight job needs sixty eight virtual C P Us, which fits the quota of a hundred; by day, the intraday job and three engineers need seventy two. One night's virtual machines cost six dollars eighty all on demand, and two dollars thirty two with the workers on Spot, at a hypothetical six cents an hour against twenty. Spot machines are spare capacity that Azure can take back at any moment; when it does, the policy falls back to on demand, and the job takes longer rather than failing. The list underneath is what the policy prevents: a bigger machine nobody budgeted for, more than sixteen workers, a driver evicted in the middle of a run, and a cluster without its cost tags. Next, who starts the job each night.",
+}

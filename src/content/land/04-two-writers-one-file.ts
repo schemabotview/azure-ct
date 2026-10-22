@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const twoWritersOneFile: Section = {
+  id: 'two-writers-one-file',
+  title: 'Two writers, one file',
+  scene: 'two-deliveries',
+  narration:
+    "File transfers retry. One evening the collateral delivery times out, the vendor sends it again two minutes later, and the second copy differs: one vessel mortgage has been revalued from six million to five point four. Data Factory had already started reading the first. The editor shows tools slash two deliveries dot py, which plays this out against the emulator three ways. First, plain writes. The first copy is written, the reader notes the file's E tag, a value that changes on every write, and the second copy overwrites it, silently: the last write wins. The reader then asks for the rest of the file only if it is unchanged, and gets four twelve, condition not met. Without that check, it would have read half of one copy and half of the other. Second, write once. The upload is made conditional on the name being new, and the second copy is refused, four oh nine, blob already exists. Third, a lease. The reader takes a sixty second lease, and while it holds it, a writer without the lease is refused, four twelve, lease I D missing, and the reader, with its lease, marks the file as loaded. The table on the right lists the headers behind these. None, and the last write wins. If none match star, only if the name is new. If match an E tag, only if unchanged. And a lease I D, only the lease holder. The list underneath is the rule the landing zone follows. One dated path per delivery. Written once, so a second copy is refused, and the vendor is told. A correction is a new file, never a change to the old one. And a reader pins the E tag it started with. Next, what the lake keeps, and how a file comes back.",
+}

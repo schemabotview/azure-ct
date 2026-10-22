@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const consumersAndCheckpoints: Section = {
+  id: 'consumers-and-checkpoints',
+  title: 'Consumers and checkpoints',
+  scene: 'stream-checkpoints',
+  narration:
+    "A stream is read, not emptied: the events stay in the hub for a day, and each reader keeps its own place. The editor shows tools slash intraday reader dot py. It reads deal events as the consumer group exposure intraday, and keeps its checkpoints in a blob container called checkpoints, in the lake's storage account. For each event, it handles it, and then updates its checkpoint: the offset and sequence number it reached in that partition. If there is no checkpoint yet, it starts from the oldest event the hub still has. The terminal runs it against the emulators. The first run reads three events, all in partition nought: L C twenty forty one booked, L C nineteen ninety five amended, and L C twenty forty one issued, and saves its checkpoint. Then tools slash deal event dot py publishes one new event, L C twenty forty two booked. The second run reads only that one, from partition two, because everything before it was already checkpointed. The table on the right lists the readers of deal events. Exposure intraday reads for the intraday exposure. The default group is left unused. And Capture, in the next section, needs no group at all. The list underneath is what checkpoints mean. They are kept per group and per partition, in blob storage. They are written after an event is handled. A restart carries on from the last one. But a crash between handling an event and checkpointing it means that event comes again after the restart. So the handling must be safe to repeat: recalculating a deal's exposure twice gives the same answer, while sending an alert twice does not, which is why alerts go through Service Bus, later in this course. Next, keeping every event, with no reader at all.",
+}

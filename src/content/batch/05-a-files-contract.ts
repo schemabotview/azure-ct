@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const aFilesContract: Section = {
+  id: 'a-files-contract',
+  title: 'A file\'s contract',
+  scene: 'file-contract',
+  narration:
+    "A file from another team is an agreement, whether anyone wrote it down or not, and this one is written down: contracts slash hierarchy dot json lists the hierarchy file's columns, in order, a pattern for each column's values, and its key, the counterparty I D, agreed with the client data team on the first of September. Load landing file checks the columns before it copies anything, and fails the run if they differ. The editor shows tools slash check contract dot py, the full check, values included, which runs locally here and in Databricks later. It finds the contract from the file's name, compares the header with the agreed columns, lists any missing and any unexpected, then checks every value against its column's pattern, and finally that the key is unique. The terminal checks two days' files. The thirteenth's agrees: five columns, nine rows. The fourteenth's is refused. The counterparty I D column is missing, because the source renamed it c p t y I D. There are two unexpected columns, that renamed one and a new one called L E I, a legal entity identifier. And all nine country codes break the pattern, because the source switched from two letter codes, G B, to three letter codes, G B R. The table on the right lines those changes up, agreed against delivered. Any one of them would have broken the exposure numbers quietly: a join on counterparty I D finds nothing, and a group's exposure drops to zero. The list underneath is the rule. The contract is written down: columns, order, formats and key. A file that breaks it is refused whole, never half loaded. The source is told the same evening. A change is agreed first, and becomes a new version of the contract. And it is never fixed silently in the pipeline. Next, checking that the lake agrees with TradeBook.",
+}

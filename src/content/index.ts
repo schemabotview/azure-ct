@@ -4,6 +4,13 @@ import { howAzureRuns } from './how-azure-runs'
 import { start } from './start'
 import { secure } from './secure'
 import { network } from './network'
+import { automate } from './automate'
+import { land } from './land'
+import { batch } from './batch'
+import { stream } from './stream'
+import { transform } from './transform'
+import { serve } from './serve'
+import { publish } from './publish'
 
 // Course registry, in plan order (AZURE-COURSE-PLAN.md). A course is registered here only once
 // it is authored. Reset on 2026-10-22: the previous 12-chapter course was deleted for a re-plan.
@@ -13,6 +20,13 @@ export const COURSES: Record<string, Course> = {
   [start.id]: start,
   [secure.id]: secure,
   [network.id]: network,
+  [automate.id]: automate,
+  [land.id]: land,
+  [batch.id]: batch,
+  [stream.id]: stream,
+  [transform.id]: transform,
+  [serve.id]: serve,
+  [publish.id]: publish,
 }
 
 export type { Course, Section }

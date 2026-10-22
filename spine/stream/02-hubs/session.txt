@@ -1,0 +1,10 @@
+$ python tools/send_events.py
+fx-rates: 4 partitions
+  GBPUSD   -> partition 3, number 0
+  EURUSD   -> partition 1, number 0
+  SGDUSD   -> partition 2, number 0
+  GBPUSD   -> partition 3, number 1
+deal-events: 4 partitions
+  LC-2041  -> partition 0, number 0
+  LC-1995  -> partition 0, number 1
+  LC-2041  -> partition 0, number 2

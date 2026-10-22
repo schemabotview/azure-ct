@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const dataFactorysParts: Section = {
+  id: 'data-factorys-parts',
+  title: 'Data Factory\'s parts',
+  scene: 'adf-parts',
+  narration:
+    "Data Factory moves data on a schedule or when something happens, and it is built from six parts, in the table on the right. A trigger decides when a pipeline runs. A pipeline is a sequence of activities. An activity is one step: copy, look something up, run a job. A dataset says which data: a table, or a folder of files. A linked service is a connection, and how it signs in. And an integration runtime is the machines that actually move the bytes. The factory keeps all of these in git, one J S O N file per part, in a folder for its kind, which is the explorer's new adf folder. The editor shows adf slash pipeline slash copy tradebook dot json, the first pipeline. Its one activity, Copy Changed Deals, is a Copy activity. Its input is the TradeBook deals dataset, and its output is a Parquet file in bronze. The source is a PostgreSQL query, which is long enough that the editor folds it; the next section prints it in full. The terminal runs tools slash adf parts dot py, which reads the folder and follows the references, the way the factory does. The trigger tr tradebook daily, a tumbling window trigger, starts copy tradebook. Its Copy Changed Deals activity reads ds tradebook deals, through the linked service ls tradebook, on the runtime called ir bank, and writes ds bronze parquet, through ls lake, on the Azure runtime. That one line is the important one: reading TradeBook needs a runtime inside the bank's reach, and writing the lake does not. The list underneath is how these files live: edited in the development factory, saved to git, released by Course six's pipeline, and run in production unchanged. Next, the runtime inside the bank.",
+}

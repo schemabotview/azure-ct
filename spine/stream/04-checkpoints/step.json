@@ -1,0 +1,2 @@
+{"venv": true, "env": true, "time": "real",
+ "setup": ["az storage container create -n checkpoints -o none", "python tools/send_events.py"]}

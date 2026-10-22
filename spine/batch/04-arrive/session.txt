@@ -1,0 +1,11 @@
+$ python tools/route_event.py
+18:00  hierarchy_20261013.csv
+       tr_hierarchy_arrives -> load_landing_file(hierarchy/2026-10-13)
+18:58  collateral_20261013.csv
+       no trigger
+19:00  collateral_20261013.csv
+       tr_collateral_arrives -> load_landing_file(collateral/2026-10-13)
+19:01  collateral_20261014.csv
+       ignored: 0 bytes
+00:05  deals.parquet
+       no trigger

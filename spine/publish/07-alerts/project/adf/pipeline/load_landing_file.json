@@ -1,0 +1,81 @@
+{
+  "name": "load_landing_file",
+  "properties": {
+    "description": "A delivered file: check its columns, then copy it to bronze",
+    "parameters": {
+      "folder": {"type": "string"},
+      "file": {"type": "string"},
+      "structure": {"type": "string"}
+    },
+    "activities": [
+      {
+        "name": "ReadColumns",
+        "type": "GetMetadata",
+        "typeProperties": {
+          "dataset": {
+            "referenceName": "ds_landing_csv",
+            "type": "DatasetReference",
+            "parameters": {
+              "folder": "@pipeline().parameters.folder",
+              "file": "@pipeline().parameters.file"
+            }
+          },
+          "fieldList": ["structure"]
+        }
+      },
+      {
+        "name": "ColumnsAsAgreed",
+        "type": "IfCondition",
+        "dependsOn": [
+          {"activity": "ReadColumns", "dependencyConditions": ["Succeeded"]}
+        ],
+        "typeProperties": {
+          "expression": {
+            "value": "@equals(string(activity('ReadColumns').output.structure), pipeline().parameters.structure)",
+            "type": "Expression"
+          },
+          "ifTrueActivities": [
+            {
+              "name": "CopyToBronze",
+              "type": "Copy",
+              "inputs": [
+                {
+                  "referenceName": "ds_landing_csv",
+                  "type": "DatasetReference",
+                  "parameters": {
+                    "folder": "@pipeline().parameters.folder",
+                    "file": "@pipeline().parameters.file"
+                  }
+                }
+              ],
+              "outputs": [
+                {
+                  "referenceName": "ds_bronze_parquet",
+                  "type": "DatasetReference",
+                  "parameters": {
+                    "folder": "@pipeline().parameters.folder",
+                    "file": "@replace(pipeline().parameters.file, '.csv', '.parquet')"
+                  }
+                }
+              ],
+              "typeProperties": {
+                "source": {"type": "DelimitedTextSource"},
+                "sink": {"type": "ParquetSink"}
+              }
+            }
+          ],
+          "ifFalseActivities": [
+            {
+              "name": "RefuseTheFile",
+              "type": "Fail",
+              "typeProperties": {
+                "message": "@concat(pipeline().parameters.file, ': columns differ from the contract')",
+                "errorCode": "ContractBroken"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

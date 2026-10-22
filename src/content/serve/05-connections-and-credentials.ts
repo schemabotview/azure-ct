@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const connectionsAndCredentials: Section = {
+  id: 'connections-and-credentials',
+  title: 'Connections and credentials',
+  scene: 'retry-safely',
+  narration:
+    "Networks fail at the worst moment: a reservation commits, and the reply never reaches the A P I. The A P I sees an error, and cannot tell whether the reservation happened. The editor shows tools slash retry safely dot py, run against the mart on PostgreSQL sixteen, with that lost reply staged. Its reserve function inserts a reservation of half a million in one of two ways. Without a key, every attempt gets a new I D. With a key, the request's own I D, a second attempt finds the first and does nothing, because of on conflict do nothing. The main loop makes each reservation twice: the first attempt commits and its reply is lost, so the A P I retries. The terminal shows the difference. Without a key, two reservations, one million held for one deal of half a million. With the key, one reservation, half a million held. The table on the right says what is safe to retry. Reading headroom, always. Reserving with a key, yes, and it happens once. Reserving without a key, no, because it holds twice. A serialization failure or a timeout, retry, with a growing wait between attempts. And a check constraint violation, never: that is an answer, not a fault. The list underneath is how the A P I connects at all. It signs in as its own managed identity, and its password is an Entra I D token, valid for about an hour, which the connection pool must renew. Each instance of the A P I keeps a pool: ten instances with ten connections each is a hundred. And every pool counts against the server's maximum number of connections, which depends on its size, so pools are sized on purpose. Next, the other store: a lookup by group.",
+}

@@ -26,3 +26,4 @@ azure-mgmt-containerregistry
 azure-mgmt-redisenterprise
 azure-mgmt-managementgroups
 azure-mgmt-consumption
+actionlint-py==1.7.7.23

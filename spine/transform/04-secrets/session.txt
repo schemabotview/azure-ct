@@ -1,0 +1,5 @@
+$ python tools/secret_read.py
+dbutils.secrets.get('risk-kv', 'tradebook-dbx-reader')
+  priya (Risk Data Engineers): reads it; a notebook prints [REDACTED]
+  omar  (Risk Analysts): refused: no READ on risk-kv
+  sam   (Credit Officers): cannot sign in to the workspace

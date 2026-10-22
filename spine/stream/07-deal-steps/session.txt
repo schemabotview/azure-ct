@@ -1,0 +1,10 @@
+$ python tools/deal_steps.py
+sent 6 messages
+LC-2041  booked            completed
+LC-2041  documents-checked completed
+LC-2041  issued            completed
+LC-2042  booked            completed
+LC-2042  issued            abandoned, delivery 1: no beneficiary on the deal
+LC-2042  issued            abandoned, delivery 2: no beneficiary on the deal
+LC-2042  issued            abandoned, delivery 3: no beneficiary on the deal
+dead-lettered: LC-2042/issued, MaxDeliveryCountExceeded
