@@ -8,3 +8,5 @@ images
 *.local
 .claude
 .DS_Store
+__pycache__
+.spine-cache/

@@ -1,8 +1,11 @@
 import type { Course, Section } from './types'
+import { whyCloud } from './why-cloud'
 
 // Course registry, in plan order (AZURE-COURSE-PLAN.md). A course is registered here only once
 // it is authored. Reset on 2026-10-22: the previous 12-chapter course was deleted for a re-plan.
-export const COURSES: Record<string, Course> = {}
+export const COURSES: Record<string, Course> = {
+  [whyCloud.id]: whyCloud,
+}
 
 export type { Course, Section }
 

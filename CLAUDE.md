@@ -34,7 +34,7 @@ superseded by the plan.
 
 | # | Course id | Course | Sections | Status |
 | --- | --- | --- | --- | --- |
-| 1 | `why-cloud` | Why the cloud | 6 | planned |
+| 1 | `why-cloud` | Why the cloud | 6 | authored, awaiting owner review (no narration audio yet) |
 | 2 | `how-azure-runs` | How Azure runs a request | 6 | planned |
 | 3 | `start` | Start the project | 6 | planned |
 | 4 | `secure` | Lock it down | 8 | planned |
@@ -59,6 +59,45 @@ Lakeflow) belongs to `databricks-data-engineer-ct`. This course teaches what Azu
 
 **Network note (2026-10-22):** this environment's policy denies `learn.microsoft.com`; Microsoft's
 emulator images (`mcr.microsoft.com`), PyPI, npm and NuGet are reachable.
+
+## Frames
+
+Sections are **scene-only** (no `slide`; `check-content.mjs` fails on one). Four kinds, tagged per
+section in the plan:
+
+- **Map frame** — `mapFrame(id, built, side)` in `src/scenes/map.ts`: the platform's ONE architecture
+  map (`platformMap`) at its natural size on the left, a side pane pinned to fill a 16:9 frame on the
+  right. Every part is always drawn with the same label, so the map never moves; a part not built yet
+  trades its Azure icon for a grey `box` outline. `BUILT_BY[n]` is what the platform has at the end of
+  course n (the bank's own systems and readers exist from Course 1). `MAP_W` × `MAP_H` (1318 × 1227)
+  is the map as laid out — re-measure if a part's label changes (`.tmp/measure.mjs`, local).
+  `check-render.mjs` fails a map frame whose map or side pane moves.
+- **IDE frame** — `ideFrame()` in `src/scenes/ide.ts`, the python-ct / Spark / aws-ct template:
+  explorer 300 | editor 80 cols × 18 rows over terminal | side 520, 1632 × 918.
+- **Concept frame** — any scene; author wide, not tall (the frame is 16:9).
+
+## The fixed example (frozen: frames quote these numbers)
+
+Extend this table — never change a value a frame already quotes. USD millions unless stated.
+
+| fact | value |
+| --- | --- |
+| bank | Woodgrove Bank (Microsoft fictitious name); capital **80.0** → large-exposures threshold 10% = **8.0** |
+| Wide World Group | limit **10.0**; Wide World Importers (UK): LC-1987 3.0, LC-2011 2.0, new LC-2041 2.0; Wide World Logistics (SG): LC-2003 2.5; open 7.5 + new 2.0 = gross 9.5; collateral cash 0.5 (0%) + warehouse goods 1.0 (40% → 0.6) = 1.1; **net 8.4**, headroom 1.6, on the report |
+| sources | TradeBook (on-premises PostgreSQL, the deals); hierarchy file 18:00; limits extract 18:30; collateral file 19:00; market feed (Kafka) all day; report due **07:00** London |
+| manual morning | illustrative: 06:00 export → 06:40 match groups → 07:20 collateral → 07:55 FX and limits → 08:15 build → 08:30 filed, 90 min late |
+| platform day | overnight run 00–02 h, 16 workers; intraday refresh 08–18 h, 2 workers; 52 worker-hours used vs 384 owned (14%); hypothetical USD 0.20 per worker-hour → 10.40 rented vs 76.80 owned |
+
+## Scene inventory
+
+| Scene id | Shape | Used by |
+| --- | --- | --- |
+| `risk-question` | Wide World's hierarchy and deals, collateral, the exposure sum, the report test, the ten words | `why-cloud-the-risk-question` |
+| `five-sources` | five sources → one spreadsheet → the report, beside the illustrative morning | `why-cloud-one-team-five-sources` |
+| `overnight-burst` | workers-per-hour plot, own 16 vs rent 52 worker-hours (hypothetical rate) | `why-cloud-renting-instead-of-owning` |
+| `managed-services` | own server → VM → PostgreSQL → Data Factory → Power BI, bank runs / Microsoft runs | `why-cloud-managed-services` |
+| `shared-responsibility` | always the bank's / always Microsoft's, who-patches matrix, incidents | `why-cloud-shared-responsibility` |
+| `risk-on-azure` | map frame: the finished platform, the course as its route, four kinds of frame | `why-cloud-what-we-will-build` |
 
 ## Invariants — do not break
 
