@@ -258,7 +258,9 @@ for (const file of walk('src/content')) {
 // been generated and is now incomplete: a renamed section id, or one file that never came back. So
 // the moment a course has its first wav, every section in it is required to have one.
 const coursesWithAudio = new Set(
-  readdirSync('public/audio').filter((c) => readdirSync(join('public/audio', c)).some((f) => f.endsWith('.wav'))),
+  readdirSync('public/audio')
+    .filter((c) => statSync(join('public/audio', c)).isDirectory()) // skips .gitkeep
+    .filter((c) => readdirSync(join('public/audio', c)).some((f) => f.endsWith('.wav'))),
 )
 for (const file of walk('src/content')) {
   const parts = file.split('/')

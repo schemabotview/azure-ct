@@ -1,125 +1,89 @@
 # CLAUDE.md — azure-ct
 
-> **Re-planned on 2026-10-22, awaiting owner review.** `AZURE-COURSE-PLAN.md` now holds the new plan:
-> 14 courses, 111 sections, one project (`risk-on-azure`, Woodgrove Bank's counterparty-risk data
-> platform), scene-only frames, emulators as aws-ct used moto. The 12 courses below are the PREVIOUS
-> plan's, still in the tree until the reset (delete them, upgrade to flow 2.2 / shell 0.14) lands;
-> the previous plan is in git history, and `AUTHORING-PLAN.md` describes that previous approach.
->
-> The Azure course: 12 courses, 90 sections, authored from the previous `AZURE-COURSE-PLAN.md` (see `AUTHORING-PLAN.md`
-> for the approach, review guide and open items). Below the inventory is the template's engine guidance.
->
 > The workspace-level `CLAUDE.md` (one level up, in `graphl-workspace`) holds the invariants that
 > span every repo. This file is only what is true *here*.
 
-## Course inventory (route contract: `#/<courseId>-<sectionId>`)
-
-| Course id | Chapter | Sections |
-| --- | --- | --- |
-| `foundations` | Azure Foundations and Resource Ownership | 6 |
-| `identity` | Identity, Access, and Governance | 8 |
-| `app-service` | A First Managed Application | 6 |
-| `networking` | Networking and Request Delivery | 9 |
-| `compute` | Compute Alternatives and Elastic Capacity | 7 |
-| `storage` | Storage and Data Protection | 7 |
-| `databases` | Databases and Application State | 8 |
-| `integration` | APIs, Functions, and Asynchronous Workflows | 9 |
-| `analytics` | Data Integration and Analytical Workloads | 6 |
-| `delivery` | Infrastructure and Software Delivery | 7 |
-| `operations` | Observability, Security, and Recovery | 10 |
-| `optimisation` | Optimisation and Architecture Evolution | 7 |
-
-Scenes live in `src/scenes/<course>/` (one file per scene; ids are plain slugs, unique across courses); sections in
-`src/content/<course>/NN-<section-id>.ts`. Authoring conventions used here: synthetic names only
-(`contoso-*`, `<subscription-id>`), placeholders for IDs and secrets, hypothetical numbers labelled as such,
-and a header comment on each section naming what must be re-verified against current Microsoft docs.
-
 ## What this repo is
 
-A GraphL concept app: one concept, N courses, each course a list of sections. A **section** is
-`(scene, slide, narration)` and is one segment of the course video. One section = one slide.
+The GraphL concept app for **Azure — from an empty tenant to a counterparty-risk data platform**,
+authored from **`AZURE-COURSE-PLAN.md`** (re-planned 2026-10-22: 14 courses, 111 sections, one
+project `risk-on-azure` — Woodgrove Bank's counterparty-risk data platform — built step by step;
+awaiting owner review, no course authored). A **section** is `(scene, narration)` — one full-screen
+frame, no slide — and one segment of the course video. The previous 12-chapter plan is in git history.
 
-The render engine is `@graphlearning/flow`; the app shell is `@graphlearning/shell`. Both are
-**published packages pinned by version** (`flow@^1.2.0`, `shell@^0.8.0`). This repo's own surface is
-`src/content/`, `src/scenes/`, `src/main.tsx` and `src/theme.css` — nothing else.
+Engine `@graphlearning/flow@^2.2.0` (own renderer, react-flow removed); shell
+`@graphlearning/shell@^0.14.0` (headerless section frames, `SCENE_ASPECT`). This repo's own surface is
+`src/content/`, `src/scenes/`, `src/main.tsx`, `src/theme.css` and `scripts/`.
+
+## Route contract
+
+- Slug **`azure-ct`** — the GitHub repo name, the vite `base` (`/azure-ct/`) and the path under
+  `graphl.in`. All three must be the same string.
+- Routes: `#/` is the catalog; a section is `#/<courseId>-<sectionId>`. `?capture=1` and
+  `window.__scene.plan()` come from the shell.
+- Audio: `public/audio/<courseId>/<sectionId>.wav`. Section ids are unique within a course; scene ids
+  are unique across the repo.
+
+## Course arc and status
+
+**Reset on 2026-10-22**: every course, scene and wav of the previous 12-chapter, slide-based course
+(90 sections) was deleted, and the subject re-planned in `AZURE-COURSE-PLAN.md` around one project
+(aws-ct's method). Nothing is registered in `src/content/index.ts` / `src/scenes/index.ts`; a course
+is registered only once authored. `AUTHORING-PLAN.md` describes the previous course's approach and is
+superseded by the plan.
+
+| # | Course id | Course | Sections | Status |
+| --- | --- | --- | --- | --- |
+| 1 | `why-cloud` | Why the cloud | 6 | planned |
+| 2 | `how-azure-runs` | How Azure runs a request | 6 | planned |
+| 3 | `start` | Start the project | 6 | planned |
+| 4 | `secure` | Lock it down | 8 | planned |
+| 5 | `network` | Give it a network | 9 | planned |
+| 6 | `automate` | Make it repeatable | 8 | planned |
+| 7 | `land` | Land the files | 8 | planned |
+| 8 | `batch` | Bring the batches in | 8 | planned |
+| 9 | `stream` | Bring the stream in | 8 | planned |
+| 10 | `transform` | Transform it in Databricks | 7 | planned |
+| 11 | `serve` | Serve the results | 9 | planned |
+| 12 | `publish` | Publish to the risk team | 9 | planned |
+| 13 | `operate` | Operate it | 10 | planned |
+| 14 | `evolve` | Measure, tune and evolve it | 9 | planned |
+
+**Scope boundary:** the Databricks side (notebooks, Spark, Delta, Unity Catalog grants, Auto Loader,
+Lakeflow) belongs to `databricks-data-engineer-ct`. This course teaches what Azure puts around it.
+
+**Still to port from aws-ct before Course 1**, as that repo did: the `ideFrame` / `mapFrame` helpers,
+`spine.py` and `check:spine` (against Azure's emulators), `check-plan.mjs`, `check-render.mjs`,
+`check-icons.mjs`, a `check-azure.py` for the verification levels, and a scene-only
+`check-content.mjs` (the current one still carries the slide-era models, harmless with no content).
+
+**Network note (2026-10-22):** this environment's policy denies `learn.microsoft.com`; Microsoft's
+emulator images (`mcr.microsoft.com`), PyPI, npm and NuGet are reachable.
 
 ## Invariants — do not break
 
-- **Never write `x` or `y`.** Scenes are declarative: nodes, edges, nesting. `computeLayout` is not
-  exported, so there is no way around this, and that is the point — reproducible frames.
-- **Do not reimplement the shell.** `SectionView`, `CourseIndex`, `SlidePanel` and the hooks are
-  withheld on purpose. The route contract (`#/<courseId>-<sectionId>`, `?capture=1`,
-  `window.__scene.plan()`) is what every recorder drives, and it holds only if every repo composes
-  the pieces identically.
-- **`SiteHeader` goes on the catalog page only** — never on a section. A section is a video frame.
-- **Three stylesheets, in cascade order**, imported in `main.tsx`. The order is load-bearing:
-  1. `@graphlearning/flow/styles.css` — react-flow plus the IBM Plex faces the engine is
-     *calibrated* to. `codeMetrics` sizes code nodes from a measured 9.02px glyph advance, so a
-     different monospace face mis-sizes every code card. Carries the `.tok-*` colours.
-  2. `@graphlearning/shell/styles.css` — the shell paints the canvas (`--bg: #1a1d23`; SceneView
-     draws its dots at `#2a2f38` assuming a dark surface).
-  3. `./theme.css` — this repo's three brand tokens. **Last, or the brand loses to the defaults.**
-- **`file:../ui-flow` / `file:../ui-shell` must never be committed.** Local engine work only; CI has
-  no sibling checkout.
+- **Never write `x` or `y`.** Scenes are declarative: nodes, edges, nesting.
+- **Do not reimplement the shell** (`SectionView`, `CourseIndex`, hooks). The route contract is what
+  every recorder drives.
+- **`SiteHeader` goes on the catalog page only.**
+- **Three stylesheets, in cascade order** in `main.tsx`: flow, shell, then `./theme.css` last.
+- **`file:../ui-flow` / `file:../ui-shell` must never be committed.**
 - **Narration is never hand-produced.** `.tts` → `.wav` via Colab + Chatterbox only.
-
-## Layout rules the frames actually care about
-
-`npm run check` (`scripts/check-content.mjs`) models four silent failures — each builds green and
-breaks only on screen. Its comments carry the measured constants; the short version:
-
-- **Leaf cards are a fixed 210×96** with a ~134px text column. Only containers grow to fit. Keep the
-  `label` to 2 wrapped lines; 2 label lines + 2 sub lines fits. Watch unbreakable tokens — `_`, `.`
-  and `/` are **not** break opportunities in CSS, so `snake_case` and paths overflow sideways in a
-  way the height model cannot see.
-- **Slides do not scale to fit.** Type size is fixed by the frame (`zoom = paneWidth / 806`,
-  width-proportional only), so an over-long slide **clips at the bottom** with no error.
-  `check` fails over 1000 modelled design px; the band below gives the floor too. Bullets cost far
-  more than prose of the same length.
-- **A `focus:` that names no node in its scene is a silent no-op** — nothing lights up.
-- **`icon:` names are NOT guarded.** The engine's lucide registry is `Record<string, LucideIcon>`
-  and does not enumerate its keys, so a wrong name type-checks, passes `check`, builds, and renders
-  a card with no glyph. There are ~75 valid keys; copy one off an existing scene rather than
-  guessing a lucide name (`volume`, `move`, `maximize` and `git` are all absent, for instance).
-- **A section with no wav narrates silence** and records a silent segment. Audio resolves purely by
-  convention: `public/audio/<course>/<section-id>.wav`.
-
-What `check` does *not* model: an edge label landing on top of a card, or whether the frame is too
-empty. Look at the route.
-
-### Density targets — the frame must use the space it has
-
-The guarded failure is a slide that overflows. The unguarded one is its opposite: a frame that
-builds green, reads correctly, and leaves half its pane empty. Against the ~1080 design px pane:
-
-| | target | why |
-| --- | --- | --- |
-| slide height | **80–95 %** of the pane (≈ 865–1025px; `SLIDE_H_MAX` caps the top at 1000) | below 80 % the right half looks empty; above ~95 % it risks clipping |
-| scene, binding axis | ≥ 0.85 of the pane | the board should reach the edge it is limited by |
-| scene, area | ≥ 0.55 of the pane (w × h) | a wide board that fills the width but a third of the height wastes the pane |
-| eyebrow | no node under the top-left eyebrow label | boards that bind on height run up to y≈30 |
-
-Levers: **add real content, not padding**; **restack** a board toward the pane's ~1:1 aspect; lower
-scene `padding` to 0.04 for boards that float, **raise** it (0.12–0.17) for tall boards that touch
-the eyebrow.
-
-These are read off the rendered route by eye — `check` models no density at all. The two ratios come
-from one repo's ~80 frames of diagram-and-code-card boards, so a deliberately sparse board can sit
-under them. Targets, not thresholds.
+- **Synthetic names only** — Microsoft's fictitious companies (Woodgrove Bank, Wide World Importers,
+  Fabrikam, Contoso, Tailspin, Northwind), documentation-style placeholder GUIDs, hypothetical prices
+  labelled as such.
 
 ## Guards before handing over
 
 ```sh
-npm run build && npx tsc --noEmit && npm run check
+npx tsc --noEmit && npm run build && npm run check
 ```
 
-All three are a **floor, not proof** — they pass on frames that are visually wrong. The rendered
-route is the real bar, and the owner reviews it.
+All are a **floor, not proof** — look at the rendered route.
 
 ## Working agreement
 
-- **Author the whole unit, then hand over the route.** Scenes, slides and narration together.
-- **No ASCII sketches of scenes.** A sketch cannot show what the layout engine will do, which is the
-  only thing worth looking at.
+- **Author the whole unit, then hand over the route.** Scenes, spine steps and narration together.
+- **No ASCII sketches of scenes.**
 - **No silent scaffolding**, no work outside the ask. Say plainly what was built, what was verified,
   and what was left out.

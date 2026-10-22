@@ -1,32 +1,8 @@
-import { foundations } from './foundations'
-import { identity } from './identity'
-import { appService } from './app-service'
-import { networking } from './networking'
-import { compute } from './compute'
-import { storage } from './storage'
-import { databases } from './databases'
-import { integration } from './integration'
-import { analytics } from './analytics'
-import { delivery } from './delivery'
-import { operations } from './operations'
-import { optimisation } from './optimisation'
 import type { Course, Section } from './types'
 
-// Course registry, in syllabus order. Courses are added here as each is authored.
-export const COURSES: Record<string, Course> = {
-  [foundations.id]: foundations,
-  [identity.id]: identity,
-  [appService.id]: appService,
-  [networking.id]: networking,
-  [compute.id]: compute,
-  [storage.id]: storage,
-  [databases.id]: databases,
-  [integration.id]: integration,
-  [analytics.id]: analytics,
-  [delivery.id]: delivery,
-  [operations.id]: operations,
-  [optimisation.id]: optimisation,
-}
+// Course registry, in plan order (AZURE-COURSE-PLAN.md). A course is registered here only once
+// it is authored. Reset on 2026-10-22: the previous 12-chapter course was deleted for a re-plan.
+export const COURSES: Record<string, Course> = {}
 
 export type { Course, Section }
 

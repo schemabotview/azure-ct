@@ -1,14 +1,3 @@
 {
-  "foundations": "Azure Basics: Subscriptions, Resource Groups, Regions",
-  "identity": "Azure Identity, RBAC, Managed Identity and Policy",
-  "app-service": "Deploying a Web App on Azure App Service",
-  "networking": "Azure Networking: VNets, NSGs, DNS and Private Endpoints",
-  "compute": "Azure Compute: VMs, Container Apps and AKS Compared",
-  "storage": "Azure Storage: Blob, Files, Disks and Redundancy",
-  "databases": "Azure Databases: SQL, PostgreSQL, Cosmos DB and Caching",
-  "integration": "Azure Functions, Service Bus, Event Grid and Event Hubs",
-  "analytics": "Azure Data Pipelines: ADLS, Data Factory, Fabric",
-  "delivery": "Azure Bicep and CI/CD: Deploy Safely",
-  "operations": "Azure Monitor, KQL, Security and Disaster Recovery",
-  "optimisation": "Azure Architecture Review: Cost, Performance, Well-Architected"
+  "_comment": "Curated publish titles (YouTube title + thumbnail header) per course, keyed by course id. Search-first: what someone would actually type, never 'Course 4'. One entry per course in src/content/index.ts."
 }

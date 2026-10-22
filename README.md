@@ -1,6 +1,6 @@
 # azure-ct
 
-A **GraphL content repo** for the Azure course — from cloud foundations to advanced application and operations. Course plan: [`AZURE-COURSE-PLAN.md`](AZURE-COURSE-PLAN.md); authoring approach and status: [`AUTHORING-PLAN.md`](AUTHORING-PLAN.md). Status: All 12 chapters authored (90 sections, narration text only — no `.wav` yet).
+A **GraphL content repo** for the Azure course — from an empty tenant to a counterparty-risk data platform. Course plan: [`AZURE-COURSE-PLAN.md`](AZURE-COURSE-PLAN.md). Status: reset on 2026-10-22 and re-planned (14 courses, 111 sections, one project `risk-on-azure`), awaiting owner review; no course authored. The previous 12-chapter course is in git history.
 
 The rest of this file is the template's description of the content model.
 
