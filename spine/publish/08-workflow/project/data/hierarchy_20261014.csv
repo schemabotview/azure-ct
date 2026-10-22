@@ -1,0 +1,10 @@
+group_id,group_name,cpty_id,counterparty_name,country,lei
+G-WW,Wide World Group,C-101,Wide World Importers,GBR,5493001KJTIIGC8Y1R12
+G-WW,Wide World Group,C-102,Wide World Logistics,SGP,5493002RBSJ8XFK4QD32
+G-FAB,Fabrikam Holdings,C-201,Fabrikam Textiles,IND,5493003MBTQN7WQ2LX51
+G-FAB,Fabrikam Holdings,C-202,Fabrikam Fibres,VNM,5493004HLVZ2R0PGN842
+G-CON,Contoso Shipping,C-301,Contoso Shipping,GBR,5493005SWXYQ1NMB6T17
+G-CON,Contoso Shipping,C-302,Contoso Freight,NLD,5493006PQ0JR3DW1EF09
+G-TAIL,Tailspin Traders,C-401,Tailspin Traders,USA,5493007UVC2KX8AJ7M66
+G-NW,Northwind Group,C-501,Northwind Foods,GBR,5493008YD4T6GBZ3HS24
+G-NW,Northwind Group,C-502,Northwind Trading,ARE,5493009FK7NW5QEJ2P90

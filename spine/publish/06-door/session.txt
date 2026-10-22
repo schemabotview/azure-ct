@@ -1,0 +1,6 @@
+$ python tools/apim_check.py
+no Authorization header    401: no token
+a Graph token              401: token is for https://graph.microsoft.com
+this API, no scope         401: no Exposure.Read scope
+omar's dashboard, call 12  200: passed to the API
+a team's script, call 61   429: 60 calls a minute used, retry after the minute

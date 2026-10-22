@@ -1,0 +1,12 @@
+$ python tools/walk_breach.py
+the officer approves at 15:42
+  15:42  ask_officer: approve
+  15:42  record_decision: done
+  -> approve
+no answer; the head of credit rejects
+  16:00  30-minute timer: fired
+  16:08  ask_head_of_credit: reject
+  16:08  release_reservation: done
+  16:08  tell_dealer: done
+  16:08  record_decision: done
+  -> reject

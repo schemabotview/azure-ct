@@ -1,0 +1,15 @@
+$ python app/server.py > api.log 2>&1 & export SERVER=$!; sleep 1
+$ export U=localhost:8000/groups/G-WW J='{"amount_musd": 1.00}'
+$ curl -s localhost:8000/health
+{"status": "ok"}
+$ curl -s $U/headroom
+{"group": "G-WW", "headroom_musd": 1.6}
+$ curl -s -H "Idempotency-Key: req-7f3a" -d "$J" $U/reservations
+{"reservation": "req-7f3a", "headroom_musd": 0.6}
+$ curl -s -H "Idempotency-Key: req-8b1c" -d "$J" $U/reservations
+{"error": "over the limit", "headroom_musd": 0.6}
+$ kill $SERVER; cat api.log
+GET /health 200
+GET /groups/G-WW/headroom 200
+POST /groups/G-WW/reservations 201
+POST /groups/G-WW/reservations 409

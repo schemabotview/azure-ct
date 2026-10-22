@@ -1,0 +1,15 @@
+{
+  "properties": {
+    "sourceType": "OnPremises",
+    "sourceDbServerResourceId": "10.50.12.7:5432@migration_user",
+    "dbsToMigrate": ["tradebook"],
+    "migrationMode": "Online",
+    "overwriteDbsInTarget": "True",
+    "secretParameters": {
+      "adminCredentials": {
+        "sourceServerPassword": "added from Key Vault when the script runs",
+        "targetServerPassword": "added from Key Vault when the script runs"
+      }
+    }
+  }
+}

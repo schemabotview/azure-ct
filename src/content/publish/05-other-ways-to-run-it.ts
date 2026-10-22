@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const otherWaysToRunIt: Section = {
+  id: 'other-ways-to-run-it',
+  title: 'Other ways to run it',
+  scene: 'other-ways-to-run-it',
+  narration:
+    "The exposure A P I could have run in six places, and the table at the top compares them by what the bank must run itself. On a virtual machine, the bank runs the operating system, its patches and the web server, and scales by adding machines by hand: all the work, for nothing the A P I needs. On a scale set, the bank runs an operating system image and its updates, and scales by whole machines; that is only worth it for software that needs the operating system. On App Service, the choice, the bank runs only its code, and instances scale automatically, with slots and zones built in. On Container Apps, the bank runs a container image, and replicas scale, even to zero; it would fit equally well if the A P I were packaged as a container. On A K S, managed Kubernetes, the bank runs clusters, node pools and their upgrades: one A P I is not a reason to run a platform. And on Functions, the bank runs a function, triggered by events and billed per execution, which suits the breach alert, not an A P I that is always busy. The table at the bottom left shows where each part of the platform runs, and why. The exposure A P I on App Service, because it is always on and needs slots. The breach alert on Functions, because it is an event, now and then. The breach workflow on Durable Functions, because it waits half an hour for a person. The report filer as a Container Apps job, because it runs once a day, as a container. And the integration runtime on virtual machines, because it is Windows software. The list on the right is the rule of thumb: run the least you can; code before containers, containers before clusters, and a virtual machine only for what needs one. Next, a single door for other teams.",
+}

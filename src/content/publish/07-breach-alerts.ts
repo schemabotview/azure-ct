@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const breachAlerts: Section = {
+  id: 'breach-alerts',
+  title: 'Breach alerts',
+  scene: 'breach-alerts',
+  narration:
+    "Course nine promised an alert within seconds of a breach. At fifteen thirty on the fourteenth, a two million letter of credit for Wide World Importers takes Wide World Group to ten point four against its limit of ten. The intraday job sees it and publishes a limit breached event to Event Grid. The editor shows functions slash breach alert slash function app dot p y, an Azure Function in Python. Its decorators say everything: an Event Grid trigger delivers the event, and a Service Bus output binding sends whatever the function sets to the queue breach alerts, through a connection called Service Bus that uses the function's identity, not a key. The function's body is one line: it turns the event into the credit officer's message. All the logic is in message dot p y, so it can be run and tested without Azure. The terminal runs tools slash invoke breach dot p y, which calls that logic as the Functions host would, with the sample event. In: Woodgrove dot Risk dot Limit Breached, for groups slash G W W. Out, to the queue: for sam, the credit officer; group G W W; deal L C twenty forty four; reservation req c four one e; and the text: Wide World Group is over its limit, net ten point four against ten, one hundred and four per cent, the deal and its amount, and a request to approve the excess or reject the deal within thirty minutes. The first table is where a function can run. Flex Consumption, this one's plan, suits bursts, joins the virtual network and is paid per run. Premium keeps instances warm for long runs. And the Dedicated plan uses spare room on an App Service plan. The list underneath is the path: the intraday job sees the breach, Event Grid carries the event, the function writes the message, and Service Bus keeps it until it is handled. Next, what handles it.",
+}

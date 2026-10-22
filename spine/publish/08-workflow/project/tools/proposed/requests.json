@@ -1,0 +1,12 @@
+[
+  {"type": "Microsoft.Storage/storageAccounts", "name": "stwgriskprod",
+   "location": "uksouth", "properties": {"publicNetworkAccess": "Disabled"}},
+  {"type": "Microsoft.Storage/storageAccounts", "name": "stwgriskcopy",
+   "location": "westeurope", "properties": {"publicNetworkAccess": "Disabled"}},
+  {"type": "Microsoft.Storage/storageAccounts", "name": "stwgriskscratch",
+   "location": "uksouth", "properties": {"publicNetworkAccess": "Enabled"}},
+  {"type": "Microsoft.Storage/storageAccounts", "name": "stwgrisktemp",
+   "location": "ukwest", "properties": {}},
+  {"type": "Microsoft.Resources/resourceGroups", "name": "rg-risk-eu",
+   "location": "westeurope", "properties": {}}
+]

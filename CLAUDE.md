@@ -45,7 +45,7 @@ superseded by the plan.
 | 9 | `stream` | Bring the stream in | 8 | authored, awaiting owner review (no narration audio yet) |
 | 10 | `transform` | Transform it in Databricks | 7 | authored, awaiting owner review (no narration audio yet) |
 | 11 | `serve` | Serve the results | 9 | authored, awaiting owner review (no narration audio yet) |
-| 12 | `publish` | Publish to the risk team | 9 | planned |
+| 12 | `publish` | Publish to the risk team | 9 | authored, awaiting owner review (no narration audio yet) |
 | 13 | `operate` | Operate it | 10 | planned |
 | 14 | `evolve` | Measure, tune and evolve it | 9 | planned |
 
@@ -207,6 +207,11 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | group lookup | `cosmos-wg-risk-<env>` NoSQL, Session, Entra only, private, db `risk`, container `groups` (/groupId), autoscale 4,000 RU/s; emulator vNext EN20261008 (flat request charge); hot partition model 1,200 → 3,000 lookups/s, 40% one group → 1,200 RU/s vs 1,000 share; ETag 412 for the second editor; batch add C-103 + members 3 applied, add C-101 409 none |
 | cache | `redis-wg-risk-<env>` Azure Managed Redis Balanced_B1, keys off; model TTL 60 s: stale 10–60 s, delete-on-write fresh from 10 s |
 | TradeBook move | target `psql-wg-tradebook-prod`, migration `tradebook-2026-11` online from 10.50.12.7 (`infra/11-migrate-tradebook.sh`, `infra/migration-tradebook.json`); cutover Saturday 06:00, old server kept read-only a month |
+| exposure API | `app/server.py` (stdlib + psycopg): GET /health, GET /groups/{id}/headroom, POST /groups/{id}/reservations (Idempotency-Key, SERIALIZABLE, 40001 retried 3×); run locally: 1.6 → req-7f3a 201 (0.6 left) → req-8b1c 409 |
+| App Service | `app-wg-exposure-<env>` on `asp-app-wg-exposure-<env>` P1v3 × 3, zone-redundant, Python 3.12, `python app/server.py`, /health, VNet integration snet-app, public access off, identity `id-wg-exposure-prod`; settings MART_HOST, MART_DATABASE, AZURE_CLIENT_ID, LIMITS_SERVICE_KEY = Key Vault reference (`kv-wg-risk-prod`, secret `limits-key`, used by `app/limits.py`); slot `staging`; autoscale 3–10 (+1 > 70% CPU 10 min, −1 < 30%, cooldown 10 min); `infra/12-release.sh` |
+| API Management | `apim-wg-risk-<env>` StandardV2, API `exposure`, policy validate-jwt (aud `api://exposure-api`, scp Exposure.Read) + rate-limit-by-key 60/60 s per subscription; model: 401 ×3, 200, 429 |
+| breach | event `Woodgrove.Risk.LimitBreached` (G-WW net 10.40 vs 10.00, 104%; deal LC-2044 2.00 booked 15:30, Wide World Importers, reservation `req-c41e`) → function `func-wg-breach-<env>` (Flex Consumption, storage `stwgfunc<env>`) → queue `breach-alerts` → Durable orchestrator: officer sam 30 min, else head of credit; reject → release reservation, tell dealer; walk: approve 15:42; timer 16:00, reject 16:08 |
+| filer | registry `crwgrisk<env>` Premium, environment `cae-wg-risk-<env>` in new subnet `snet-jobs` 10.110.4.0/27 (dev 10.120.4.0/27, delegated Microsoft.App/environments), job `job-wg-filer-<env>` cron `30 5 * * *` UTC (06:30 BST, 05:30 GMT), image `filer:1.0.3`, AcrPull; file in by 06:34; deployer's condition also allows AcrPull and Storage Blob Data Owner |
 | API versions | Storage data plane `x-ms-version` 2026-10-06 (SDK 12.31); Microsoft.Storage control plane `2025-08-01` (CLI 2.91, Bicep 0.48.1) |
 
 ## Scene inventory
@@ -296,6 +301,15 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | `cosmos-concurrency` | IDE: tools/group_update.py — ETag 412, transactional batch all-or-none; consistency levels | `serve-consistency-and-concurrency-in-cosmos-db` |
 | `cache-headroom` | IDE: tools/cache_headroom.py (a model): TTL vs delete-on-write | `serve-caching-the-headroom` |
 | `moving-tradebook` | map frame: infra/11-migrate-tradebook.sh, the cutover weekend, what the service does | `serve-moving-tradebook` |
+| `exposure-api` | IDE: app/server.py run locally against the mart with curl (health, headroom, 201, 409) | `publish-the-exposure-api` |
+| `app-service` | map frame: app.bicep plan and site; bicep build + arm_summary; App Service words | `publish-app-service` |
+| `settings-without-secrets` | IDE: app.bicep's settings + tools/settings_check.py; a Key Vault reference | `publish-settings-without-secrets` |
+| `logs-scale-slots` | map frame: infra/12-release.sh (staging slot, swap); scale up/out; health and logs | `publish-logs-scale-and-slots` |
+| `other-ways-to-run-it` | VM / scale set / App Service / Container Apps / AKS / Functions for the API; where each part runs | `publish-other-ways-to-run-it` |
+| `one-door` | map frame: the APIM policy XML + tools/apim_check.py (a model reading it) | `publish-one-door-for-other-teams` |
+| `breach-alerts` | IDE: functions/breach_alert/function_app.py + tools/invoke_breach.py (its logic, run locally) | `publish-breach-alerts` |
+| `breach-workflow` | IDE: the Durable orchestrator + tools/walk_breach.py (stand-in runtime) | `publish-the-breach-workflow` |
+| `morning-report` | map frame: filer.bicep (registry, Container Apps job); the morning; the analysts' tools | `publish-the-morning-report-and-the-analysts` |
 
 ## Invariants — do not break
 

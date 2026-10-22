@@ -1,0 +1,7 @@
+$ bicep build templates/modules/app.bicep
+$ python tools/arm_summary.py templates/modules/app.json
+deploymentTemplate, 5 parameters
+Microsoft.Web/sites/slots@2024-11-01  after: sites, serverfarms
+Microsoft.Web/serverfarms@2024-11-01
+Microsoft.Web/sites@2024-11-01  after: serverfarms
+Microsoft.Insights/autoscalesettings@2022-10-01  after: serverfarms
