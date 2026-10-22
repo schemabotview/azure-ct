@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const twoDealsOneLimit: Section = {
+  id: 'two-deals-one-limit',
+  title: 'Two deals, one limit',
+  scene: 'two-deals-one-limit',
+  narration:
+    "Two dealers, at the same moment, each want to reserve one million of Wide World's headroom for a new letter of credit. There is one point six left, enough for one of them, not both. The editor shows tools slash reserve headroom dot py, which runs both transactions against the mart on PostgreSQL sixteen, stepping them in the same interleaved order every time. Each transaction checks the headroom, then inserts its reservation. The terminal shows the run twice. First at read committed, PostgreSQL's default. A sees one point six, B sees one point six: both enough. A holds one million and commits. B holds one million and commits. The headroom is now minus nought point four: the limit was broken, by two transactions that each did the right thing. Then at serializable. Both see one point six again, and A commits. But when B tries to commit, PostgreSQL refuses it: could not serialize. It has noticed that B's decision rested on a reading that A's commit made false. B rechecks and finds nought point six, which is too little, so its dealer is told no. The headroom is nought point six, as it should be. The table on the right sums up the options. Read committed lets both commit. Serializable refuses one, with error code four oh oh oh one. A lock, select for update on the group's row, makes one wait and then see nought point six. The list underneath is the mart's rule for money. Check and hold in one transaction. Use serializable for every reservation. Retry a four oh oh oh one from the check, never from the insert. And let the database refuse, not the A P I. Next, connecting to the mart, and which failures are safe to retry.",
+}

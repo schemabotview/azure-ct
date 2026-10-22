@@ -54,6 +54,7 @@ step.json (all keys optional):
   {"postgres": ["tradebook"]}   fresh databases on the local PostgreSQL 16 cluster, dropped after
   {"capture": ["path", ...]}    files the session creates that a scene shows; saved to captured/
   eventhubs.json / servicebus.json   start that Microsoft emulator (Docker) with this config, beside the step
+  {"cosmos": true}              start the Cosmos DB (NoSQL, vNext) emulator in Docker on 8081
   {"columns": 100}              the pane's width: 84 in an IDE frame's terminal (default), 100 in a map frame's side pane
 """
 import base64
@@ -224,7 +225,26 @@ def start_messaging(step: Path) -> list[str]:
         raise
 
 
+COSMOS = 'mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:vnext-EN20261008'
+
+
 def _start_messaging(step: Path, made: list[str]) -> list[str]:
+    if json.loads((step / 'step.json').read_text()).get('cosmos') if (step / 'step.json').exists() else False:
+        # the Linux (vNext) Cosmos DB emulator, NoSQL API over plain HTTP on 8081
+        name = f'spine-cosmos-{os.getpid()}'
+        subprocess.run(['docker', 'run', '-d', '--name', name, '-p', '8081:8081', COSMOS, '--protocol', 'http'],
+                       check=True, capture_output=True)
+        made.append(name)
+        for _ in range(150):
+            try:
+                with urllib.request.urlopen('http://127.0.0.1:8081/', timeout=2) as r:
+                    if r.status == 200:
+                        break
+            except OSError:
+                pass
+            time.sleep(2)
+        else:
+            raise SystemExit(f'{step}: the Cosmos DB emulator did not start')
     for kind, (image, target, ports) in EMULATORS.items():
         config = step / f'{kind}.json'
         if not config.exists():

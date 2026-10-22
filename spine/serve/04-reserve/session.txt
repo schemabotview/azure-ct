@@ -1,0 +1,11 @@
+$ python tools/reserve_headroom.py
+READ_COMMITTED:
+  A sees 1.60, B sees 1.60: both enough for 1.00
+  A holds 1.00, commits
+  B holds 1.00, commits
+  headroom now -0.40
+SERIALIZABLE:
+  A sees 1.60, B sees 1.60: both enough for 1.00
+  A holds 1.00, commits
+  B refused: could not serialize; it rechecks and finds 0.60
+  headroom now 0.60

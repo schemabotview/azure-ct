@@ -1,0 +1,27 @@
+{
+  "name": "tr_collateral_arrives",
+  "properties": {
+    "type": "BlobEventsTrigger",
+    "description": "The collateral file, when it lands (19:00)",
+    "typeProperties": {
+      "scope": "/subscriptions/aaaa0a0a-bb1b-cc2c-dd3d-eeeeee4e4e4e/resourceGroups/rg-risk-prod-data/providers/Microsoft.Storage/storageAccounts/stwgriskprod",
+      "events": ["Microsoft.Storage.BlobCreated"],
+      "blobPathBeginsWith": "/landing/blobs/collateral/",
+      "blobPathEndsWith": ".csv",
+      "ignoreEmptyBlobs": true
+    },
+    "pipelines": [
+      {
+        "pipelineReference": {
+          "referenceName": "load_landing_file",
+          "type": "PipelineReference"
+        },
+        "parameters": {
+          "folder": "@replace(triggerBody().folderPath, 'landing/', '')",
+          "file": "@triggerBody().fileName",
+          "structure": "[{\"name\":\"collateral_id\",\"type\":\"String\"},{\"name\":\"counterparty_id\",\"type\":\"String\"},{\"name\":\"kind\",\"type\":\"String\"},{\"name\":\"value_musd\",\"type\":\"String\"},{\"name\":\"haircut\",\"type\":\"String\"}]"
+        }
+      }
+    ]
+  }
+}

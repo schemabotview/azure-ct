@@ -1,0 +1,5 @@
+$ python tools/group_lookup.py
+9 counterparties, 5 groups loaded
+point read  Wide World Group
+one group   C-101, C-102
+by id only  C-502 is in G-NW, after asking every partition

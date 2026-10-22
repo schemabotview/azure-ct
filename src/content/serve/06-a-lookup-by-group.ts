@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const aLookupByGroup: Section = {
+  id: 'a-lookup-by-group',
+  title: 'A lookup by group',
+  scene: 'group-lookup',
+  narration:
+    "The A P I is asked, many times a second, which group a counterparty belongs to and who else is in it. That is a lookup by key, and Cosmos D B is built for it. The editor shows tools slash group lookup dot py, run against the Cosmos D B emulator. It creates a container called groups whose partition key is slash group I D, so every item for one group lives together, in one logical partition. It loads the nine counterparties and the five groups from the hierarchy file. Then three reads. A point read, by an item's I D and its partition key, fetches Wide World Group directly. A query with the partition key, for Wide World's members, stays inside one partition: C one oh one and C one oh two. And a query by counterparty I D alone, without the key, has to ask every partition before it finds that C five oh two is in Northwind Group. The emulator reports a flat cost for everything, so the first table on the right takes the costs from the documentation. A point read of a one kilobyte item costs one request unit. A query with the key costs a few, in one partition. A query without it costs a few times every partition. The second table is the warning in this design: one giant group is a hot partition. Throughput is divided evenly across physical partitions, so with four thousand request units a second over four partitions, each gets a thousand. Today, twelve hundred lookups a second put three hundred on the busiest. If lookups grow to three thousand and forty per cent are for one group, that group's partition needs twelve hundred, and is throttled, while the container as a whole is below its limit. Next, keeping two editors and several items consistent.",
+}

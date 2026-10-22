@@ -1,0 +1,10 @@
+$ psql -d riskmart -q -f sql/mart.sql
+$ psql -d riskmart -c "SELECT * FROM mart.headroom ORDER BY group_id"
+ group_id | limit_musd | net_musd | reserved_musd | headroom_musd 
+----------+------------+----------+---------------+---------------
+ G-CON    |       6.00 |     1.30 |             0 |          4.70
+ G-FAB    |       8.00 |     3.70 |             0 |          4.30
+ G-NW     |       5.00 |     1.85 |             0 |          3.15
+ G-TAIL   |       4.00 |     3.30 |             0 |          0.70
+ G-WW     |      10.00 |     8.40 |             0 |          1.60
+(5 rows)

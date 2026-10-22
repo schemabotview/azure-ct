@@ -1,0 +1,7 @@
+collateral_id,counterparty_id,kind,value_musd,haircut
+COL-7001,C-101,cash,0.50,0.00
+COL-7002,C-101,warehouse goods,1.00,0.40
+COL-7003,C-201,receivables,2.40,0.25
+COL-7004,C-301,vessel mortgage,6.00,0.30
+COL-7005,C-501,cash,0.80,0.00
+COL-7006,C-502,standby letter of credit,1.50,0.10

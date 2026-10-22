@@ -44,7 +44,7 @@ superseded by the plan.
 | 8 | `batch` | Bring the batches in | 8 | authored, awaiting owner review (no narration audio yet) |
 | 9 | `stream` | Bring the stream in | 8 | authored, awaiting owner review (no narration audio yet) |
 | 10 | `transform` | Transform it in Databricks | 7 | authored, awaiting owner review (no narration audio yet) |
-| 11 | `serve` | Serve the results | 9 | planned |
+| 11 | `serve` | Serve the results | 9 | authored, awaiting owner review (no narration audio yet) |
 | 12 | `publish` | Publish to the risk team | 9 | planned |
 | 13 | `operate` | Operate it | 10 | planned |
 | 14 | `evolve` | Measure, tune and evolve it | 9 | planned |
@@ -121,7 +121,9 @@ What makes a replay deterministic, all of it about the machine:
   and give a step that reads or settles messages `"time": "real"` (no faked clock at all) — a frozen
   clock stalls the SDKs' waits, and a ticking one starts in each process separately, so Azurite's
   clock runs ahead of the reader's and blob-stored partition ownership never looks expired. The
-  Service Bus emulator refuses a TTL over 1 h and a duplicate window over 5 min.
+  Service Bus emulator refuses a TTL over 1 h and a duplicate window over 5 min. `{"cosmos": true}`
+  starts the Cosmos DB (NoSQL) vNext emulator on 8081 (`COSMOS_ENDPOINT` / `COSMOS_KEY` in env.sh);
+  it reports a flat request charge, so RU figures are doc-cited.
 - Output is hard-wrapped at the pane's width: 84 columns in an IDE terminal, `"columns": 88` in a map
   frame's side pane (`MAP_SIDE_W` is 853 px; 88 × 9.02 fits). A typed line exactly the pane's width is
   refused as ambiguous.
@@ -200,6 +202,11 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | Databricks secrets | Key Vault-backed scopes need access policies, so a second vault `kv-wg-dbx-<env>` (access policies, trusted services); scope `risk-kv`, READ for Risk Data Engineers only; secret `tradebook-dbx-reader` |
 | Databricks compute | Standard_D4ds_v5 (4 vCPU), DDSv5 quota 100 (assumed); overnight 16 workers + driver 00–02 (68 vCPU), by day intraday 2 + driver and three engineers' 4-worker clusters (18 nodes, 72 vCPU; 41 addresses spare); policy `policies/databricks/overnight-job.json` (Spot with fallback, driver on demand, tags); **hypothetical** Spot 0.06/h, DBU 0.15, 0.75 DBU per node-hour (assumed): night VMs 6.80 → 2.32, overnight 6.14 a run / 184.35 a month, intraday 9.38 / 206.25, total 390.60 |
 | nightly pipeline | `nightly`: ExecutePipeline copy_tradebook → DatabricksJob `BuildExposure` (job 481516234200, `business_date`), linked service `ls_databricks` (MSI); `tr_tradebook_daily` now starts `nightly`; the intraday job uses Databricks' own scheduler |
+| risk mart | `psql-wg-riskmart-<env>` PostgreSQL 16, General Purpose Standard_D2ds_v5, zone 1 + ZoneRedundant standby zone 3, 128 GB, 14-day geo-redundant backups, Entra only, private endpoint; `sql/mart.sql` (schema `mart`: groups, exposure 13 Oct, reservations, view headroom); limits G-WW 10.00 / G-FAB 8.00 / G-CON 6.00 / G-TAIL 4.00 / G-NW 5.00, net 8.40 / 3.70 / 1.30 / 3.30 / 1.85, headroom 1.60 / 4.30 / 4.70 / 0.70 / 3.15 |
+| reservations | two 1.00 at once against 1.60: READ COMMITTED both commit (−0.40), SERIALIZABLE B refused (40001), finds 0.60; lost reply retried: no key 2 rows (1.00), key `req-7f3a` 1 row (0.50) |
+| group lookup | `cosmos-wg-risk-<env>` NoSQL, Session, Entra only, private, db `risk`, container `groups` (/groupId), autoscale 4,000 RU/s; emulator vNext EN20261008 (flat request charge); hot partition model 1,200 → 3,000 lookups/s, 40% one group → 1,200 RU/s vs 1,000 share; ETag 412 for the second editor; batch add C-103 + members 3 applied, add C-101 409 none |
+| cache | `redis-wg-risk-<env>` Azure Managed Redis Balanced_B1, keys off; model TTL 60 s: stale 10–60 s, delete-on-write fresh from 10 s |
+| TradeBook move | target `psql-wg-tradebook-prod`, migration `tradebook-2026-11` online from 10.50.12.7 (`infra/11-migrate-tradebook.sh`, `infra/migration-tradebook.json`); cutover Saturday 06:00, old server kept read-only a month |
 | API versions | Storage data plane `x-ms-version` 2026-10-06 (SDK 12.31); Microsoft.Storage control plane `2025-08-01` (CLI 2.91, Bicep 0.48.1) |
 
 ## Scene inventory
@@ -280,6 +287,15 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | `dbx-compute` | IDE: the overnight cluster policy + tools/compute_plan.py (quota, Spot) | `transform-compute-on-the-azure-bill` |
 | `who-starts-the-job` | map frame: adf/pipeline/nightly.json (DatabricksJob); Data Factory vs Databricks' scheduler | `transform-who-starts-the-job` |
 | `night-cost` | IDE: tools/night_cost.py (hypothetical VM + DBU prices) | `transform-what-a-night-costs` |
+| `who-needs-what` | three readers' asks, which store answers which, one rule | `serve-who-needs-what` |
+| `relational-choices` | Azure SQL / MI / SQL on a VM / PostgreSQL flexible server; why PostgreSQL | `serve-relational-choices` |
+| `risk-mart` | map frame: mart.bicep + sql/mart.sql on local PostgreSQL 16 (headroom view); failures | `serve-the-risk-mart` |
+| `two-deals-one-limit` | IDE: tools/reserve_headroom.py — READ COMMITTED overbooks, SERIALIZABLE refuses | `serve-two-deals-one-limit` |
+| `retry-safely` | IDE: tools/retry_safely.py — lost reply, retry with and without an idempotency key | `serve-connections-and-credentials` |
+| `group-lookup` | IDE: tools/group_lookup.py in the Cosmos emulator; RU costs (doc); hot partition model | `serve-a-lookup-by-group` |
+| `cosmos-concurrency` | IDE: tools/group_update.py — ETag 412, transactional batch all-or-none; consistency levels | `serve-consistency-and-concurrency-in-cosmos-db` |
+| `cache-headroom` | IDE: tools/cache_headroom.py (a model): TTL vs delete-on-write | `serve-caching-the-headroom` |
+| `moving-tradebook` | map frame: infra/11-migrate-tradebook.sh, the cutover weekend, what the service does | `serve-moving-tradebook` |
 
 ## Invariants — do not break
 

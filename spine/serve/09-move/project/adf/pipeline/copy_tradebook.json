@@ -1,0 +1,41 @@
+{
+  "name": "copy_tradebook",
+  "properties": {
+    "description": "One day's changed deals from TradeBook into bronze",
+    "parameters": {
+      "windowStart": {"type": "string"},
+      "windowEnd": {"type": "string"}
+    },
+    "activities": [
+      {
+        "name": "CopyChangedDeals",
+        "type": "Copy",
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 2,
+          "retryIntervalInSeconds": 300
+        },
+        "inputs": [
+          {"referenceName": "ds_tradebook_deals", "type": "DatasetReference"}
+        ],
+        "outputs": [
+          {
+            "referenceName": "ds_bronze_parquet",
+            "type": "DatasetReference",
+            "parameters": {
+              "folder": "@concat('tradebook/deals/', formatDateTime(pipeline().parameters.windowStart, 'yyyy-MM-dd'))",
+              "file": "deals.parquet"
+            }
+          }
+        ],
+        "typeProperties": {
+          "source": {
+            "type": "PostgreSqlV2Source",
+            "query": "SELECT deal_id, counterparty_id, product, amount_musd, updated_at FROM trade.deals WHERE updated_at >= '@{pipeline().parameters.windowStart}' AND updated_at < '@{pipeline().parameters.windowEnd}'"
+          },
+          "sink": {"type": "ParquetSink"}
+        }
+      }
+    ]
+  }
+}
