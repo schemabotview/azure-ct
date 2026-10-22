@@ -36,7 +36,7 @@ superseded by the plan.
 | --- | --- | --- | --- | --- |
 | 1 | `why-cloud` | Why the cloud | 6 | authored, awaiting owner review (no narration audio yet) |
 | 2 | `how-azure-runs` | How Azure runs a request | 6 | authored, awaiting owner review (no narration audio yet) |
-| 3 | `start` | Start the project | 6 | planned |
+| 3 | `start` | Start the project | 6 | authored, awaiting owner review (no narration audio yet) |
 | 4 | `secure` | Lock it down | 8 | planned |
 | 5 | `network` | Give it a network | 9 | planned |
 | 6 | `automate` | Make it repeatable | 8 | planned |
@@ -68,7 +68,11 @@ section in the plan:
   is the map as laid out — re-measure if a part's label changes (`.tmp/measure.mjs`, local).
   `check-render.mjs` fails a map frame whose map or side pane moves.
 - **IDE frame** — `ideFrame()` in `src/scenes/ide.ts`, the python-ct / Spark / aws-ct template:
-  explorer 300 | editor 80 cols × 18 rows over terminal | side 520, 1632 × 918.
+  explorer 300 | editor 80 cols × 18 rows over terminal | side 520, 1632 × 918. **Every project
+  line stays within 80 columns** and a file longer than 18 rows is folded with `show` (each fold is a
+  row); the terminal holds about 16 lines; a side pane holds tables and lists only, with short cells.
+  Anything larger grows a pane and `check-render.mjs` fails the frame.
+- **Map frame side pane** is 853 px: a code card there must stay within ~80 columns, a terminal 88.
 - **Concept frame** — any scene; author wide, not tall (the frame is 16:9).
 
 ## The spine: commands are replayed, not pasted
@@ -139,6 +143,10 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | hierarchy file | `hierarchy_20261013.csv`, 507 bytes: G-WW Wide World Group (C-101 Wide World Importers GB, C-102 Wide World Logistics SG), G-FAB Fabrikam Holdings (C-201 Fabrikam Textiles IN, C-202 Fabrikam Fibres VN), G-CON Contoso Shipping (C-301 Contoso Shipping GB, C-302 Contoso Freight NL), G-TAIL Tailspin Traders (C-401 US), G-NW Northwind Group (C-501 Northwind Foods GB, C-502 Northwind Trading AE) |
 | rate card | **hypothetical**, USD: VM 4 vCPU 0.20/h allocated; managed disk 0.10/GB-month; public IP 0.005/h; Event Hubs throughput unit 0.03/h; lake hot 0.02/GB-month; PostgreSQL 2 vCore 0.25/h; log data 2.00/GB ingested; 730 h/month. Always labelled hypothetical on screen |
 | risk-dev month | VM 146.00, 128 GB disk 12.80, public IP 3.65, 1 TU 21.90, 200 GB lake 4.00: running 188.35, stopped in the OS 188.35, deallocated 42.35 |
+| dev environment | `rg-risk-dev-data` in `uksouth`, `stwgriskdev` (HNS, Standard_LRS, TLS 1.2, no public blob access), container `landing`; tags `app=risk-platform env=dev owner=priya` |
+| sign-in | priya@woodgrovebank.example; profile lists risk-prod (default) and risk-dev; she sets risk-dev |
+| break-glass | `breakglass-01`, `breakglass-02`: Global Administrator, cloud-only, phishing-resistant MFA |
+| dev ledger | vm-wg-shir-dev 146.00, disk 12.80, pip-wg-shir-dev 3.65, evh-wg-risk-dev 21.90 (untagged), stwgriskdev 4.00; owner priya 166.45, untagged 21.90; budget `risk-dev-monthly` 150 USD monthly, filter env=dev, actual 80% / forecast 100% → email priya; forecast 126% |
 | API versions | Storage data plane `x-ms-version` 2026-10-06 (SDK 12.31); Microsoft.Storage control plane `2025-08-01` (CLI 2.91, Bicep 0.48.1) |
 
 ## Scene inventory
@@ -157,6 +165,12 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | `request-anatomy` | map frame: replayed blob read, request_parts.py, the control plane refusing without login (`spine/how-azure-runs/04-anatomy`) | `how-azure-runs-anatomy-of-a-request` |
 | `resource-ids` | the landing container's resource ID split, the naming rule, why names matter | `how-azure-runs-resource-ids-and-naming` |
 | `what-keeps-charging` | the hypothetical rate card, risk-dev's month running / stopped / deallocated | `how-azure-runs-what-keeps-charging` |
+| `project-tour` | IDE: the finished tree, what-each-part-is-for table in the editor's place | `start-the-finished-project-toured` |
+| `break-glass` | the tenant's identities (break-glass, daily, workloads), what the highest roles reach, lock it away | `start-the-tenant-and-its-break-glass-accounts` |
+| `first-session` | map frame: a staged sign-in profile read by the real CLI (no token), what az login does | `start-a-first-session` |
+| `emulators` | IDE: env.sh, the emulator refusing an uppercase name; the emulator list and what none can show | `start-the-emulators-beside-azure` |
+| `first-resources` | map frame: infra/01-lake.sh (stops at the sign-in), landing created twice in the emulator | `start-the-first-resources` |
+| `cleanup` | IDE: tools/cost_ledger.py (188.35 / 42.35, untagged 21.90), the budget, what deleting a group leaves | `start-budgets-tags-and-cleanup` |
 
 ## Invariants — do not break
 

@@ -25,3 +25,4 @@ azure-mgmt-security
 azure-mgmt-containerregistry
 azure-mgmt-redisenterprise
 azure-mgmt-managementgroups
+azure-mgmt-consumption

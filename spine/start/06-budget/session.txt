@@ -1,0 +1,12 @@
+$ python tools/cost_ledger.py
+vm-wg-shir-dev          730 vm         146.00
+vm-wg-shir-dev disk     128 disk GB     12.80
+pip-wg-shir-dev         730 IP           3.65
+evh-wg-risk-dev         730 TU          21.90
+stwgriskdev             200 lake GB      4.00
+running                                188.35
+VM deallocated                          42.35
+owner priya                            166.45
+owner (untagged)                        21.90
+budget risk-dev-monthly                150.00
+forecast is 126% of it: an alert; nothing stops
