@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const filesAndDisks: Section = {
+  id: 'files-and-disks',
+  title: 'Files and disks',
+  scene: 'files-and-disks',
+  narration:
+    "The collateral team keeps working spreadsheets that several people edit during the day, and those belong on a file share, not in the lake. The code at the top is templates slash modules slash share dot bicep: a zone redundant storage account with a share called collateral, a hundred gibibytes, over S M B, the protocol Windows uses for shared drives. Its identity setting is Microsoft Entra Kerberos: the team signs in with their own bank accounts, which are synced to Entra I D, so there is no shared password and no storage key on anyone's desktop. Its default share permission is none, so only people given a share role get in. The table in the middle follows a request from a desktop in the bank. The path, port four four five, goes over ExpressRoute to a private endpoint, because public access is disabled, and many internet providers block that port anyway. Who you are is your bank sign in, checked by Kerberos. The share is opened by a role, Storage File Data S M B Share Contributor, given to the collateral team's group. And a folder or file is governed by ordinary Windows permissions underneath. The last table is the runtime machines' disks, from Course six's template. The operating system disk is Premium S S D, locally redundant, one per machine, and it lasts as long as the machine. Each machine also has a temporary disk on its physical host, fine for scratch files and lost when the machine is deallocated. And a snapshot is a copy of a disk at a point in time, kept until it is deleted, which is how a disk is backed up before a risky change. The two machines sit in different zones, so losing one zone loses one disk, not both. Next, what redundancy protects against, and what it does not.",
+}

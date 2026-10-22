@@ -5,6 +5,7 @@ import { start } from './start'
 import { secure } from './secure'
 import { network } from './network'
 import { automate } from './automate'
+import { land } from './land'
 
 // Course registry, in plan order (AZURE-COURSE-PLAN.md). A course is registered here only once
 // it is authored. Reset on 2026-10-22: the previous 12-chapter course was deleted for a re-plan.
@@ -15,6 +16,7 @@ export const COURSES: Record<string, Course> = {
   [secure.id]: secure,
   [network.id]: network,
   [automate.id]: automate,
+  [land.id]: land,
 }
 
 export type { Course, Section }

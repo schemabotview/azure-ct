@@ -1,0 +1,10 @@
+group_id,group_name,counterparty_id,counterparty_name,country
+G-WW,Wide World Group,C-101,Wide World Importers,GB
+G-WW,Wide World Group,C-102,Wide World Logistics,SG
+G-FAB,Fabrikam Holdings,C-201,Fabrikam Textiles,IN
+G-FAB,Fabrikam Holdings,C-202,Fabrikam Fibres,VN
+G-CON,Contoso Shipping,C-301,Contoso Shipping,GB
+G-CON,Contoso Shipping,C-302,Contoso Freight,NL
+G-TAIL,Tailspin Traders,C-401,Tailspin Traders,US
+G-NW,Northwind Group,C-501,Northwind Foods,GB
+G-NW,Northwind Group,C-502,Northwind Trading,AE

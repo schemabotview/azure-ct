@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const objectFileAndBlock: Section = {
+  id: 'object-file-and-block',
+  title: 'Object, file and block',
+  scene: 'storage-kinds',
+  narration:
+    "Before the platform lands its first file, it helps to know the three ways Azure stores one. The first column is object storage, Blob Storage: a name and its bytes, read and written whole, over H T T P S, in any size and any number. The lake is object storage, with Data Lake Storage's folders on top. The second is file storage, Azure Files: a shared drive with folders, where people open a file and edit it in place, mapped on their desktop as a drive letter. The collateral team will work from one. The third is block storage, managed disks: the blocks under a machine's file system, attached to one virtual machine at a time, small and fast. The integration runtime's machines run on them. The table at the bottom left is what survives what, because each kind fails differently. A machine that restarts loses nothing. A machine that is deallocated loses its temporary disk, which lives on the physical host, not in storage. A machine that is deleted takes its disks with it only if they were set to be deleted with it. A deleted blob is kept for fourteen days, with soft delete on. And deleting the storage account deletes everything in it, which is why accounts are locked down in Course four. The table on the right says which the platform uses. Deals, daily files and the stream go to the lake, as objects, because Spark reads them in parallel. The collateral team's working files go to a file share, because people edit them in place. The runtime's Windows and its logs live on disks, because a machine needs one. And the filed reports are objects that are locked, because nobody may change them. Next, the lake account, and its four zones.",
+}

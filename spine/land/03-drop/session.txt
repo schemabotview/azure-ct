@@ -1,0 +1,5 @@
+$ python tools/drop_sas.py
+write the file, until 19:30           allowed
+read it back                          403 AuthorizationPermissionMismatch
+list landing                          403 AuthorizationPermissionMismatch
+write with yesterday's token          403 AuthorizationFailure

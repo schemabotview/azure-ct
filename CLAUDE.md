@@ -40,7 +40,7 @@ superseded by the plan.
 | 4 | `secure` | Lock it down | 8 | authored, awaiting owner review (no narration audio yet) |
 | 5 | `network` | Give it a network | 9 | authored, awaiting owner review (no narration audio yet) |
 | 6 | `automate` | Make it repeatable | 8 | authored, awaiting owner review (no narration audio yet) |
-| 7 | `land` | Land the files | 8 | planned |
+| 7 | `land` | Land the files | 8 | authored, awaiting owner review (no narration audio yet) |
 | 8 | `batch` | Bring the batches in | 8 | planned |
 | 9 | `stream` | Bring the stream in | 8 | planned |
 | 10 | `transform` | Transform it in Databricks | 7 | planned |
@@ -175,6 +175,11 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | templates | `templates/main.bicep` (subscription scope: rg-risk-<env>-net / -data, modules network, lake, vault, runtime); subnets are child resources, `@batchSize(1)`; `prod.bicepparam` / `dev.bicepparam` (10.110 / 10.120); runtime admin `shiradmin`, password from `az.getSecret(..., kv-wg-risk-<env>, runtime-admin-password)`; vault `enabledForTemplateDeployment` |
 | drift (model) | stwgriskprod TLS lowered to 1.0 by hand → Modify back to 1.2; `stwgscratch` made by hand → Ignore (incremental) / Delete (complete) |
 | pipeline | GitHub repo `woodgrove-example/risk-on-azure`; `deploy.yml` build → dev → prod (prod environment needs a reviewer); `release.yml` reusable; identities `risk-deploy-dev` / `risk-deploy-prod`, federated subject `repo:woodgrove-example/risk-on-azure:environment:<env>`, Contributor on own subscription only; release order infra → Databricks bundle → Data Factory (triggers stopped); deployment name `risk-<env>-<sha7>`, `out/SHA256SUMS` |
+| lake zones | containers `landing` (as delivered, 30 days), `bronze` (kept; cool > 30 d, cold > 90 d), `silver`, `gold`; blob + container soft delete 14 days; HNS: no blob versioning, soft delete does not keep overwrites; landing is write-once (`<source>/<date>/<file>`) |
+| collateral file | `collateral_20261013.csv`, 19:00, six rows COL-7001…7006 (C-101 cash 0.50 / warehouse goods 1.00 haircut 0.40; C-201 receivables 2.40; C-301 vessel mortgage 6.00, redelivered as 5.40; C-501 cash 0.80; C-502 standby LC 1.50); drop SAS create+write on landing, 30 min (emulated) |
+| lifecycle model | bronze 2 GB/day, a year: hot 62 / cool 120 / cold 548 GB = 4.63 vs all hot 14.60 USD/month; landing 60 GB 1.20 (**hypothetical**: hot 0.020, cool 0.010, cold 0.004 per GB-month) |
+| reports | account `stwgreports<env>` (GZRS, no HNS), container `large-exposures`, container-level WORM 2,557 days (seven years, assumed bank rule), locked by `infra/07-lock-reports.sh` |
+| collateral share | account `stwgcollat<env>` (ZRS), share `collateral` 100 GiB SMB, Microsoft Entra Kerberos (`AADKERB`), default share permission None, role Storage File Data SMB Share Contributor |
 | API versions | Storage data plane `x-ms-version` 2026-10-06 (SDK 12.31); Microsoft.Storage control plane `2025-08-01` (CLI 2.91, Bicep 0.48.1) |
 
 ## Scene inventory
@@ -224,6 +229,14 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | `pipeline-identity` | IDE: release.yml (OIDC) + tools/oidc_subject.py (a model of the subject match) | `automate-a-pipeline-with-no-stored-secret` |
 | `data-release` | map frame: the future release.yml (model-checked, actionlint), release order, ADF from git | `automate-releasing-data-code` |
 | `promotion` | map frame: deploy.yml build once, infra/06-build.sh checksums; Bicep vs Terraform | `automate-one-artefact-two-environments` |
+| `storage-kinds` | object / file / block lists, what survives what, which the platform uses | `land-object-file-and-block` |
+| `lake-zones` | map frame: lake.bicep (HNS, soft delete, four zone containers) + the zones made and the hierarchy file landed in Azurite | `land-the-lake-account` |
+| `drop-sas` | IDE: tools/drop_sas.py — write-only SAS: write ok, read/list 403, expired 403 (emulated) | `land-who-may-write-a-file` |
+| `two-deliveries` | IDE: tools/two_deliveries.py — overwrite + ETag 412, write-once 409, lease 412 (emulated) | `land-two-writers-one-file` |
+| `lake-lifecycle` | IDE: lifecycle.bicep + tools/lifecycle_plan.py (a model); tiers; recovery without versions | `land-versions-soft-delete-and-lifecycle` |
+| `locked-reports` | map frame: reports.bicep (WORM 2,557 d) + 07-lock-reports.sh; what a locked policy allows | `land-reports-nobody-can-change` |
+| `files-and-disks` | map frame: share.bicep (Entra Kerberos), reaching the share, the runtime VMs' disks | `land-files-and-disks` |
+| `storage-redundancy` | LRS / ZRS / GRS / GZRS table, a failover, what redundancy does not undo | `land-redundancy-and-restore` |
 
 ## Invariants — do not break
 

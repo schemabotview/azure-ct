@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const redundancyAndRestore: Section = {
+  id: 'redundancy-and-restore',
+  title: 'Redundancy and restore',
+  scene: 'storage-redundancy',
+  narration:
+    "Every storage account keeps several copies of every byte, and the redundancy option chooses where. The table at the top lists them. L R S keeps three copies in one datacentre, which survives a failed disk or rack; development uses it. Z R S keeps three copies across the Region's three availability zones, written at the same time, which survives losing a zone; the lake and the collateral share use it, and Microsoft recommends it for Data Lake Storage. G R S adds a copy in the paired Region, U K West, written a little later. And G Z R S is both: zones here, and a copy in U K West, which the locked reports use, because a regulator's evidence should survive losing London. The list at the bottom left is a failover to U K West. The bank starts it, if U K South is lost. The secondary becomes the primary. Writes that had not been copied yet are lost, and the account's last sync time says from when; with priority replication, block blobs are at most fifteen minutes behind. Afterwards the account is locally redundant until the bank sets it up again. The table on the right is the point of this section: redundancy is not a backup. Every copy copies mistakes too, at once. A file deleted is deleted everywhere, and soft delete undoes it for fourteen days. A file overwritten is overwritten everywhere, and reloading from landing undoes it. If the account itself is deleted, every copy goes with it, and only a backup somewhere else brings it back, which Course thirteen sets up. And a bad job's output is undone by rebuilding from bronze. That completes landing the files. Next, Course eight brings the batches in, with Data Factory.",
+}
