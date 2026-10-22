@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const secretsAndPeople: Section = {
+  id: 'secrets-and-people',
+  title: 'Secrets and people',
+  scene: 'dbx-secrets',
+  narration:
+    "Some jobs still need a password, such as a read only login to TradeBook for a nightly check, and a notebook must never contain one. Databricks reads secrets through a secret scope, and a scope can be backed by Azure Key Vault. There is a catch, in the first table on the right. The platform's vault, k v w g risk prod, uses Azure roles for its permissions, and a Key Vault backed scope supports only the older access policy model. So Databricks gets its own small vault, k v w g d b x prod, created by templates slash modules slash d b x vault dot bicep. It uses access policies, holds only the secrets Databricks jobs need, and lets trusted Microsoft services through its firewall, because Databricks reads it from its control plane. The editor shows infra slash ten secret scope dot sh. It looks up the vault's I D, then, with the Databricks command line rather than the Azure one, creates a scope called risk k v backed by that vault, which also gives Databricks' own application permission to get and list its secrets. It then grants read on the scope to the Risk Data Engineers group, and to nobody else. The terminal runs tools slash secret read dot py, a model of who can read the TradeBook password. Priya, in Risk Data Engineers, reads it, and if a notebook prints it, Databricks shows redacted. Omar, in Risk Analysts, is refused: no read on risk k v. Sam, in Credit Officers, cannot even sign in, because that group was never added to the workspace. The list underneath is how people get in: Entra groups, synced into Databricks, never local users; a group is added to the workspace; and the scope's access list decides who reads which secret. Next, the machines Databricks runs on, and what they do to the Azure bill.",
+}

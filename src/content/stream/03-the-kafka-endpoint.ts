@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const theKafkaEndpoint: Section = {
+  id: 'the-kafka-endpoint',
+  title: 'The Kafka endpoint',
+  scene: 'kafka-endpoint',
+  narration:
+    "The bank already has a producer that publishes market data to its own Kafka cluster, and it should not need rewriting. The editor shows feeds slash market producer dot py, the bank's code. It reads a properties file, makes a Kafka producer from it, and publishes each rate in data slash f x twenty twenty six ten thirteen dot c s v to the topic f x rates, keyed by currency pair. Nothing in it names a cluster. The table on the right is the whole migration: the difference between feeds slash bank dot properties and feeds slash azure dot properties. The bootstrap server becomes the namespace's address, on port nine oh nine three. The security protocol stays S A S L over S S L. The mechanism becomes O AUTH BEARER, and the credential becomes an Entra I D token for the producer's app registration, because the namespace accepts no keys. And the code is unchanged. The terminal runs the same producer against the emulator, using feeds slash emulator dot properties, which speaks plain text on port nine oh nine two with the emulator's fixed development key. Six rates are delivered, each with its partition and offset, and the three G B P U S D rates share partition one, at offsets nought, one and two. Notice that the previous section's G B P U S D went to partition three. A Kafka client chooses the partition itself, by hashing the key its own way, while the Event Hubs S D K lets the service choose. Both keep a key together, but not in the same place, so each hub is written one way only: f x rates by Kafka, deal events by the S D K. The list underneath sums up the move: the namespace is the cluster, each hub is a topic, and there is no broker to run, patch or grow. Next, reading the stream, and carrying on after a restart.",
+}

@@ -1,0 +1,5 @@
+{"UserConfig": {"Namespaces": [{"Name": "sbemulatorns", "Queues": [
+  {"Name": "deal-steps", "Properties": {"DeadLetteringOnMessageExpiration": true, "DefaultMessageTimeToLive": "PT1H",
+   "DuplicateDetectionHistoryTimeWindow": "PT5M", "ForwardDeadLetteredMessagesTo": "", "ForwardTo": "",
+   "LockDuration": "PT30S", "MaxDeliveryCount": 3, "RequiresDuplicateDetection": true, "RequiresSession": true}}]}],
+ "Logging": {"Type": "File"}}}

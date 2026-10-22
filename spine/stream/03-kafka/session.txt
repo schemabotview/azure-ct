@@ -1,0 +1,7 @@
+$ python feeds/market_producer.py feeds/emulator.properties
+SGDUSD  partition 0, offset 0
+GBPUSD  partition 1, offset 0
+GBPUSD  partition 1, offset 1
+GBPUSD  partition 1, offset 2
+EURUSD  partition 3, offset 0
+INRUSD  partition 3, offset 1

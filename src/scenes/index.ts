@@ -7,11 +7,13 @@ import { networkScenes } from './network'
 import { automateScenes } from './automate'
 import { landScenes } from './land'
 import { batchScenes } from './batch'
+import { streamScenes } from './stream'
+import { transformScenes } from './transform'
 
 // Scene registry. Sections reference scenes by id; scenes are grouped by course (one folder each,
 // mirroring src/content). Ids are globally unique across courses, so the flat lookup below is
 // unambiguous. Courses are added here as each is authored.
-const ALL: Scene[] = [...whyCloudScenes, ...howAzureRunsScenes, ...startScenes, ...secureScenes, ...networkScenes, ...automateScenes, ...landScenes, ...batchScenes]
+const ALL: Scene[] = [...whyCloudScenes, ...howAzureRunsScenes, ...startScenes, ...secureScenes, ...networkScenes, ...automateScenes, ...landScenes, ...batchScenes, ...streamScenes, ...transformScenes]
 
 export const SCENES: Record<string, Scene> = Object.fromEntries(ALL.map((s) => [s.id, s]))
 

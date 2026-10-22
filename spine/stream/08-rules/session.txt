@@ -1,0 +1,9 @@
+$ python tools/stream_rules.py
+the 08:00 burst, 13,000 events
+  2 units:  600 refused a second, all in by 7 s
+  3 units:    0 refused a second, all in by 5 s
+the 14:00 minute, open until 14:01:10
+  GBPUSD at 14:00:58, arrived 14:00:59: counted
+  EURUSD at 14:00:58, arrived 14:01:07: counted
+  SGDUSD at 14:00:59, arrived 14:01:24: too late: a correction
+deal events: 4 received, 3 kept, 1 duplicate dropped

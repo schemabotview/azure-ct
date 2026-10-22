@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const captureToTheLake: Section = {
+  id: 'capture-to-the-lake',
+  title: 'Capture to the lake',
+  scene: 'stream-capture',
+  narration:
+    "Event Hubs keeps events for a day, and the platform needs them for years: to replay a day, to reconcile the stream against the batch, and to answer the auditors. Event Hubs Capture writes every event to the lake, with no reader to run. The code at the top is the streaming module with Capture added. A capture setting, shared by both hubs, is enabled, writes Avro files, closes a file every three hundred seconds or every three hundred megabytes, whichever comes first, and skips windows with no events. Its destination is the bronze container, and it writes as the namespace's own managed identity, which the namespace now has. The file names follow a path of namespace, hub, partition, then year, month, day, hour, minute and second. At the bottom of the module, a role assignment gives that identity Storage Blob Data Contributor on bronze, one of the two roles the deployment identity is allowed to grant. The table in the middle reads one such path. The namespace and hub, e v h w g risk prod slash deal events. The partition, two. The window, to the second: the thirteenth of October, fourteen twenty five. And the file, Avro, holding each event's body, offset and enqueued time. The emulator has no Capture, so nothing here was run: the module is checked by the Bicep compiler. The list at the bottom is why the platform captures as well as reads. The hub keeps events a day, and bronze keeps them. There is nothing to run, so no reader and no checkpoints. Databricks can replay any day from bronze. And the nightly batch reconciles against it. Next, a step back: four services that move messages, and which job each one fits.",
+}

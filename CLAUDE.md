@@ -42,8 +42,8 @@ superseded by the plan.
 | 6 | `automate` | Make it repeatable | 8 | authored, awaiting owner review (no narration audio yet) |
 | 7 | `land` | Land the files | 8 | authored, awaiting owner review (no narration audio yet) |
 | 8 | `batch` | Bring the batches in | 8 | authored, awaiting owner review (no narration audio yet) |
-| 9 | `stream` | Bring the stream in | 8 | planned |
-| 10 | `transform` | Transform it in Databricks | 7 | planned |
+| 9 | `stream` | Bring the stream in | 8 | authored, awaiting owner review (no narration audio yet) |
+| 10 | `transform` | Transform it in Databricks | 7 | authored, awaiting owner review (no narration audio yet) |
 | 11 | `serve` | Serve the results | 9 | planned |
 | 12 | `publish` | Publish to the risk team | 9 | planned |
 | 13 | `operate` | Operate it | 10 | planned |
@@ -114,6 +114,14 @@ What makes a replay deterministic, all of it about the machine:
 - **The control plane has no emulator.** A command that needs Resource Manager stops at
   `ERROR: Please run 'az login' to setup account.` — real output, shown where it teaches something.
   Otherwise control-plane files are shown `model-checked` (below), never as captured output.
+- **Event Hubs and Service Bus run in Microsoft's emulators, in Docker** (Event Hubs 2.2.1 with its
+  own Azurite, Service Bus 2.0.1 with SQL Server 2022 CU26), started by a step that has
+  `eventhubs.json` / `servicebus.json` beside it, on the standard ports, which `env.sh`'s connection
+  strings name. Start Docker first (`dockerd`). Their clocks are real: never print an enqueued time,
+  and give a step that reads or settles messages `"time": "real"` (no faked clock at all) — a frozen
+  clock stalls the SDKs' waits, and a ticking one starts in each process separately, so Azurite's
+  clock runs ahead of the reader's and blob-stored partition ownership never looks expired. The
+  Service Bus emulator refuses a TTL over 1 h and a duplicate window over 5 min.
 - Output is hard-wrapped at the pane's width: 84 columns in an IDE terminal, `"columns": 88` in a map
   frame's side pane (`MAP_SIDE_W` is 853 px; 88 × 9.02 fits). A typed line exactly the pane's width is
   refused as ambiguous.
@@ -184,6 +192,14 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | batch copy | factory `adf-wg-risk-prod`, runtime `ir-bank`; pipeline `copy_tradebook` (tumbling window `tr_tradebook_daily`, 24 h, delay 5 min, retry 2 × 600 s) → `bronze/tradebook/deals/<window start>/deals.parquet`: first load 10 rows, 13 Oct 2 rows; reconcile TradeBook 10 / 27.80 vs lake 11 / 28.70 (LC-2007) |
 | arriving files | `load_landing_file` (Get Metadata → If → Copy or Fail `ContractBroken`), storage event triggers `tr_hierarchy_arrives` / `tr_collateral_arrives` (`/landing/blobs/<source>/`, `.csv`, ignore empty); `contracts/hierarchy.json`; `hierarchy_20261014.csv` refused (cpty_id, lei, three-letter countries) |
 | factory identity | linked services `ls_lake` / `ls_keyvault` (managed identity), `ls_tradebook` (user `adf_reader`, Key Vault secret `tradebook-adf-reader`); roles Key Vault Secrets User on the vault, Blob Data Contributor on landing and bronze; deployer gets RBAC Administrator conditioned to those two roles (`infra/08-deploy-can-assign.sh`) |
+| streams | namespace `evh-wg-<role>-<env>` → `evh-wg-risk-prod` Standard, 2 TUs, auto-inflate to 4, Kafka on, local auth off; hubs `fx-rates` (key: pair) and `deal-events` (key: deal), 4 partitions, 1 day, group `exposure-intraday`; Capture → bronze, Avro, 300 s / 300 MB, as the namespace's identity |
+| stream runs (emulated) | AMQP keys: GBPUSD → partition 3, EURUSD 1, SGDUSD 2, deal events → 0; Kafka (`feeds/market_producer.py`, `data/fx_20261013.csv`): SGDUSD 0, GBPUSD 1 (×3), EURUSD and INRUSD 3; checkpoints: 3 events, then LC-2042 (partition 2) only |
+| deal steps | Service Bus `sb-wg-risk-<env>` Standard, queue `deal-steps` (sessions, duplicate detection 10 min — emulator 5, lock 30 s, 3 deliveries, TTL 1 day — emulator 1 h); LC-2041 booked / documents-checked / issued (retry dropped), LC-2042 issued dead-lettered (MaxDeliveryCountExceeded) |
+| stream model | 08:00 burst 2,600 events/s × 5 s: 2 TUs refuse 600/s, in by 7 s; 3 TUs none, 5 s; 14:00 minute open to 14:01:10 (SGDUSD at 14:01:24 too late); 4 deal events, 3 kept |
+| workspace | `dbw-wg-risk-<env>` Premium, managed group `rg-dbw-wg-risk-<env>-managed`, VNet-injected (`snet-dbx-host` / `snet-dbx-container`, NSG `nsg-snet-dbx`), no public IP, public access off, `NoAzureDatabricksRules`, private endpoint `pe-dbw-wg-risk-<env>` (`databricks_ui_api`) in snet-pe; access connector `ac-wg-risk-<env>` (Blob Data Contributor on the lake); URL `adb-1234567890123456.7.azuredatabricks.net` (illustrative) |
+| Databricks secrets | Key Vault-backed scopes need access policies, so a second vault `kv-wg-dbx-<env>` (access policies, trusted services); scope `risk-kv`, READ for Risk Data Engineers only; secret `tradebook-dbx-reader` |
+| Databricks compute | Standard_D4ds_v5 (4 vCPU), DDSv5 quota 100 (assumed); overnight 16 workers + driver 00–02 (68 vCPU), by day intraday 2 + driver and three engineers' 4-worker clusters (18 nodes, 72 vCPU; 41 addresses spare); policy `policies/databricks/overnight-job.json` (Spot with fallback, driver on demand, tags); **hypothetical** Spot 0.06/h, DBU 0.15, 0.75 DBU per node-hour (assumed): night VMs 6.80 → 2.32, overnight 6.14 a run / 184.35 a month, intraday 9.38 / 206.25, total 390.60 |
+| nightly pipeline | `nightly`: ExecutePipeline copy_tradebook → DatabricksJob `BuildExposure` (job 481516234200, `business_date`), linked service `ls_databricks` (MSI); `tr_tradebook_daily` now starts `nightly`; the intraday job uses Databricks' own scheduler |
 | API versions | Storage data plane `x-ms-version` 2026-10-06 (SDK 12.31); Microsoft.Storage control plane `2025-08-01` (CLI 2.91, Bicep 0.48.1) |
 
 ## Scene inventory
@@ -249,6 +265,21 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | `reconcile-tradebook` | IDE: tools/reconcile.py (PostgreSQL vs bronze): LC-2007 deleted, still in the lake; window vs CDC | `batch-batch-cdc-and-reconciliation` |
 | `rerun-window` | IDE: tools/rerun_window.py (Azurite): append 3 rows vs replace 2 | `batch-reruns-without-duplicates` |
 | `pipeline-secrets` | IDE: ls_tradebook.json (Key Vault secret), adf_parts --credentials; the factory's roles | `batch-secrets-and-identities-for-pipelines` |
+| `why-stream` | Wide World's 14 October intraday, batch vs stream, the two streams | `stream-why-a-stream` |
+| `event-hubs` | map frame: streaming.bicep + tools/send_events.py in the Event Hubs emulator (partition keys) | `stream-event-hubs` |
+| `kafka-endpoint` | IDE: feeds/market_producer.py, unchanged, to the emulator's Kafka endpoint; what the properties change | `stream-the-kafka-endpoint` |
+| `stream-checkpoints` | IDE: tools/intraday_reader.py with blob checkpoints: 3 events, restart reads 1 | `stream-consumers-and-checkpoints` |
+| `stream-capture` | map frame: Capture in streaming.bicep (Avro to bronze, namespace identity) | `stream-capture-to-the-lake` |
+| `four-ways` | Queue Storage / Service Bus / Event Grid / Event Hubs, and each one's job here | `stream-queue-storage-service-bus-event-grid-or-event-hubs` |
+| `deal-steps` | IDE: tools/deal_steps.py in the Service Bus emulator: sessions, duplicate dropped, dead letter | `stream-service-bus-for-deal-steps` |
+| `stream-rules` | IDE: tools/stream_rules.py (a model): throttling, late events, duplicates | `stream-late-duplicate-and-throttled` |
+| `dbx-workspace` | map frame: databricks.bicep (connector, workspace); what Azure creates; this course vs the Databricks course | `transform-the-workspace-as-an-azure-resource` |
+| `dbx-network` | map frame: the NSG on the Databricks subnets + tools/dbx_capacity.py; three private paths | `transform-databricks-in-the-network` |
+| `dbx-lake` | IDE: access connector and its lake role, bicep build + arm_summary; Azure role to a Unity Catalog grant | `transform-reaching-the-lake` |
+| `dbx-secrets` | IDE: infra/10-secret-scope.sh (Databricks CLI), tools/secret_read.py; why a second vault | `transform-secrets-and-people` |
+| `dbx-compute` | IDE: the overnight cluster policy + tools/compute_plan.py (quota, Spot) | `transform-compute-on-the-azure-bill` |
+| `who-starts-the-job` | map frame: adf/pipeline/nightly.json (DatabricksJob); Data Factory vs Databricks' scheduler | `transform-who-starts-the-job` |
+| `night-cost` | IDE: tools/night_cost.py (hypothetical VM + DBU prices) | `transform-what-a-night-costs` |
 
 ## Invariants — do not break
 

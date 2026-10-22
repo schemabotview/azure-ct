@@ -1,0 +1,6 @@
+$ python tools/compute_plan.py
+vCPUs: 68 for the overnight job, quota 100: fits
+by day: 72 for the intraday job and three engineers
+VMs for one night, all on demand:  6.80 USD
+VMs for one night, workers Spot:   2.32 USD
+if Azure takes the Spot VMs back: the policy falls back to on demand

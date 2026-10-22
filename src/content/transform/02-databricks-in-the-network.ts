@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const databricksInTheNetwork: Section = {
+  id: 'databricks-in-the-network',
+  title: 'Databricks in the network',
+  scene: 'dbx-network',
+  narration:
+    "Databricks clusters run in the bank's own network, which is called V Net injection. Each cluster node gets two addresses, one in the host subnet and one in the container subnet, both delegated to Databricks in Course five; the A P I still calls them the public and private subnets. The code at the top is the network module's change for it: Databricks needs a network security group on both subnets, so the module now creates n s g snet d b x and attaches it to any subnet delegated to Databricks. Databricks manages that group's rules itself. The terminal runs tools slash d b x capacity dot py, a model of whether the clusters fit. Each subnet is a slash twenty six, with fifty nine usable addresses. The overnight job needs seventeen nodes, sixteen workers and a driver, at night. By day, the intraday job needs three and three engineers' clusters fifteen. The busiest moment is eighteen nodes at once, which leaves forty one addresses spare. If the subnets were too small, clusters would fail to start, and subnets are hard to grow once in use, which is why Course five sized them for the peak. The table at the bottom is the three paths in and out, all private. An engineer reaches the workspace through front end private link, via the hub. A cluster reaches Databricks' control plane through back end private link, and only ever connects outwards: that is secure cluster connectivity. A cluster reaches the lake through the private endpoints in snet p e. And from the internet to a cluster there is nothing at all: no public I P, no open port. Next, how a cluster is allowed to read the lake.",
+}

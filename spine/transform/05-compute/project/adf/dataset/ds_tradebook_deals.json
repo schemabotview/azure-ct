@@ -1,0 +1,11 @@
+{
+  "name": "ds_tradebook_deals",
+  "properties": {
+    "type": "PostgreSqlV2Table",
+    "linkedServiceName": {
+      "referenceName": "ls_tradebook",
+      "type": "LinkedServiceReference"
+    },
+    "typeProperties": {"schema": "trade", "table": "deals"}
+  }
+}

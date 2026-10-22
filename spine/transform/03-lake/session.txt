@@ -1,0 +1,7 @@
+$ bicep build templates/modules/databricks.bicep
+$ python tools/arm_summary.py templates/modules/databricks.json
+deploymentTemplate, 5 parameters
+Microsoft.Databricks/accessConnectors@2024-05-01
+Microsoft.Databricks/workspaces@2024-05-01
+Microsoft.Network/privateEndpoints@2025-07-01  after: workspaces
+Microsoft.Authorization/roleAssignments@2022-04-01  after: accessConnectors
