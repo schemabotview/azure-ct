@@ -1,0 +1,67 @@
+import type { Scene } from '@graphlearning/flow'
+import { ideFrame } from '../ide'
+
+// The finished project as AZURE-COURSE-PLAN.md describes it. Nothing here runs yet — this frame is the
+// map, so the editor's place holds what each part is for, not code.
+export const tour: Scene = ideFrame(
+  'project-tour',
+  'risk-on-azure',
+  [
+    { name: '.venv', folder: true, state: 'muted', note: 'azure SDKs' },
+    { name: 'adf', folder: true, note: 'pipelines' },
+    { name: 'api', folder: true, note: 'exposure API' },
+    { name: 'budgets', folder: true, note: 'cost alerts' },
+    { name: 'databricks', folder: true, note: 'workspace' },
+    { name: 'docs', folder: true, note: 'the ADR' },
+    { name: 'filer', folder: true, note: 'the report job' },
+    { name: 'functions', folder: true, note: 'breach alert' },
+    { name: 'infra', folder: true, note: 'az CLI scripts' },
+    { name: 'ops', folder: true, note: 'KQL, runbooks' },
+    { name: 'pipeline', folder: true, note: 'GitHub Actions' },
+    { name: 'policies', folder: true, note: 'roles, Policy' },
+    { name: 'serve', folder: true, note: 'risk mart SQL' },
+    { name: 'sources', folder: true, note: 'sample inputs' },
+    { name: 'stream', folder: true, note: 'producer, consumer' },
+    { name: 'templates', folder: true, note: 'Bicep' },
+    { name: 'tools', folder: true, note: 'calculations' },
+    { name: 'env.sh', state: 'active' },
+    { name: 'requirements.txt' },
+  ],
+  {
+    id: 'parts',
+    kind: 'table',
+    label: 'What each part is for, and where we build it',
+    headers: ['part', 'its job', 'course'],
+    values: [
+      ['env.sh, .venv/', 'Region, defaults, emulator, SDKs', '3'],
+      ['infra/', 'the az CLI scripts that build it', '3 → 5'],
+      ['policies/', 'who may do what; what is allowed', '4 → 13'],
+      ['templates/, pipeline/', 'the same resources, declared and deployed', '6 → 14'],
+      ['sources/', 'what the bank delivers, as samples', '7 → 9'],
+      ['adf/', 'the batch pipelines', '8'],
+      ['stream/', 'the market feed and deal events', '9'],
+      ['databricks/', 'the workspace’s Azure side', '10'],
+      ['serve/', 'the risk mart’s schema and loads', '11'],
+      ['api/, functions/, filer/', 'what the risk team touches', '12'],
+      ['ops/', 'queries, alerts, runbooks, drills', '13'],
+      ['tools/, budgets/', 'exposure, costs, models', '3 → 14'],
+      ['docs/', 'the decision record', '14'],
+    ],
+  },
+  {
+    id: 'legend',
+    kind: 'list',
+    icon: 'folder',
+    label: 'Reading every lesson',
+    sub: 'the same panels, always',
+    pattern: 'network',
+    items: [
+      'Left: the project, as your editor shows it',
+      'NEW marks a file this lesson adds',
+      'Centre: the file, this lesson’s lines highlighted',
+      'Below it: the terminal, exactly as it ran',
+      '· emulated: run against a local emulator, not Azure',
+      '··· N lines folds what this lesson does not need',
+    ],
+  },
+)

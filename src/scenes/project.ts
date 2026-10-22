@@ -1,6 +1,6 @@
 import type { TreeEntry } from '@graphlearning/flow'
 
-// The explorer for any step of shop-on-aws: give it the project's files as paths, the open one,
+// The explorer for any step of risk-on-azure: give it the project's files as paths, the open one,
 // and what the section adds. Folders come first, then files, each alphabetical, as an editor shows
 // them; a path ending in `/` is a folder shown closed (with an optional note after a space:
 // 'catalog/ product JSON'). Folders named in `collapse` are shown closed with a count, unless the open
@@ -8,7 +8,7 @@ import type { TreeEntry } from '@graphlearning/flow'
 // Folders named in `trim` that are open show only their sub-folders and the active and new files;
 // the rest become one muted '… N more files' line (infra/ outgrew the pane in Course 11).
 export function projectTree(paths: string[], active: string, fresh: string[] = [], collapse: string[] = [], trim: string[] = []): TreeEntry[] {
-  const root: TreeEntry[] = [{ name: '.venv', folder: true, state: 'muted', note: 'boto3' }]
+  const root: TreeEntry[] = [{ name: '.venv', folder: true, state: 'muted', note: 'azure SDKs' }]
   const state = (path: string): TreeEntry['state'] => (path === active ? 'active' : fresh.some((f) => path === f || path.startsWith(f.replace(/\/?$/, '/'))) ? 'new' : undefined)
   for (const raw of paths) {
     const [path, ...note] = raw.split(' ')

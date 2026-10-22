@@ -1,0 +1,17 @@
+$ bash infra/01-lake.sh
+ERROR: Please run 'az login' to setup account.
+$ az storage container create --name landing
+{
+  "created": true
+}
+$ az storage container create --name landing
+{
+  "created": false
+}
+$ az storage container list --query "[].{name: name, at: properties.lastModified}"
+[
+  {
+    "at": "2026-10-13T22:30:00+00:00",
+    "name": "landing"
+  }
+]

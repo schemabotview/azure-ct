@@ -1,0 +1,14 @@
+$ az account list --query "[].{name: name, default: isDefault}" -o table
+Name       Default
+---------  ---------
+risk-prod  True
+risk-dev   False
+$ az account set --subscription risk-dev
+$ az account show --query "{sub: name, tenant: tenantDisplayName, user: user.name}"
+{
+  "sub": "risk-dev",
+  "tenant": "Woodgrove Bank",
+  "user": "priya@woodgrovebank.example"
+}
+$ az account show --query id -o tsv
+bbbb1b1b-cc2c-dd3d-ee4e-ffffff5f5f5f

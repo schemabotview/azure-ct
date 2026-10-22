@@ -33,10 +33,10 @@ What makes a replay deterministic — all of it about the MACHINE, never the com
     `time` (default 2026-10-13 22:30:00 UTC) and does not move, so a Last-Modified, an ETag Azurite
     derives from the time and a signed SAS come out the same on every run. A step whose `time` starts
     with `@` has a ticking clock instead (it starts there and runs).
-  - Azurite serves the platform's own storage account, `stwgriskprod`, with a fixed emulator key, on
-    127.0.0.1:10000-10002 — the addresses `env.sh` names. In OUTPUT, those addresses become the
-    endpoints the same account has on Azure (https://stwgriskprod.blob.core.windows.net, …) — except
-    on a line that sets AZURE_STORAGE_CONNECTION_STRING, which is shown as written.
+  - Azurite serves the platform's own storage accounts, `stwgriskprod` and `stwgriskdev`, with a fixed
+    emulator key, on 127.0.0.1:10000-10002 — the addresses `env.sh` names. In OUTPUT, those addresses
+    become the endpoints the same account has on Azure (https://stwgriskprod.blob.core.windows.net, …)
+    — except on a line that sets AZURE_STORAGE_CONNECTION_STRING, which is shown as written.
   - A random GUID in output (a request id, a client request id) becomes a stable one derived from the
     step and its order of appearance; a GUID written in the project or the step's settings is left
     alone. Nothing else in an output is edited.
@@ -80,8 +80,8 @@ BICEP = '0.48.1'
 # Azure CLI extensions the course's commands use, pinned; installed into .spine-cache/cli-extensions.
 CLI_EXTENSIONS = {'datafactory': '1.0.4', 'databricks': '1.3.2'}
 CLOCK = '2026-10-13 22:30:00'
-ACCOUNT = 'stwgriskprod'
-# Azurite's key for the account: fixed so a SharedKey signature and a SAS repeat. Not a secret — it
+ACCOUNTS = ['stwgriskprod', 'stwgriskdev']
+# Azurite's key for the accounts: fixed so a SharedKey signature and a SAS repeat. Not a secret — it
 # exists only in the emulator; env.sh says so.
 ACCOUNT_KEY = base64.b64encode(b'woodgrove-emulator-key-not-a-secret').decode()
 PORTS = {'blob': 10000, 'queue': 10001, 'table': 10002}
@@ -169,11 +169,6 @@ def faketime_env(venv: Path, start: str) -> dict:
             'FAKETIME_NO_CACHE': '1', 'FAKETIME_DISABLE_SHM': '1', 'FAKETIME': start}
 
 
-def connection_string() -> str:
-    ends = ';'.join(f'{k.title()}Endpoint=http://127.0.0.1:{p}/{ACCOUNT}' for k, p in PORTS.items())
-    return f'DefaultEndpointsProtocol=http;AccountName={ACCOUNT};AccountKey={ACCOUNT_KEY};{ends};'
-
-
 def wait_port(port: int, what: str) -> None:
     for _ in range(300):
         try:
@@ -185,7 +180,7 @@ def wait_port(port: int, what: str) -> None:
 
 
 def start_azurite(venv: Path, config: dict, data: Path) -> subprocess.Popen:
-    env = {**os.environ, **faketime_env(venv, config.get('time', CLOCK)), 'AZURITE_ACCOUNTS': f'{ACCOUNT}:{ACCOUNT_KEY}'}
+    env = {**os.environ, **faketime_env(venv, config.get('time', CLOCK)), 'AZURITE_ACCOUNTS': ';'.join(f'{a}:{ACCOUNT_KEY}' for a in ACCOUNTS)}
     server = subprocess.Popen([str(azurite()), '--silent', '--location', str(data), '--skipApiVersionCheck',
                                '--disableProductStyleUrl', '--loose'],
                               env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -235,7 +230,8 @@ def real_endpoints(output: str) -> str:
         if 'AZURE_STORAGE_CONNECTION_STRING' in line:
             return line
         for kind, port in PORTS.items():
-            line = line.replace(f'http://127.0.0.1:{port}/{ACCOUNT}', f'https://{ACCOUNT}.{kind}.core.windows.net')
+            for account in ACCOUNTS:
+                line = line.replace(f'http://127.0.0.1:{port}/{account}', f'https://{account}.{kind}.core.windows.net')
         return line
     return '\n'.join(fix(l) for l in output.split('\n'))
 
