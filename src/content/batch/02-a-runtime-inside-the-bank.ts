@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const aRuntimeInsideTheBank: Section = {
+  id: 'a-runtime-inside-the-bank',
+  title: 'A runtime inside the bank',
+  scene: 'bank-runtime',
+  narration:
+    "TradeBook has no public address, and it never will, so Data Factory cannot reach it from Azure's shared machines. The map now has the integration runtime and Data Factory. The code at the top is templates slash modules slash factory dot bicep. The factory gets its own managed identity, and public network access disabled. Inside it is a self hosted integration runtime called i r bank: software that runs on the bank's own machines, here the two Windows virtual machines from Course six's runtime module. Each machine registers with the runtime using its authentication key, and a runtime can have up to four such nodes, for availability and for capacity. The table in the middle is what running those machines means, because self hosted means the bank runs them. The image is Windows Server twenty twenty two, Azure Edition. The disks are Premium S S D, with the runtime's logs on the operating system disk. The two nodes sit in zones one and three, under one runtime and one key. On the network, they only go out, on port four four three, through the hub firewall, to Data Factory's service. They are patched by Azure Update Manager, one node at a time, so the runtime never stops. And people reach them through Azure Bastion from the hub, because neither has a public I P. The list at the bottom says why this design is the right one. TradeBook has no public address. The runtime reaches it over ExpressRoute. It calls out to Data Factory to ask for work, rather than Data Factory calling in. So nothing inside the bank opens a port inward. Next, the first copy through it: TradeBook's deals.",
+}

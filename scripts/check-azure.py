@@ -33,6 +33,9 @@ unless it IS a spine file, byte for byte (`replayed`): scripts/spine.py has alre
                                effect, field conditions well-formed.
                     role `.json` (has "assignableScopes")   a custom role: actions in
                                Provider/type/operation form, data actions apart from actions.
+                    a spine `adf/<folder>/*.json`   a Data Factory resource in its git layout, walked
+                               against azure-mgmt-datafactory's PipelineResource, DatasetResource,
+                               LinkedServiceResource, TriggerResource or IntegrationRuntimeResource.
                     other `.json`   valid JSON.
                     `.yml`     a GitHub Actions workflow, linted by actionlint: syntax, expressions,
                                and each well-known action's real inputs (a spine file is linted with
@@ -435,8 +438,15 @@ def static_check(where: str, name: str, text: str, path: Path | None) -> None:
         check_bicepparam(where, path)
     elif name.endswith((".yml", ".yaml")):
         check_workflow(where, text, path)
+    elif path and path.suffix == ".json" and path.parent.name in ADF_FOLDERS and path.parent.parent.name == "adf":
+        check_model(where, "datafactory", ADF_FOLDERS[path.parent.name], text)
     elif name.endswith(".json"):
         check_json(where, text)
+
+
+# Data Factory's git layout: adf/<folder>/<name>.json, each file one resource ({name, properties}).
+ADF_FOLDERS = {"pipeline": "PipelineResource", "dataset": "DatasetResource", "linkedService": "LinkedServiceResource",
+               "trigger": "TriggerResource", "integrationRuntime": "IntegrationRuntimeResource"}
 
 
 def main() -> None:

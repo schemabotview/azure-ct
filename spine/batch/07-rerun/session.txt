@@ -1,0 +1,5 @@
+$ python tools/rerun_window.py
+append   first failed after part-1, then succeeded
+         3 files, 3 rows (the window has 2)
+replace  first failed after part-1, then succeeded
+         2 files, 2 rows (the window has 2)

@@ -1,0 +1,14 @@
+$ python tools/copy_window.py 2026-01-01 2026-10-13
+SELECT deal_id, counterparty_id, product, amount_musd, updated_at
+  FROM trade.deals
+ WHERE updated_at >= '2026-01-01' AND updated_at < '2026-10-13'
+10 rows -> bronze/tradebook/deals/2026-01-01/deals.parquet
+$ psql -d tradebook -f data/tradebook_20261013.sql
+INSERT 0 1
+UPDATE 1
+DELETE 1
+$ python tools/copy_window.py 2026-10-13 2026-10-14
+SELECT deal_id, counterparty_id, product, amount_musd, updated_at
+  FROM trade.deals
+ WHERE updated_at >= '2026-10-13' AND updated_at < '2026-10-14'
+2 rows -> bronze/tradebook/deals/2026-10-13/deals.parquet

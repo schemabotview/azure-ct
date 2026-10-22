@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const rerunsWithoutDuplicates: Section = {
+  id: 'reruns-without-duplicates',
+  title: 'Reruns without duplicates',
+  scene: 'rerun-window',
+  narration:
+    "Pipelines fail halfway: the runtime loses its connection to TradeBook after writing part of a window, and the retry runs the whole window again. Whether that doubles the data depends only on how the load writes. The editor shows tools slash rerun window dot py, which plays it out in the storage emulator with two parts of the thirteenth's window: the files are real, and the failure is raised on purpose. Its run function writes each part, and stops after the first if told to fail. In append mode, each run names its files after its run I D, so nothing is ever overwritten. In replace mode, the window has one folder and fixed file names. Each mode runs twice: first failing after part one, then succeeding. The terminal shows the difference. Append ends with three files and three rows, for a window that has two: the failed run's part one is still there beside the retry's. Replace ends with two files and two rows, because the retry wrote the same names again. That property, running twice leaves the same result as once, is called idempotent. The table on the right applies it. Appending a file per run duplicates on a rerun. One folder per window replaces. Inserting into a table duplicates. Merging on the key replaces. The platform's loads are all of the second kind. The list underneath is how the pipeline fails well. The copy retries twice, five minutes apart. A failed window is rerun alone, from the trigger's run history. The next window waits, because the trigger runs one window at a time. And everything downstream reads only finished windows. Next, the last piece: how the pipelines sign in, without a single password in the factory.",
+}

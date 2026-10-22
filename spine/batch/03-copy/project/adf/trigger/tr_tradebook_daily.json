@@ -1,0 +1,25 @@
+{
+  "name": "tr_tradebook_daily",
+  "properties": {
+    "type": "TumblingWindowTrigger",
+    "description": "One run per day of TradeBook changes, just after midnight UTC",
+    "typeProperties": {
+      "frequency": "Hour",
+      "interval": 24,
+      "startTime": "2026-10-13T00:00:00Z",
+      "delay": "00:05:00",
+      "maxConcurrency": 1,
+      "retryPolicy": {"count": 2, "intervalInSeconds": 600}
+    },
+    "pipeline": {
+      "pipelineReference": {
+        "referenceName": "copy_tradebook",
+        "type": "PipelineReference"
+      },
+      "parameters": {
+        "windowStart": "@trigger().outputs.windowStartTime",
+        "windowEnd": "@trigger().outputs.windowEndTime"
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+$ python tools/reconcile.py
+           deals    USD m
+TradeBook     10    27.80
+lake          11    28.70
+  LC-2007: TradeBook absent, lake 0.90

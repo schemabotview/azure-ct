@@ -1,0 +1,4 @@
+$ python tools/adf_parts.py --credentials
+ls_keyvault   AzureKeyVault  the factory's managed identity
+ls_lake       AzureBlobFS    the factory's managed identity
+ls_tradebook  PostgreSqlV2   user adf_reader, Key Vault secret tradebook-adf-reader

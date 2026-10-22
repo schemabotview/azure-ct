@@ -41,7 +41,7 @@ superseded by the plan.
 | 5 | `network` | Give it a network | 9 | authored, awaiting owner review (no narration audio yet) |
 | 6 | `automate` | Make it repeatable | 8 | authored, awaiting owner review (no narration audio yet) |
 | 7 | `land` | Land the files | 8 | authored, awaiting owner review (no narration audio yet) |
-| 8 | `batch` | Bring the batches in | 8 | planned |
+| 8 | `batch` | Bring the batches in | 8 | authored, awaiting owner review (no narration audio yet) |
 | 9 | `stream` | Bring the stream in | 8 | planned |
 | 10 | `transform` | Transform it in Databricks | 7 | planned |
 | 11 | `serve` | Serve the results | 9 | planned |
@@ -126,7 +126,7 @@ Every code card declares how it was verified, as the last part of its `filename`
 | level | what it means | what check:azure does |
 | --- | --- | --- |
 | `runs locally` | real Python or SQL, really run | runs the `.py` card with the SDK environment (or a `.sql` card in a fresh database on the local PostgreSQL 16 cluster); a sibling node `<id>-out` must equal its output exactly |
-| `model-checked` | checked offline against Azure's own definitions | `.yml`: actionlint (syntax, expressions, each known action's real inputs); a spine `.bicepparam`: `bicep build-params` + lint; `.bicep`: `bicep build` + `bicep lint`, any warning fails (Bicep type-checks every property against Azure's API definitions); `.sh`: `bash -n`, and every `az …` line through the CLI's own parser (a command that only wants a sign-in passes; an unknown command or parameter fails); `<package>.<Model>.json`: every key at every depth is a member of that model in `azure-mgmt-<package>` (TypeSpec and msrest models, discriminated subtypes and maps handled); policy JSON: if/then, known effect, well-formed conditions; role JSON: Provider/type/operation actions |
+| `model-checked` | checked offline against Azure's own definitions | `.yml`: actionlint (syntax, expressions, each known action's real inputs); a spine `adf/<folder>/*.json`: walked against azure-mgmt-datafactory's Pipeline/Dataset/LinkedService/Trigger resource models; a spine `.bicepparam`: `bicep build-params` + lint; `.bicep`: `bicep build` + `bicep lint`, any warning fails (Bicep type-checks every property against Azure's API definitions); `.sh`: `bash -n`, and every `az …` line through the CLI's own parser (a command that only wants a sign-in passes; an unknown command or parameter fails); `<package>.<Model>.json`: every key at every depth is a member of that model in `azure-mgmt-<package>` (TypeSpec and msrest models, discriminated subtypes and maps handled); policy JSON: if/then, known effect, well-formed conditions; role JSON: Provider/type/operation actions |
 | `emulated` | behaviour from an emulator, **not Azure** | must be a spine file (replayed); a stand-alone emulated card fails |
 | `doc-cited` | Microsoft documentation says so | the scene file must carry a `// source: https://…` comment |
 | `illustrative` | made-up but realistic; nothing checks it | counted, so unverified cards stay visible |
@@ -180,6 +180,10 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | lifecycle model | bronze 2 GB/day, a year: hot 62 / cool 120 / cold 548 GB = 4.63 vs all hot 14.60 USD/month; landing 60 GB 1.20 (**hypothetical**: hot 0.020, cool 0.010, cold 0.004 per GB-month) |
 | reports | account `stwgreports<env>` (GZRS, no HNS), container `large-exposures`, container-level WORM 2,557 days (seven years, assumed bank rule), locked by `infra/07-lock-reports.sh` |
 | collateral share | account `stwgcollat<env>` (ZRS), share `collateral` 100 GiB SMB, Microsoft Entra Kerberos (`AADKERB`), default share permission None, role Storage File Data SMB Share Contributor |
+| TradeBook deals | `data/tradebook.sql` (local PostgreSQL 16 stand-in, `trade.deals`), 12 Oct: LC-1987 C-101 3.00, LC-1990 C-201 4.00, LC-1995 C-202 1.20, GT-2001 C-301 5.50, LC-2003 C-102 2.50, LC-2007 C-302 0.90, TL-2010 C-401 3.30, LC-2011 C-101 2.00, LC-2015 C-501 2.20, LC-2020 C-502 1.80 (10 deals, 26.40); 13 Oct: + LC-2041 C-101 2.00 (14:05), LC-1995 → 1.50 (11:20), LC-2007 deleted |
+| batch copy | factory `adf-wg-risk-prod`, runtime `ir-bank`; pipeline `copy_tradebook` (tumbling window `tr_tradebook_daily`, 24 h, delay 5 min, retry 2 × 600 s) → `bronze/tradebook/deals/<window start>/deals.parquet`: first load 10 rows, 13 Oct 2 rows; reconcile TradeBook 10 / 27.80 vs lake 11 / 28.70 (LC-2007) |
+| arriving files | `load_landing_file` (Get Metadata → If → Copy or Fail `ContractBroken`), storage event triggers `tr_hierarchy_arrives` / `tr_collateral_arrives` (`/landing/blobs/<source>/`, `.csv`, ignore empty); `contracts/hierarchy.json`; `hierarchy_20261014.csv` refused (cpty_id, lei, three-letter countries) |
+| factory identity | linked services `ls_lake` / `ls_keyvault` (managed identity), `ls_tradebook` (user `adf_reader`, Key Vault secret `tradebook-adf-reader`); roles Key Vault Secrets User on the vault, Blob Data Contributor on landing and bronze; deployer gets RBAC Administrator conditioned to those two roles (`infra/08-deploy-can-assign.sh`) |
 | API versions | Storage data plane `x-ms-version` 2026-10-06 (SDK 12.31); Microsoft.Storage control plane `2025-08-01` (CLI 2.91, Bicep 0.48.1) |
 
 ## Scene inventory
@@ -237,6 +241,14 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | `locked-reports` | map frame: reports.bicep (WORM 2,557 d) + 07-lock-reports.sh; what a locked policy allows | `land-reports-nobody-can-change` |
 | `files-and-disks` | map frame: share.bicep (Entra Kerberos), reaching the share, the runtime VMs' disks | `land-files-and-disks` |
 | `storage-redundancy` | LRS / ZRS / GRS / GZRS table, a failover, what redundancy does not undo | `land-redundancy-and-restore` |
+| `adf-parts` | IDE: adf/pipeline/copy_tradebook.json + tools/adf_parts.py (follows the git JSON's references) | `batch-data-factorys-parts` |
+| `bank-runtime` | map frame: factory.bicep (MI, private, ir-bank); running the runtime's two VMs | `batch-a-runtime-inside-the-bank` |
+| `copy-tradebook` | IDE: tools/copy_window.py runs the pipeline's own query on PostgreSQL 16 into Azurite: 10 then 2 rows | `batch-copying-tradebook` |
+| `files-arrive` | map frame: tr_collateral_arrives.json + tools/route_event.py (a model of the event match) | `batch-files-that-arrive` |
+| `file-contract` | IDE: tools/check_contract.py: 13 Oct agreed, 14 Oct refused | `batch-a-files-contract` |
+| `reconcile-tradebook` | IDE: tools/reconcile.py (PostgreSQL vs bronze): LC-2007 deleted, still in the lake; window vs CDC | `batch-batch-cdc-and-reconciliation` |
+| `rerun-window` | IDE: tools/rerun_window.py (Azurite): append 3 rows vs replace 2 | `batch-reruns-without-duplicates` |
+| `pipeline-secrets` | IDE: ls_tradebook.json (Key Vault secret), adf_parts --credentials; the factory's roles | `batch-secrets-and-identities-for-pipelines` |
 
 ## Invariants — do not break
 

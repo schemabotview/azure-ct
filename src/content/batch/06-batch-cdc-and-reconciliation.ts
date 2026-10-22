@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const batchCdcAndReconciliation: Section = {
+  id: 'batch-cdc-and-reconciliation',
+  title: 'Batch, CDC and reconciliation',
+  scene: 'reconcile-tradebook',
+  narration:
+    "Every copy can go wrong in a way that raises no error, so every night the lake is reconciled with its source. The editor shows tools slash reconcile dot py. It asks TradeBook, still the local PostgreSQL sixteen database, for every deal and its amount. It then reads every daily window in bronze, from the storage emulator, and keeps each deal at its latest version. It counts and sums both sides, and lists every deal that differs, one by one, never as a single net figure. The terminal shows the result after the thirteenth. TradeBook has ten deals worth twenty seven point eight million. The lake has eleven, worth twenty eight point seven. The difference is one deal: L C twenty oh seven, absent from TradeBook and still in the lake at nought point nine million. It was deleted on the thirteenth, and a query by window cannot see a row that no longer exists. Left alone, Contoso Freight would carry a cancelled letter of credit in tomorrow's exposure. The table on the right compares the two ways to copy changes. Copying by window reads the rows that changed, cannot see deletes, puts one query a day on TradeBook, and is a day behind. Change data capture reads the database's own log of inserts, updates and deletes, so it sees deletes, needs a replication slot on TradeBook, and is minutes behind. The bank's database team must agree to that slot, so for now the platform keeps the daily copy and reconciles it, and the stream in Course nine is where capture by log arrives. The list underneath is the nightly rule: count and sum on both sides, list every deal that differs, and stop the report run when anything does. Next, what happens when a run fails halfway and is run again.",
+}

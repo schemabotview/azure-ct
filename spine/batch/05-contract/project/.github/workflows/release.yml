@@ -1,0 +1,27 @@
+# One environment's release. No secret is stored anywhere: azure/login trades
+# GitHub's token for an Entra ID one, through the federated credential that
+# infra/06-federation.sh made for this repository and environment.
+name: release
+on:
+  workflow_call:
+    inputs:
+      env: { type: string, required: true }
+
+permissions:
+  id-token: write   # let the job ask GitHub for a token
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}   # prod: a required reviewer approves
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4   # the build, not a rebuild
+        with: { name: release, path: out/ }
+      - uses: azure/login@v2
+        with:   # identifiers, not secrets: set per environment
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - run: infra/06-deploy.sh ${{ inputs.env }}
