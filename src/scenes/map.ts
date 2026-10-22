@@ -81,9 +81,9 @@ export const BUILT_BY: Record<number, Part[]> = (() => {
   const adds: Record<number, Part[]> = {
     1: ['tradebook', 'files', 'feed', 'team', 'regulator'],
     3: ['lake', 'cost'],
-    4: ['entra', 'mi', 'policy', 'kv'],
+    4: ['entra', 'mi', 'policy'],
     5: ['er', 'vnet', 'pe'],
-    6: ['bicep', 'pipeline'],
+    6: ['bicep', 'pipeline', 'kv'],
     7: ['reports'],
     8: ['shir', 'adf', 'eg'],
     9: ['evh', 'sb'],

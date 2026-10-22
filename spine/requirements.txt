@@ -9,6 +9,7 @@ azure-identity==1.26.0
 confluent-kafka==2.16.0
 psycopg[binary]==3.3.6
 PyJWT==2.15.1
+cryptography==50.0.2
 duckdb==2.0.0
 pyarrow==26.0.0
 libfaketime==3.0.1
