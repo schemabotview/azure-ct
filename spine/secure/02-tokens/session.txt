@@ -1,0 +1,11 @@
+$ python tools/token_claims.py
+token: 821 characters, three parts: 3
+aud  api://exposure-api
+iss  https://login.microsoftonline.com/aaaabbbb-0000-cccc-1111-dddd2222eeee/v2.0
+tid  aaaabbbb-0000-cccc-1111-dddd2222eeee
+oid  bbbbcccc-1111-dddd-2222-eeee3333ffff
+name omar
+scp  Exposure.Read
+azp  00001111-aaaa-2222-bbbb-3333cccc4444
+lasts 65 minutes; signature verified
+scp changed to Exposure.Admin: Signature verification failed

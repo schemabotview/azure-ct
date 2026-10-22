@@ -1,0 +1,8 @@
+$ python tools/planes.py
+priya  change the lake’s settings       allowed: Contributor
+priya  read a gold file, Entra token    denied: no role grants it
+priya  list the account keys            allowed: Contributor
+omar   read a gold file, Entra token    allowed: Storage Blob Data Reader
+omar   change the lake’s settings       denied: no role grants it
+a key reads every file in the account, whoever holds it:
+  allowSharedKeyAccess=false on the lake (Course 7) refuses keys

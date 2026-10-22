@@ -124,24 +124,35 @@ def check_az(where: str, text: str) -> None:
     joined = re.sub(r"\\\n\s*", " ", text)
     for raw in joined.splitlines():
         line = raw.strip().removeprefix("$ ").removeprefix("> ").strip()
-        found = re.search(r"(?:^|\$\(|\|\s*|&&\s*|;\s*)\s*(az\s[^)|;&]*)", line)
-        if not found or line.startswith("#"):
+        if line.startswith("#"):
             continue
-        cmd = found.group(1).split(" #", 1)[0]
-        cmd = re.sub(r"\$\{?\w+\}?", "x", re.sub(r"\$\([^)]*\)", "x", cmd))
-        try:
-            words = shlex.split(cmd)
-        except ValueError:
-            problems.append(f"{where}: cannot split `{cmd}`")
-            continue
-        if len(words) < 2 or words[1] in CUSTOMISATIONS:
-            notes.append(f"{where}: `az {' '.join(words[1:2])}` changes the CLI itself, not checked")
-            continue
-        verdict = az_verdict(words)
-        if verdict == "EXTENSION":
-            notes.append(f"{where}: `{' '.join(words[:3])}` is a CLI extension, not installed offline; not checked")
-        elif verdict:
-            problems.append(f"{where}: the Azure CLI rejects `{' '.join(words[:6])}…`: {verdict}")
+        # command substitutions, innermost first: an az inside one is checked on its own
+        candidates = []
+        while (inner := re.search(r"\$\(([^()]*)\)", line)):
+            candidates.append(inner.group(1))
+            line = line[:inner.start()] + "x" + line[inner.end():]
+        candidates.append(line)
+        for part in candidates:
+            found = re.search(r"(?:^|\|\s*|&&\s*|;\s*)\s*(az\s[^|;&]*)", part)
+            if found:
+                check_az_command(where, found.group(1))
+
+
+def check_az_command(where: str, cmd: str) -> None:
+    cmd = re.sub(r"\$\{?\w+\}?", "x", cmd.split(" #", 1)[0])
+    try:
+        words = shlex.split(cmd)
+    except ValueError:
+        problems.append(f"{where}: cannot split `{cmd}`")
+        return
+    if len(words) < 2 or words[1] in CUSTOMISATIONS:
+        notes.append(f"{where}: `az {' '.join(words[1:2])}` changes the CLI itself, not checked")
+        return
+    verdict = az_verdict(words)
+    if verdict == "EXTENSION":
+        notes.append(f"{where}: `{' '.join(words[:3])}` is a CLI extension, not installed offline; not checked")
+    elif verdict:
+        problems.append(f"{where}: the Azure CLI rejects `{' '.join(words[:6])}…`: {verdict}")
 
 
 def check_bash(where: str, text: str) -> None:

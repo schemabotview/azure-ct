@@ -37,7 +37,7 @@ superseded by the plan.
 | 1 | `why-cloud` | Why the cloud | 6 | authored, awaiting owner review (no narration audio yet) |
 | 2 | `how-azure-runs` | How Azure runs a request | 6 | authored, awaiting owner review (no narration audio yet) |
 | 3 | `start` | Start the project | 6 | authored, awaiting owner review (no narration audio yet) |
-| 4 | `secure` | Lock it down | 8 | planned |
+| 4 | `secure` | Lock it down | 8 | authored, awaiting owner review (no narration audio yet) |
 | 5 | `network` | Give it a network | 9 | planned |
 | 6 | `automate` | Make it repeatable | 8 | planned |
 | 7 | `land` | Land the files | 8 | planned |
@@ -53,7 +53,15 @@ superseded by the plan.
 Lakeflow) belongs to `databricks-data-engineer-ct`. This course teaches what Azure puts around it.
 
 **Network note (2026-10-22):** this environment's policy denies `learn.microsoft.com`; Microsoft's
-emulator images (`mcr.microsoft.com`), PyPI, npm and NuGet are reachable.
+emulator images (`mcr.microsoft.com`), PyPI, npm and NuGet are reachable. **The Learn pages' own
+sources are reachable on GitHub**: `raw.githubusercontent.com/MicrosoftDocs/<repo>/<branch>/<path>`
+for the public repos `azure-docs`, `azure-compute-docs`, `entra-docs`, `azure-management-docs`,
+`azure-monitor-docs`, `azure-dev-docs`, `fabric-docs`, `azure-docs-cli` (Key Vault, PostgreSQL,
+Cosmos DB, reliability and policy pages live in repos that are not public — web search for those).
+Built-in role JSON comes from `azure-docs/articles/role-based-access-control/built-in-roles/*.md`,
+built-in policy definitions from `raw.githubusercontent.com/Azure/azure-policy/master/built-in-policies/`.
+A local `.tmp/doc.sh` (tree-only clones as a path index, raw fetch for one file) is how facts were
+checked; it is not committed. Cite the learn.microsoft.com URL that page publishes as.
 
 ## Frames
 
@@ -73,6 +81,10 @@ section in the plan:
   row); the terminal holds about 16 lines; a side pane holds tables and lists only, with short cells.
   Anything larger grows a pane and `check-render.mjs` fails the frame.
 - **Map frame side pane** is 853 px: a code card there must stay within ~80 columns, a terminal 88.
+- **Ids:** `ideFrame` and `mapFrame` name their wrappers `<id>-explorer`, `<id>-centre`, `<id>-side`,
+  `<id>-map`; a side pane's own root must not reuse one (use `<id>-pane`) — the renderer hangs.
+- **Explorer trees** are generated from the snapshots (`src/scenes/<course>/tree.ts`); a folder marked
+  new stays open, so mark files, not a folder of long names (it widens the explorer).
 - **Concept frame** — any scene; author wide, not tall (the frame is 16:9).
 
 ## The spine: commands are replayed, not pasted
@@ -147,6 +159,14 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | sign-in | priya@woodgrovebank.example; profile lists risk-prod (default) and risk-dev; she sets risk-dev |
 | break-glass | `breakglass-01`, `breakglass-02`: Global Administrator, cloud-only, phishing-resistant MFA |
 | dev ledger | vm-wg-shir-dev 146.00, disk 12.80, pip-wg-shir-dev 3.65, evh-wg-risk-dev 21.90 (untagged), stwgriskdev 4.00; owner priya 166.45, untagged 21.90; budget `risk-dev-monthly` 150 USD monthly, filter env=dev, actual 80% / forecast 100% → email priya; forecast 126% |
+| groups | Risk Data Engineers (priya), Risk Analysts (omar), Credit Officers (sam), Risk Auditors (audit-01); daily accounts synced from the bank's directory |
+| Conditional Access | admin roles → phishing-resistant MFA; risk data (analysts, officers) → compliant device; legacy sign-in blocked; break-glass excluded from blocks (Entra ID P1) |
+| exposure API app | registration "Exposure API", `api://exposure-api`, scope `Exposure.Read`; omar's oid `bbbbcccc-1111-dddd-2222-eeee3333ffff`; dashboard client `00001111-aaaa-2222-bbbb-3333cccc4444`; token 821 chars, 65 min (made locally, labelled) |
+| identities | `id-wg-exposure-prod` user-assigned (API + breach function); system-assigned: `adf-wg-risk-prod`, `ac-wg-risk-prod`, `vm-wg-shir-prod-1` |
+| role assignments | Risk Data Engineers: Contributor on risk-dev, Reader on risk-prod; Risk Analysts: Storage Blob Data Reader on gold; Risk Auditors: Reader on landing-zones, Blob Data Reader on reports; adf-wg-risk-prod: Blob Data Contributor on landing. Built-in definitions verbatim in `policies/roles/`; answers from `tools/access_check.py` (a model: no deny assignments, no conditions) |
+| policies | built-in Allowed locations (`e56962a6-4747-49cd-b67b-bf8b01975c4c`, Indexed, so not resource groups) → uksouth, ukwest; custom "Storage: no public network access" (deny unless publicNetworkAccess = Disabled; missing counts); both at management group woodgrove/landing-zones |
+| management groups | woodgrove → platform (platform-connectivity) / landing-zones (risk-prod, risk-dev) |
+| PIM | Owner on risk-prod: nobody standing; 3 platform engineers eligible 1 h with approval; break-glass via Global Administrator; access reviews quarterly; Activity Log 90 days |
 | API versions | Storage data plane `x-ms-version` 2026-10-06 (SDK 12.31); Microsoft.Storage control plane `2025-08-01` (CLI 2.91, Bicep 0.48.1) |
 
 ## Scene inventory
@@ -171,6 +191,14 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | `emulators` | IDE: env.sh, the emulator refusing an uppercase name; the emulator list and what none can show | `start-the-emulators-beside-azure` |
 | `first-resources` | map frame: infra/01-lake.sh (stops at the sign-in), landing created twice in the emulator | `start-the-first-resources` |
 | `cleanup` | IDE: tools/cost_ledger.py (188.35 / 42.35, untagged 21.90), the budget, what deleting a group leaves | `start-budgets-tags-and-cleanup` |
+| `people-signin` | map frame: infra/04-groups.sh, the four groups, Conditional Access, authn vs authz | `secure-people-and-sign-in` |
+| `app-tokens` | IDE: tools/token_claims.py (a locally made token decoded, tampered, refused); app object vs service principal | `secure-applications-and-tokens` |
+| `managed-identities` | map frame: infra/04-identities.sh, the workload identities, system- vs user-assigned | `secure-managed-identities` |
+| `role-assignments` | IDE: policies/assignments.py + tools/access_table.py (the RBAC model's answers), scopes reach down | `secure-role-based-access` |
+| `two-planes` | IDE: tools/access_check.py + planes.py: Contributor cannot read a blob, but can list keys | `secure-control-plane-and-data-plane` |
+| `policy-deny` | IDE: policies/storage-private.json + tools/policy_check.py over five proposed resources | `secure-azure-policy` |
+| `environments` | map frame: infra/04-management-groups.sh, what lands where, what a subscription isolates | `secure-management-groups-and-environments` |
+| `privileged-access` | PIM activation steps, access reviews, landing-zone ownership, standing vs eligible Owner, audit trail | `secure-privileged-access-and-audit` |
 
 ## Invariants — do not break
 

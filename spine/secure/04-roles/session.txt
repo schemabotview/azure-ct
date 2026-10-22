@@ -1,0 +1,11 @@
+$ python tools/access_table.py
+priya            create a VM in risk-dev   allowed: Contributor
+priya            grant a role in risk-dev  denied: excluded by Contributor
+priya            read prod lake settings   allowed: Reader
+priya            change the prod lake      denied: no role grants it
+omar             read a file in gold       allowed: Storage Blob Data Reader
+omar             read a file in landing    denied: no role grants it
+audit-01         read prod lake settings   allowed: Reader
+audit-01         read a filed report       allowed: Storage Blob Data Reader
+adf-wg-risk-prod write a file to landing   allowed: Storage Blob Data Contributor
+adf-wg-risk-prod write a file to gold      denied: no role grants it

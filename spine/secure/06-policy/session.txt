@@ -1,0 +1,6 @@
+$ python tools/policy_check.py
+stwgriskprod     uksouth     allowed
+stwgriskcopy     westeurope  denied: Allowed locations
+stwgriskscratch  uksouth     denied: Storage: no public network access
+stwgrisktemp     ukwest      denied: Storage: no public network access
+rg-risk-eu       westeurope  allowed
