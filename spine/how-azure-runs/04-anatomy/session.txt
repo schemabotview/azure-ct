@@ -1,0 +1,16 @@
+$ export BLOB=hierarchy/hierarchy_20261013.csv
+$ az storage blob show -c landing -n $BLOB --query properties.contentLength
+507
+$ python request_parts.py
+method        HEAD
+url           https://stwgriskprod.blob.core.windows.net/landing/hierarchy/hierarchy_202
+61013.csv
+api version   2026-10-06
+date          Tue, 13 Oct 2026 22:30:00 GMT
+scheme        SharedKey
+account       stwgriskprod
+signature     HMAC-SHA256 of the request, 44 characters (not shown)
+status        200
+length        507 bytes
+$ az storage account show -n stwgriskprod -g rg-risk-prod-data
+ERROR: Please run 'az login' to setup account.

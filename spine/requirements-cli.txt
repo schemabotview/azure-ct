@@ -1,0 +1,2 @@
+azure-cli==2.91.0
+libfaketime==3.0.1

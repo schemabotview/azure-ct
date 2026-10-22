@@ -1,0 +1,3 @@
+{"project": "how-azure-runs", "venv": true, "env": true, "columns": 88,
+ "setup": ["az storage container create --name landing -o none",
+           "az storage blob upload -c landing -n hierarchy/hierarchy_20261013.csv -f hierarchy_20261013.csv --no-progress -o none"]}
