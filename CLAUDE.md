@@ -1,6 +1,12 @@
 # CLAUDE.md — azure-ct
 
-> The Azure course: 12 courses, 90 sections, authored from `AZURE-COURSE-PLAN.md` (see `AUTHORING-PLAN.md`
+> **Re-planned on 2026-10-22, awaiting owner review.** `AZURE-COURSE-PLAN.md` now holds the new plan:
+> 14 courses, 111 sections, one project (`risk-on-azure`, Woodgrove Bank's counterparty-risk data
+> platform), scene-only frames, emulators as aws-ct used moto. The 12 courses below are the PREVIOUS
+> plan's, still in the tree until the reset (delete them, upgrade to flow 2.2 / shell 0.14) lands;
+> the previous plan is in git history, and `AUTHORING-PLAN.md` describes that previous approach.
+>
+> The Azure course: 12 courses, 90 sections, authored from the previous `AZURE-COURSE-PLAN.md` (see `AUTHORING-PLAN.md`
 > for the approach, review guide and open items). Below the inventory is the template's engine guidance.
 >
 > The workspace-level `CLAUDE.md` (one level up, in `graphl-workspace`) holds the invariants that
