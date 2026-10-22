@@ -38,7 +38,7 @@ superseded by the plan.
 | 2 | `how-azure-runs` | How Azure runs a request | 6 | authored, awaiting owner review (no narration audio yet) |
 | 3 | `start` | Start the project | 6 | authored, awaiting owner review (no narration audio yet) |
 | 4 | `secure` | Lock it down | 8 | authored, awaiting owner review (no narration audio yet) |
-| 5 | `network` | Give it a network | 9 | planned |
+| 5 | `network` | Give it a network | 9 | authored, awaiting owner review (no narration audio yet) |
 | 6 | `automate` | Make it repeatable | 8 | planned |
 | 7 | `land` | Land the files | 8 | planned |
 | 8 | `batch` | Bring the batches in | 8 | planned |
@@ -167,6 +167,11 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | policies | built-in Allowed locations (`e56962a6-4747-49cd-b67b-bf8b01975c4c`, Indexed, so not resource groups) → uksouth, ukwest; custom "Storage: no public network access" (deny unless publicNetworkAccess = Disabled; missing counts); both at management group woodgrove/landing-zones |
 | management groups | woodgrove → platform (platform-connectivity) / landing-zones (risk-prod, risk-dev) |
 | PIM | Owner on risk-prod: nobody standing; 3 platform engineers eligible 1 h with approval; break-glass via Global Administrator; access reviews quarterly; Activity Log 90 days |
+| address plan | on-premises 10.50.0.0/16; hub `vnet-hub-uks` 10.100.0.0/22 (GatewaySubnet .0.0/27, AzureFirewallSubnet .0.64/26 — firewall 10.100.0.68, snet-dns-inbound .1.0/28 — resolver 10.100.1.4); prod spoke `vnet-risk-prod-uks` 10.110.0.0/20: snet-dbx-host .0.0/26, snet-dbx-container .0.64/26 (Databricks-delegated), snet-pe .1.0/24, snet-app .2.0/26 (App Service-delegated), snet-shir .3.0/27; dev spoke 10.120.0.0/20 (not peered with prod); 5 addresses reserved per subnet |
+| network rules | all subnets private (`--default-outbound-access false`); `rt-risk-prod-spoke` 0.0.0.0/0 → firewall 10.100.0.68 on app, shir, pe; `nsg-snet-pe`: 100 app→5432, 110 Databricks (10.110.0.0/25)→443, 120 shir→443, 4096 deny VirtualNetwork; private zones blob, dfs, vaultcore, servicebus, postgres linked to spoke + hub; lake private endpoints `pe-stwgriskprod-blob` 10.110.1.4, `-dfs` 10.110.1.5; lake public network access Disabled |
+| peak sizing | Databricks 17 addresses per subnet (16 workers + driver); 9 private endpoints; app 20 (10 instances × 2 in a scale); shir 2 |
+| front of the dashboard | now: private Application Gateway (London, internal); Course 14: Front Door with a Private Link origin (Singapore joins) |
+| hybrid | ExpressRoute in London via the hub gateway (not encrypted by default); site-to-site VPN as backup; spoke-to-hub peering with gateway transit; platform team owns the hub (`rg-hub-net`) |
 | API versions | Storage data plane `x-ms-version` 2026-10-06 (SDK 12.31); Microsoft.Storage control plane `2025-08-01` (CLI 2.91, Bicep 0.48.1) |
 
 ## Scene inventory
@@ -199,6 +204,15 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | `policy-deny` | IDE: policies/storage-private.json + tools/policy_check.py over five proposed resources | `secure-azure-policy` |
 | `environments` | map frame: infra/04-management-groups.sh, what lands where, what a subscription isolates | `secure-management-groups-and-environments` |
 | `privileged-access` | PIM activation steps, access reviews, landing-zone ownership, standing vs eligible Owner, audit trail | `secure-privileged-access-and-audit` |
+| `cidr-plan` | IDE: tools/cidr_plan.py (no overlaps, usable counts), CIDR and ports tables | `network-addresses-cidr-and-ports` |
+| `spoke-subnets` | map frame: infra/05-network.sh (private, delegated subnets) + tools/subnet_fit.py (a sizing model) | `network-a-spoke-for-the-platform` |
+| `routes` | map frame: infra/05-routes.sh + tools/route_pick.py (longest prefix, UDR > BGP > system), ways out | `network-routes-and-outbound-access` |
+| `traffic-filters` | map frame: infra/05-nsg.sh + tools/nsg_check.py (six flows, AllowVnetInBound trap) | `network-network-security-groups` |
+| `dns-names` | map frame: infra/05-dns.sh + tools/resolve.py (one name, three vantage points) | `network-names-inside-and-outside` |
+| `tls-path` | map frame: hop-by-hop TLS, certificates, private is not encrypted | `network-tls-along-the-path` |
+| `private-endpoints` | map frame: infra/05-private-endpoints.sh + tools/reach.py; private vs service endpoint | `network-private-endpoints-and-service-endpoints` |
+| `front-door-choice` | Load Balancer / Application Gateway / Front Door / Traffic Manager, the dashboard's answer in two steps | `network-load-balancer-application-gateway-or-front-door` |
+| `hybrid-links` | map frame: infra/05-peering.sh, ways to join networks, ExpressRoute + VPN backup | `network-reaching-the-bank` |
 
 ## Invariants — do not break
 

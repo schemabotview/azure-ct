@@ -1,0 +1,8 @@
+$ python tools/nsg_check.py
+the API to the risk mart         5432  allow    100 app-to-mart
+a Databricks node to the lake     443  allow    110 databricks-to-pe
+the integration VM to the lake    443  allow    120 shir-to-lake
+the integration VM to the mart   5432  deny    4096 deny-other-vnet
+TradeBook to the mart            5432  deny    4096 deny-other-vnet
+the internet to the lake          443  deny   65500 DenyAllInBound
+a reply to an allowed flow goes back out: the rules are stateful
