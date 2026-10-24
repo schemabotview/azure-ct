@@ -1,0 +1,5 @@
+$ python tools/retry_jitter.py
+retry policy                         429s  last served
+fixed 1 s                           1,800         9.0s
+exponential, no jitter              1,800        25.5s
+exponential with full jitter          964         1.9s

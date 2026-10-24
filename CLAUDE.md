@@ -46,7 +46,7 @@ superseded by the plan.
 | 10 | `transform` | Transform it in Databricks | 7 | authored, awaiting owner review (no narration audio yet) |
 | 11 | `serve` | Serve the results | 9 | authored, awaiting owner review (no narration audio yet) |
 | 12 | `publish` | Publish to the risk team | 9 | authored, awaiting owner review (no narration audio yet) |
-| 13 | `operate` | Operate it | 10 | planned |
+| 13 | `operate` | Operate it | 10 | authored, awaiting owner review (no narration audio yet) |
 | 14 | `evolve` | Measure, tune and evolve it | 9 | planned |
 
 **Scope boundary:** the Databricks side (notebooks, Spark, Delta, Unity Catalog grants, Auto Loader,
@@ -124,6 +124,11 @@ What makes a replay deterministic, all of it about the machine:
   Service Bus emulator refuses a TTL over 1 h and a duplicate window over 5 min. `{"cosmos": true}`
   starts the Cosmos DB (NoSQL) vNext emulator on 8081 (`COSMOS_ENDPOINT` / `COSMOS_KEY` in env.sh);
   it reports a flat request charge, so RU figures are doc-cited.
+- `{"kusto": true}` starts the Kusto (Azure Data Explorer) emulator on 8080 (`KUSTO_URL` in env.sh):
+  the language Log Analytics answers, over sample tables `tools/kql.py` loads into a volatile
+  database `risk` — no ingestion from Azure, no alerts. Give the step `"time": "real"`.
+- PostgreSQL roles are cluster-wide and outlive a step's databases: a step that creates roles drops
+  them first in its `setup` (`operate/05`).
 - Output is hard-wrapped at the pane's width: 84 columns in an IDE terminal, `"columns": 88` in a map
   frame's side pane (`MAP_SIDE_W` is 853 px; 88 × 9.02 fits). A typed line exactly the pane's width is
   refused as ambiguous.
@@ -212,6 +217,14 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | API Management | `apim-wg-risk-<env>` StandardV2, API `exposure`, policy validate-jwt (aud `api://exposure-api`, scp Exposure.Read) + rate-limit-by-key 60/60 s per subscription; model: 401 ×3, 200, 429 |
 | breach | event `Woodgrove.Risk.LimitBreached` (G-WW net 10.40 vs 10.00, 104%; deal LC-2044 2.00 booked 15:30, Wide World Importers, reservation `req-c41e`) → function `func-wg-breach-<env>` (Flex Consumption, storage `stwgfunc<env>`) → queue `breach-alerts` → Durable orchestrator: officer sam 30 min, else head of credit; reject → release reservation, tell dealer; walk: approve 15:42; timer 16:00, reject 16:08 |
 | filer | registry `crwgrisk<env>` Premium, environment `cae-wg-risk-<env>` in new subnet `snet-jobs` 10.110.4.0/27 (dev 10.120.4.0/27, delegated Microsoft.App/environments), job `job-wg-filer-<env>` cron `30 5 * * *` UTC (06:30 BST, 05:30 GMT), image `filer:1.0.3`, AcrPull; file in by 06:34; deployer's condition also allows AcrPull and Storage Blob Data Owner |
+| telemetry | workspace `log-wg-risk-<env>` (PerGB2018, 90 days interactive), `appi-wg-exposure-<env>` (workspace-based); diagnostic settings: vault audit, lake blob StorageRead/Write/Delete, factory PipelineRuns (Dedicated → ADFPipelineRun); 15 Oct 08:10 mart failover: `data/app_requests_20261015.csv` (600 requests, 08:00–08:30, one per 3 s): 08:10 7 failed, p50 1611 / p95 3918 ms, 08:11 6 failed, 2791 / 3859; Kusto emulator (`kusto: true`, `KUSTO_URL`) |
+| changes | `data/activity_20261016.json` (EXAMPLE records): 21:40 MS-PIM grants jo Owner PT1H; 21:46 jo writes nsg-snet-pe rule `temp-vendor-443` (priority 105, Allow * → 443) from 10.50.4.21; 10-17 08:05 priya deletes it |
+| 07:00 objective | indicator filed by 07:00 London; objective 95% of business days; September 2026 (model): 22 days, 21 met (95.5%), budget 1.1, used 1 (17 Sep 07:20; 29 Sep 06:58 after an early page); alert `nightly-not-done-by-0400-<env>` sev 1, every 15 min, 6 h window, `kql/nightly_late.kql`, action group `ag-wg-risk-oncall` (risk-oncall@woodgrovebank.example, SMS +44 7700900123) |
+| rotation | TradeBook password every 90 days (assumed bank rule); logins `adf_reader_blue` / `adf_reader_green` alternate; one login: retry with the old copy refused; two logins: all connect (local PostgreSQL 16) |
+| leaked token | 16 Oct, the drop token pasted into a vendor ticket; emulated: policy-bound token 403 after `collateral-drop` deleted, ad hoc still writes; Azure: user-delegation SAS → `revoke-delegation-keys`, new token cw until 19:30 |
+| backup | vault `bv-wg-risk-<env>` (GeoRedundant, soft delete AlwaysOn 14 d, immutability Locked), policy `riskmart-weekly` (Sundays 03:00 UTC, kept P1Y); drill: DELETE mart.exposure (5 rows) → restore to `riskmart_drill` → 5 groups same → deleted; Azure: `psql-wg-riskmart-drill` restored to 2026-10-16T21:30Z |
+| recovery | UK South lost at 00:30 (assumed): RTO 3 h, RPO 15 min of reports; reports GZRS failover; mart geo-restore (< 1 h); lake ZRS: no copy in UK West (re-land, gap); streams resent by the bank's Kafka; code from git |
+| throttling | model: 400 dashboards at 08:00, 40 admitted per 100 ms: fixed 1 s 1,800 × 429, last 9.0 s; exponential no jitter 1,800, 25.5 s; full jitter 964, 1.9 s (seed 12) |
 | API versions | Storage data plane `x-ms-version` 2026-10-06 (SDK 12.31); Microsoft.Storage control plane `2025-08-01` (CLI 2.91, Bicep 0.48.1) |
 
 ## Scene inventory
@@ -310,6 +323,16 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | `breach-alerts` | IDE: functions/breach_alert/function_app.py + tools/invoke_breach.py (its logic, run locally) | `publish-breach-alerts` |
 | `breach-workflow` | IDE: the Durable orchestrator + tools/walk_breach.py (stand-in runtime) | `publish-the-breach-workflow` |
 | `morning-report` | map frame: filer.bicep (registry, Container Apps job); the morning; the analysts' tools | `publish-the-morning-report-and-the-analysts` |
+| `telemetry-correlation` | map frame: the 08:10 failover as metric / log / trace, joining them, retention | `operate-metrics-logs-and-traces` |
+| `kql-first-query` | IDE: kql/api_by_minute.kql run in the Kusto emulator over a sample AppRequests table | `operate-azure-monitor-and-kql` |
+| `diagnostic-logs` | IDE: monitoring.bicep diagnostic settings + tools/who_changed.py over EXAMPLE Activity Log records | `operate-diagnostic-settings-and-the-activity-log` |
+| `deadline-objective` | IDE: alerts.bicep (log search alert, action group) + tools/deadline_slo.py (a model) | `operate-the-0700-objective` |
+| `key-rotation` | IDE: tools/rotate_secret.py on PostgreSQL 16: one login vs two in turn; CMK table | `operate-keys-and-rotation` |
+| `detect-and-block` | map frame: Defender / Sentinel / WAF, what none of them fix, who acts | `operate-defender-sentinel-and-waf` |
+| `leaked-sas` | IDE: infra/13-revoke-sas.sh + tools/sas_incident.py (emulated: policy-bound vs ad hoc) | `operate-an-incident` |
+| `restore-drill` | IDE: backup.bicep (vault, locked) + tools/restore_drill.py (pg_dump / pg_restore stand-in) | `operate-backups-that-restore` |
+| `recovery-objectives` | UK South lost: part by part in UK West, RTO/RPO, dependency order, what the plan shows | `operate-recovery-objectives` |
+| `throttling-retries` | IDE: tools/retry_jitter.py (a model): fixed / exponential / full jitter; who says 429 | `operate-quotas-and-throttling` |
 
 ## Invariants — do not break
 

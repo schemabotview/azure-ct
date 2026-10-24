@@ -1,0 +1,3 @@
+{"venv": true, "azurite": false, "postgres": ["tradebook"],
+ "setup": ["psql -q -d postgres -c 'DROP ROLE IF EXISTS adf_reader_blue' -c 'DROP ROLE IF EXISTS adf_reader_green'",
+           "psql -q -d tradebook -f data/tradebook.sql"]}

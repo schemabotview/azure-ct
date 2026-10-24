@@ -1,0 +1,12 @@
+$ python tools/restore_drill.py
+1 backup taken    mart.headroom 5 groups
+2 the mistake     DELETE FROM mart.exposure: 5 rows
+                  mart.headroom 0 groups
+3 restored to     riskmart_drill (a new database)
+4 check           mart.headroom 5 groups, same as before
+                  G-CON   4.70
+                  G-FAB   4.30
+                  G-NW    3.15
+                  G-TAIL  0.70
+                  G-WW    1.60
+5 drill over      riskmart_drill deleted

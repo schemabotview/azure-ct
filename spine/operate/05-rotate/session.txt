@@ -1,0 +1,9 @@
+$ python tools/rotate_secret.py
+one login:
+  the running copy:          still reading
+  a retry with the old copy: refused: password authentication failed
+  a new run, new secret:     connects
+two logins, in turn:
+  the running copy:          still reading
+  a retry with the old copy: connects
+  a new run, new secret:     connects

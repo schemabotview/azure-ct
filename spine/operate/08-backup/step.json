@@ -1,0 +1,1 @@
+{"venv": true, "azurite": false, "postgres": ["riskmart"], "setup": ["dropdb --if-exists riskmart_drill", "psql -d riskmart -q -f sql/mart.sql"]}

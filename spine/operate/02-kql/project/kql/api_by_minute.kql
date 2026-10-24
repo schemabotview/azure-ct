@@ -1,0 +1,10 @@
+// The exposure API around 08:10 on 15 October, minute by minute: how many
+// requests, how many failed, and how long the typical and the slow took.
+AppRequests
+| where TimeGenerated >= datetime(2026-10-15 08:06)
+    and TimeGenerated < datetime(2026-10-15 08:16)
+| summarize Requests = count(), Failed = countif(Success == false),
+            P50 = percentile(DurationMs, 50),
+            P95 = percentile(DurationMs, 95)
+    by Minute = format_datetime(bin(TimeGenerated, 1m), 'HH:mm')
+| order by Minute asc
