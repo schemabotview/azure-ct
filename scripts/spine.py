@@ -55,6 +55,7 @@ step.json (all keys optional):
   {"capture": ["path", ...]}    files the session creates that a scene shows; saved to captured/
   eventhubs.json / servicebus.json   start that Microsoft emulator (Docker) with this config, beside the step
   {"cosmos": true}              start the Cosmos DB (NoSQL, vNext) emulator in Docker on 8081
+  {"kusto": true}               start the Kusto (Azure Data Explorer) emulator in Docker on 8080
   {"columns": 100}              the pane's width: 84 in an IDE frame's terminal (default), 100 in a map frame's side pane
 """
 import base64
@@ -228,7 +229,30 @@ def start_messaging(step: Path) -> list[str]:
 COSMOS = 'mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:vnext-EN20261008'
 
 
+KUSTO = 'mcr.microsoft.com/azuredataexplorer/kustainer-linux:2026.09.30.2306-2639-3cba8cb-master'
+
+
 def _start_messaging(step: Path, made: list[str]) -> list[str]:
+    config = json.loads((step / 'step.json').read_text()) if (step / 'step.json').exists() else {}
+    if config.get('kusto'):
+        # the Kusto (Azure Data Explorer) emulator: KQL over plain HTTP on 8080
+        name = f'spine-kusto-{os.getpid()}'
+        subprocess.run(['docker', 'run', '-d', '--name', name, '-e', 'ACCEPT_EULA=Y', '-m', '4G',
+                        '-p', '8080:8080', KUSTO], check=True, capture_output=True)
+        made.append(name)
+        ask = json.dumps({'csl': '.show version'}).encode()
+        for _ in range(150):
+            try:
+                req = urllib.request.Request('http://127.0.0.1:8080/v1/rest/mgmt', data=ask,
+                                             headers={'Content-Type': 'application/json'})
+                with urllib.request.urlopen(req, timeout=5) as r:
+                    if r.status == 200:
+                        break
+            except OSError:
+                pass
+            time.sleep(2)
+        else:
+            raise SystemExit(f'{step}: the Kusto emulator did not start')
     if json.loads((step / 'step.json').read_text()).get('cosmos') if (step / 'step.json').exists() else False:
         # the Linux (vNext) Cosmos DB emulator, NoSQL API over plain HTTP on 8081
         name = f'spine-cosmos-{os.getpid()}'

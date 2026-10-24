@@ -1,0 +1,8 @@
+$ python tools/who_changed.py
+10-16 21:40  MS-PIM                       roleAssignments write
+            role=Owner to=jo@woodgrovebank.example duration=PT1H
+10-16 21:46  jo@woodgrovebank.example     securityRules write
+            nsg-snet-pe/securityRules/temp-vendor-443, from 10.50.4.21
+            priority=105 access=Allow from=* port=443
+10-17 08:05  priya@woodgrovebank.example  securityRules delete
+            nsg-snet-pe/securityRules/temp-vendor-443, from 10.50.4.37

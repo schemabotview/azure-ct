@@ -1,0 +1,27 @@
+{
+  "properties": {
+    "category": "Cost",
+    "amount": 150,
+    "timeGrain": "Monthly",
+    "timePeriod": { "startDate": "2026-10-01T00:00:00Z" },
+    "filter": {
+      "tags": { "name": "env", "operator": "In", "values": ["dev"] }
+    },
+    "notifications": {
+      "actual-80": {
+        "enabled": true,
+        "operator": "GreaterThanOrEqualTo",
+        "threshold": 80,
+        "thresholdType": "Actual",
+        "contactEmails": ["priya@woodgrovebank.example"]
+      },
+      "forecast-100": {
+        "enabled": true,
+        "operator": "GreaterThanOrEqualTo",
+        "threshold": 100,
+        "thresholdType": "Forecasted",
+        "contactEmails": ["priya@woodgrovebank.example"]
+      }
+    }
+  }
+}

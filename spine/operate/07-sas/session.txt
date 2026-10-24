@@ -1,0 +1,7 @@
+$ python tools/sas_incident.py
+before: both tokens write
+  policy-bound  write allowed
+  ad hoc        write allowed
+after deleting the policy collateral-drop
+  policy-bound  403 AuthorizationFailure
+  ad hoc        write allowed

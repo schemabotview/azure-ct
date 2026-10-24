@@ -1,0 +1,9 @@
+import type { Section } from '../types'
+
+export const fourWaysToRunOneApi: Section = {
+  id: 'four-ways-to-run-one-api',
+  title: 'Four ways to run one API',
+  scene: 'four-ways-one-api',
+  narration:
+    "Course 12 chose App Service for the exposure A P I. Now the question comes back with numbers, and a comparison is only fair if its assumptions are written next to it. They are on the left of the bottom row. The A P I is busy from eight to six and quiet after. Every worker costs the same hypothetical twenty cents an instance hour, wherever it runs. Three by day gives one per zone. And the team's own time is not priced, which favours the options that need more of it. The table at the top is the four ways. Virtual machines, one per zone, running all day: four hundred and thirty eight dollars a month, and the bank runs the operating system, the patches and the web server; at eight o'clock they are ready. App Service, today's choice: the same four hundred and thirty eight, and the bank runs only the code and its settings; ready. Container Apps, scaling by rules to three replicas by day and one at night: two hundred and sixty seven dollars sixty seven, and the bank provides an image and the scale rules; with one replica kept, ready. Functions, billed per request and scaling to zero: cost by use, and at eight o'clock four hundred dashboards would meet cold starts, unless instances are kept warm, which brings the cost back towards the others. On the right, what would change the answer. If nights stay quiet, Container Apps saves thirty nine percent. If the A P I becomes a container anyway, move it then, when the work is already being done. If traffic were rare and bursty, Functions. And if nothing changes, stay: moving has its own cost, a release, new runbooks and new failure modes, and the saving is two thousand dollars a year at hypothetical rates. The comparison is a tool for a decision, and the next section writes one down.",
+}

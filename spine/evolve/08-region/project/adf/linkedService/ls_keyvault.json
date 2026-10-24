@@ -1,0 +1,8 @@
+{
+  "name": "ls_keyvault",
+  "properties": {
+    "type": "AzureKeyVault",
+    "description": "Secrets, read with the factory's own managed identity",
+    "typeProperties": {"baseUrl": "https://kv-wg-risk-prod.vault.azure.net/"}
+  }
+}

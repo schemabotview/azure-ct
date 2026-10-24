@@ -1,0 +1,8 @@
+// One row, only when it is past 04:00 UTC and today's nightly pipeline has
+// not yet succeeded: the alert fires on any row.
+let succeeded = toscalar(ADFPipelineRun
+    | where PipelineName == 'nightly' and Status == 'Succeeded'
+    | where TimeGenerated > startofday(now())
+    | count);
+print Late = hourofday(now()) >= 4 and succeeded == 0
+| where Late

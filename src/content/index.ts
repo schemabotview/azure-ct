@@ -11,6 +11,8 @@ import { stream } from './stream'
 import { transform } from './transform'
 import { serve } from './serve'
 import { publish } from './publish'
+import { operate } from './operate'
+import { evolve } from './evolve'
 
 // Course registry, in plan order (AZURE-COURSE-PLAN.md). A course is registered here only once
 // it is authored. Reset on 2026-10-22: the previous 12-chapter course was deleted for a re-plan.
@@ -27,6 +29,8 @@ export const COURSES: Record<string, Course> = {
   [transform.id]: transform,
   [serve.id]: serve,
   [publish.id]: publish,
+  [operate.id]: operate,
+  [evolve.id]: evolve,
 }
 
 export type { Course, Section }

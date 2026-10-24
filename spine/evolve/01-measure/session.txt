@@ -1,0 +1,9 @@
+$ python evolve/stages.py
+stage             median     p95   worst  share of a usual night
+copy_tradebook       9.4    36.8    45.8  ####
+bronze              14.1    17.5    17.6  #######
+silver              31.3    35.1    35.4  ###############
+gold                22.2    25.5    25.7  ###########
+mart_load            6.3     7.9     7.9  ###
+whole night         83.9   109.6   118.7
+longest stage: silver; widest spread: copy_tradebook

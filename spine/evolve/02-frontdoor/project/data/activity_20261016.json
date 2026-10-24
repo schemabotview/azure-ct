@@ -1,0 +1,69 @@
+{
+  "note": "EXAMPLE Activity Log records, made for the course: the fields an export has, invented values",
+  "value": [
+    {
+      "eventTimestamp": "2026-10-16T21:40:05Z",
+      "caller": "MS-PIM",
+      "operationName": {
+        "value": "Microsoft.Authorization/roleAssignments/write"
+      },
+      "resourceId": "/subscriptions/aaaa0a0a-bb1b-cc2c-dd3d-eeeeee4e4e4e/providers/Microsoft.Authorization/roleAssignments/c0ffee00-1111-2222-3333-444455556666",
+      "status": {
+        "value": "Succeeded"
+      },
+      "properties": {
+        "requestbody": "{\"properties\":{\"roleDefinitionId\":\"Owner\",\"principalName\":\"jo@woodgrovebank.example\",\"duration\":\"PT1H\"}}"
+      },
+      "claims": {
+        "ipaddr": ""
+      }
+    },
+    {
+      "eventTimestamp": "2026-10-16T21:46:51Z",
+      "caller": "jo@woodgrovebank.example",
+      "operationName": {
+        "value": "Microsoft.Network/networkSecurityGroups/securityRules/write"
+      },
+      "resourceId": "/subscriptions/aaaa0a0a-bb1b-cc2c-dd3d-eeeeee4e4e4e/resourceGroups/rg-risk-prod-net/providers/Microsoft.Network/networkSecurityGroups/nsg-snet-pe/securityRules/temp-vendor-443",
+      "status": {
+        "value": "Succeeded"
+      },
+      "claims": {
+        "ipaddr": "10.50.4.21"
+      },
+      "properties": {
+        "requestbody": "{\"properties\":{\"priority\":105,\"access\":\"Allow\",\"sourceAddressPrefix\":\"*\",\"destinationPortRange\":\"443\"}}"
+      }
+    },
+    {
+      "eventTimestamp": "2026-10-16T21:52:10Z",
+      "caller": "priya@woodgrovebank.example",
+      "operationName": {
+        "value": "Microsoft.Network/networkSecurityGroups/read"
+      },
+      "resourceId": "/subscriptions/aaaa0a0a-bb1b-cc2c-dd3d-eeeeee4e4e4e/resourceGroups/rg-risk-prod-net/providers/Microsoft.Network/networkSecurityGroups/nsg-snet-pe",
+      "status": {
+        "value": "Succeeded"
+      },
+      "claims": {
+        "ipaddr": "10.50.4.37"
+      },
+      "properties": {}
+    },
+    {
+      "eventTimestamp": "2026-10-17T08:05:42Z",
+      "caller": "priya@woodgrovebank.example",
+      "operationName": {
+        "value": "Microsoft.Network/networkSecurityGroups/securityRules/delete"
+      },
+      "resourceId": "/subscriptions/aaaa0a0a-bb1b-cc2c-dd3d-eeeeee4e4e4e/resourceGroups/rg-risk-prod-net/providers/Microsoft.Network/networkSecurityGroups/nsg-snet-pe/securityRules/temp-vendor-443",
+      "status": {
+        "value": "Succeeded"
+      },
+      "claims": {
+        "ipaddr": "10.50.4.37"
+      },
+      "properties": {}
+    }
+  ]
+}

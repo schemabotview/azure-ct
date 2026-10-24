@@ -1,0 +1,8 @@
+{
+  "name": "ls_lake",
+  "properties": {
+    "type": "AzureBlobFS",
+    "description": "The lake, with the factory's managed identity: no key",
+    "typeProperties": {"url": "https://stwgriskprod.dfs.core.windows.net/"}
+  }
+}

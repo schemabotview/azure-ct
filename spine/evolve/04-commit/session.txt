@@ -1,0 +1,7 @@
+$ python evolve/commitments.py
+part                        now    after  how
+runtime VMs              292.00   109.50  stop 02:30-17:30
+risk mart + standby      365.00   237.25  reserve 1 year
+API plan, 3 zones        438.00   328.50  savings plan
+total                   1095.00   675.25  USD a month, hypothetical
+a 1-year reservation beats pay-as-you-go above 65% of hours in use

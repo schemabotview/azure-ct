@@ -1,0 +1,11 @@
+$ python evolve/priorities.py
+ #  pillar       value/effort  finding
+ 1  Reliability       4/1      restore drill timed but not scheduled
+ 2  Cost              4/1      runtime VMs idle 15 h a day
+ 3  Operations        3/1      three resources untagged, no owner
+ 4  Cost              3/1      mart and API plan not committed
+ 5  Reliability       5/2      lake has no copy outside UK South
+ 6  Operations        4/2      one alert: the night; none on the API
+ 7  Security          4/3      drop tokens by hand, pasted in tickets
+ 8  Performance       3/3      TradeBook copy p95 four times its median
+ 9  Performance       2/4      silver stage is a third of the night
