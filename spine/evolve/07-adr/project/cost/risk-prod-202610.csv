@@ -1,0 +1,17 @@
+resource,group,service,owner,env,usd
+dbw-wg-risk-prod,rg-risk-prod-data,Azure Databricks,risk-data,prod,390.60
+vm-wg-shir-prod-1,rg-risk-prod-data,Virtual Machines,risk-data,prod,146.00
+vm-wg-shir-prod-2,rg-risk-prod-data,Virtual Machines,risk-data,prod,146.00
+psql-wg-riskmart-prod,rg-risk-prod-data,PostgreSQL,risk-data,prod,365.00
+asp-app-wg-exposure-prod,rg-risk-prod-data,App Service,risk-apps,prod,438.00
+apim-wg-risk-prod,rg-risk-prod-data,API Management,risk-apps,prod,292.00
+evh-wg-risk-prod,rg-risk-prod-data,Event Hubs,risk-data,prod,43.80
+sb-wg-risk-prod,rg-risk-prod-data,Service Bus,,,10.00
+cosmos-wg-risk-prod,rg-risk-prod-data,Azure Cosmos DB,risk-apps,prod,70.08
+redis-wg-risk-prod,rg-risk-prod-data,Azure Managed Redis,risk-apps,prod,58.40
+stwgriskprod,rg-risk-prod-data,Storage,risk-data,prod,18.00
+stwgreportsprod,rg-risk-prod-data,Storage,risk-data,prod,1.20
+log-wg-risk-prod,rg-risk-prod-data,Log Analytics,platform,prod,60.00
+func-wg-breach-prod,rg-risk-prod-data,Functions,risk-apps,prod,0.90
+stwgfuncprod,rg-risk-prod-data,Storage,,,2.10
+crwgriskprod,rg-risk-prod-data,Container Registry,,,36.50

@@ -1,0 +1,27 @@
+{
+  "name": "ls_tradebook",
+  "properties": {
+    "type": "PostgreSqlV2",
+    "description": "TradeBook, PostgreSQL 16 in the bank, through the runtime",
+    "typeProperties": {
+      "server": "tradebook.woodgrovebank.example",
+      "port": 5432,
+      "database": "tradebook",
+      "username": "adf_reader",
+      "sslMode": "verify-full",
+      "authenticationType": "Basic",
+      "password": {
+        "type": "AzureKeyVaultSecret",
+        "store": {
+          "referenceName": "ls_keyvault",
+          "type": "LinkedServiceReference"
+        },
+        "secretName": "tradebook-adf-reader"
+      }
+    },
+    "connectVia": {
+      "referenceName": "ir-bank",
+      "type": "IntegrationRuntimeReference"
+    }
+  }
+}

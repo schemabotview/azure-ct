@@ -1,0 +1,20 @@
+{
+  "id": "6f2c1b9e-3d4a-4f8e-9b7c-2a1d5e8f0c34",
+  "eventType": "Woodgrove.Risk.LimitBreached",
+  "subject": "groups/G-WW",
+  "eventTime": "2026-10-14T15:30:04Z",
+  "dataVersion": "1.0",
+  "data": {
+    "group_id": "G-WW",
+    "group_name": "Wide World Group",
+    "limit_musd": 10.0,
+    "net_musd": 10.4,
+    "deal": {
+      "deal_id": "LC-2044",
+      "counterparty": "Wide World Importers",
+      "amount_musd": 2.0,
+      "booked_at": "2026-10-14T15:30:02Z",
+      "reservation": "req-c41e"
+    }
+  }
+}

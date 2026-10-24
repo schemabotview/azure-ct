@@ -1,0 +1,5 @@
+$ python evolve/score_options.py
+PostgreSQL flexible   28 of 30
+Azure SQL Database    13 of 30
+Databricks SQL        out: fails M4 lookup < 100 ms
+Cosmos DB alone       out: fails M1 transaction

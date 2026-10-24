@@ -1,0 +1,11 @@
+$ python evolve/cost_by_tag.py
+owner                USD   share
+risk-data       1,110.60     53%
+risk-apps         859.38     41%
+platform           60.00      3%
+(untagged)         48.60      2%
+total           2,078.58   budget 2,500: 83%
+untagged:
+  sb-wg-risk-prod   Service Bus            10.00
+  stwgfuncprod      Storage                 2.10
+  crwgriskprod      Container Registry     36.50

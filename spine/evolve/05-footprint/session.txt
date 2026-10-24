@@ -1,0 +1,6 @@
+$ python evolve/footprint.py
+proxy                      before    after  change
+runtime vCPU-hours          5,840    2,190  runtime VMs off 15 h a day
+log GB searchable              90       30  interactive 90 -> 30 days, then archive
+report GB from origin          40        4  Front Door serves 90% of reads
+kept as is: 2,557 days of reports (the bank's rule) and the standby (the RTO)

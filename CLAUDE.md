@@ -8,7 +8,7 @@
 The GraphL concept app for **Azure — from an empty tenant to a counterparty-risk data platform**,
 authored from **`AZURE-COURSE-PLAN.md`** (re-planned 2026-10-22: 14 courses, 111 sections, one
 project `risk-on-azure` — Woodgrove Bank's counterparty-risk data platform — built step by step;
-awaiting owner review, no course authored). A **section** is `(scene, narration)` — one full-screen
+all 14 courses authored, awaiting owner review, no narration audio yet). A **section** is `(scene, narration)` — one full-screen
 frame, no slide — and one segment of the course video. The previous 12-chapter plan is in git history.
 
 Engine `@graphlearning/flow@^2.2.0` (own renderer, react-flow removed); shell
@@ -28,8 +28,8 @@ Engine `@graphlearning/flow@^2.2.0` (own renderer, react-flow removed); shell
 
 **Reset on 2026-10-22**: every course, scene and wav of the previous 12-chapter, slide-based course
 (90 sections) was deleted, and the subject re-planned in `AZURE-COURSE-PLAN.md` around one project
-(aws-ct's method). Nothing is registered in `src/content/index.ts` / `src/scenes/index.ts`; a course
-is registered only once authored. `AUTHORING-PLAN.md` describes the previous course's approach and is
+(aws-ct's method). A course is registered in `src/content/index.ts` / `src/scenes/index.ts` only
+once authored; all 14 now are. `AUTHORING-PLAN.md` describes the previous course's approach and is
 superseded by the plan.
 
 | # | Course id | Course | Sections | Status |
@@ -47,7 +47,7 @@ superseded by the plan.
 | 11 | `serve` | Serve the results | 9 | authored, awaiting owner review (no narration audio yet) |
 | 12 | `publish` | Publish to the risk team | 9 | authored, awaiting owner review (no narration audio yet) |
 | 13 | `operate` | Operate it | 10 | authored, awaiting owner review (no narration audio yet) |
-| 14 | `evolve` | Measure, tune and evolve it | 9 | planned |
+| 14 | `evolve` | Measure, tune and evolve it | 9 | authored, awaiting owner review (no narration audio yet) |
 
 **Scope boundary:** the Databricks side (notebooks, Spark, Delta, Unity Catalog grants, Auto Loader,
 Lakeflow) belongs to `databricks-data-engineer-ct`. This course teaches what Azure puts around it.
@@ -225,6 +225,15 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | backup | vault `bv-wg-risk-<env>` (GeoRedundant, soft delete AlwaysOn 14 d, immutability Locked), policy `riskmart-weekly` (Sundays 03:00 UTC, kept P1Y); drill: DELETE mart.exposure (5 rows) → restore to `riskmart_drill` → 5 groups same → deleted; Azure: `psql-wg-riskmart-drill` restored to 2026-10-16T21:30Z |
 | recovery | UK South lost at 00:30 (assumed): RTO 3 h, RPO 15 min of reports; reports GZRS failover; mart geo-restore (< 1 h); lake ZRS: no copy in UK West (re-land, gap); streams resent by the bank's Kafka; code from git |
 | throttling | model: 400 dashboards at 08:00, 40 admitted per 100 ms: fixed 1 s 1,800 × 429, last 9.0 s; exponential no jitter 1,800, 25.5 s; full jitter 964, 1.9 s (seed 12) |
+| night stages | `data/night_runs_202609.csv` (30 nights, a model's numbers): median / p95 minutes copy_tradebook 9.4 / 36.8 (worst 45.8), bronze 14.1 / 17.5, silver 31.3 / 35.1, gold 22.2 / 25.5, mart_load 6.3 / 7.9; whole night 83.9 / 109.6 |
+| Front Door | `afd-wg-risk-<env>` Premium, endpoint `risk-<env>`, origin groups `api` (Private Link `sites`, /health) and `reports` (Private Link `blob`); routes `/api/*` no cache, `/reports/*` → `/large-exposures`, IgnoreQueryString; Singapore credit desk |
+| cost by owner | `cost/risk-prod-202610.csv` (HYPOTHETICAL): risk-data 1,110.60 (53%), risk-apps 859.38 (41%), platform 60.00 (3%), untagged 48.60 (2%: sb-wg-risk-prod 10.00, stwgfuncprod 2.10, crwgriskprod 36.50); total 2,078.58 vs budget `risk-prod-monthly` 2,500 (83%) |
+| commitments | hypothetical: runtime VMs 292.00 → 109.50 (on 17:30–02:30 only), mart + standby 365.00 → 237.25 (1-year reservation, 35% assumed), API plan 438.00 → 328.50 (savings plan, 25% assumed); 1,095.00 → 675.25; break-even 65% |
+| footprint | proxies: runtime vCPU-h 5,840 → 2,190; log GB searchable 90 → 30 (1 GB/day, then archive); report GB from origin 40 → 4 |
+| four ways | hypothetical 0.20 per instance-hour: VMs 438.00, App Service 438.00, Container Apps 267.67 (3 by day 08–18, 1 at night), Functions by use; 39% / ~2,000 a year |
+| ADR-001 | `decisions/ADR-001-serving-store.md` (owner priya, 2026-10-21): musts M1 serializable transaction, M2 private + Entra, M3 zone standby, M4 lookup < 100 ms (assumed); wants W1 team ×3, W2 cost ×2, W3 open source ×1; PostgreSQL 28 / Azure SQL 13 of 30; Cosmos alone out M1, Databricks SQL out M4; revisit when Singapore books |
+| second Region | `infra/14-second-region.sh`: lake ZRS → GZRS; geo-restore `psql-wg-riskmart-dr` in `rg-risk-dr-data` (ukwest); rehearse one night; failover commented out = the boundary |
+| review | ranked (value/effort): restore drill unscheduled 4/1, runtime idle 4/1, untagged 3/1, not committed 3/1, lake single-Region 5/2, no API alert 4/2, hand-made tokens 4/3, copy tail 3/3, silver 2/4 |
 | API versions | Storage data plane `x-ms-version` 2026-10-06 (SDK 12.31); Microsoft.Storage control plane `2025-08-01` (CLI 2.91, Bicep 0.48.1) |
 
 ## Scene inventory
@@ -333,6 +342,15 @@ Extend this table — never change a value a frame already quotes. USD millions 
 | `restore-drill` | IDE: backup.bicep (vault, locked) + tools/restore_drill.py (pg_dump / pg_restore stand-in) | `operate-backups-that-restore` |
 | `recovery-objectives` | UK South lost: part by part in UK West, RTO/RPO, dependency order, what the plan shows | `operate-recovery-objectives` |
 | `throttling-retries` | IDE: tools/retry_jitter.py (a model): fixed / exponential / full jitter; who says 429 | `operate-quotas-and-throttling` |
+| `measure-first` | IDE: evolve/stages.py over 30 nights: silver is longest, the copy is what makes a night late | `evolve-measure-before-tuning` |
+| `front-door-caching` | map frame: frontdoor.bicep routes (/api never cached, /reports cached), what the edge may keep | `evolve-front-door-and-caching` |
+| `cost-by-owner` | IDE: evolve/cost_by_tag.py (hypothetical month by owner tag, untagged 2%), scopes, tag inheritance | `evolve-who-pays-for-what` |
+| `rightsizing` | IDE: evolve/commitments.py: stop idle, then reserve / savings plan (hypothetical) | `evolve-rightsizing-and-commitments` |
+| `sustainability-proxies` | IDE: evolve/footprint.py (proxies, not carbon) and each lever's price | `evolve-sustainability-trade-offs` |
+| `four-ways-one-api` | VMs / App Service / Container Apps / Functions under stated assumptions; what would change it | `evolve-four-ways-to-run-one-api` |
+| `decision-record` | IDE: decisions/ADR-001-serving-store.md + evolve/score_options.py (musts filter, wants score) | `evolve-requirements-and-a-decision-record` |
+| `second-region` | map frame: infra/14-second-region.sh, each step and its way back, the boundary | `evolve-migration-cutover-and-regions` |
+| `well-architected-review` | IDE: evolve/priorities.py (value / effort) beside evidence per pillar | `evolve-a-well-architected-review` |
 
 ## Invariants — do not break
 
